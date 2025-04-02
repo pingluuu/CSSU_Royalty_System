@@ -13,7 +13,7 @@ api.interceptors.request.use(config => {
     const token = localStorage.getItem('authToken');
     if (token){
         //Need bearer due to how backend was set up otherwise need to change backend. 
-        config.headers['Authorization'] = `Bearer ${token}` 
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config
 })
