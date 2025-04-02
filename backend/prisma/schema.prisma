@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  utorid      String    @unique
+  name        String
+  email       String    @unique
+  birthday    String?
+  password    String
+  role        Role      @default(regular)
+  points      Int       @default(0)
+  verified    Boolean   @default(false)
+  suspicious  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  lastLogin   DateTime?
+  avatarUrl   String?
+  transactions Transaction[]
+  resetToken  String?   @unique
+  expiresAt   DateTime?
+  
+
+  promotions  Promotion[]         // Promotions available to the user
+  organizedEvents EventOrganizer[] // Organizing events
+  guestEvents EventGuest[]         // Attending events
+}
+
+model Promotion {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String
+  type        PromotionType
+  startTime   DateTime
+  endTime     DateTime
+  minSpending Float?
+  rate        Float?
+  points      Int?
+  
+  users       User[]           // Users who have access to this promotion
+  transactions TransactionPromotion[] // Applied promotions
+}
+
+model Event {
+  id            Int       @id @default(autoincrement())
+  name          String
+  description   String
+  startTime     DateTime
+  endTime       DateTime
+  location      String
+  capacity      Int?
+  points        Int
+  pointsRemain  Int
+  pointsAwarded Int
+  published     Boolean   @default(false)
+
+  organizers    EventOrganizer[]
+  guests        EventGuest[]
+  transactions  Transaction[] @relation("eventTransactions")
+}
+
+model Transaction {
+  id          Int       @id @default(autoincrement())
+  utorid      String
+  userId      Int
+  type        TransactionType
+  spent       Float?
+  earned      Int?
+  amount      Int?
+  remark      String?
+  suspicious  Boolean          @default(false)
+  processed   Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  createdBy   String
+  status      Status           @default(pending)
+  relatedId   Int?
+  eventId     Int?             //  Add relation to Event
+  
+  user        User             @relation(fields: [userId], references: [id])
+  
+  event       Event?           @relation("eventTransactions", fields: [eventId], references: [id]) // Define reverse relation
+
+  promotions  TransactionPromotion[]
+}
+
+model TransactionPromotion {
+  id            Int         @id @default(autoincrement())
+  transactionId Int
+  promotionId   Int
+
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  promotion     Promotion   @relation(fields: [promotionId], references: [id])
+}
+
+
+model EventOrganizer {
+  id       Int    @id @default(autoincrement())
+  eventId  Int
+  userId   Int
+
+  event    Event  @relation(fields: [eventId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model EventGuest {
+  id       Int    @id @default(autoincrement())
+  eventId  Int
+  userId   Int
+
+  event    Event  @relation(fields: [eventId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+enum PromotionType {
+  automatic
+  one_time
+}
+
+enum Role {
+  regular
+  cashier
+  manager
+  superuser
+}
+
+enum TransactionType {
+  purchase
+  adjustment
+  redemption
+  transfer
+  event
+}
+
+enum Status {
+  pending
+  completed
+  rejected
+}
