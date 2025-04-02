@@ -8,6 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ProtectedRoute from "./components/protectedRoutes";
 import ManagerCreateNewEvent from "./pages/manager/CreateEventPage";
 import ForbiddenPage from "./pages/Forbidden";
+import AllTransactionsPage from "./pages/manager/AllTransactionsPage/AllTransactionsPage";
+
 const AppRoutes = () => {
 	const {user} = useAuth();
 	return (
@@ -17,6 +19,11 @@ const AppRoutes = () => {
 			{<ProtectedRoute requiredRole="manager">
 				<ManagerCreateNewEvent/>
 			</ProtectedRoute>}/>
+
+			<Route path="/all-transactions" element={
+				<ProtectedRoute requiredRole="manager">
+					<AllTransactionsPage />
+				</ProtectedRoute>} />
 			
 			<Route path = "/" element={<div>THIS IS JUST PLACEHOLDER PAGE</div>}/>
 			<Route path = "/forbidden" element={<ForbiddenPage/>}/>
