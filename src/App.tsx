@@ -6,7 +6,7 @@ import NavBar from "./components/NavBar";
 // import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProtectedRoute from "./components/protectedRoutes";
-import ManagerCreateNewEvent from "./pages/manager/CreateEventPage";
+import ManagerCreateNewEvent from "./pages/manager/CreateEventPage/CreateEventPage";
 import ForbiddenPage from "./pages/Forbidden";
 import AllTransactionsPage from "./pages/manager/AllTransactionsPage/AllTransactionsPage";
 import TransactionDetailPage from './pages/manager/TransactionDetailPage/TransactionDetailPage';
