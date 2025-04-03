@@ -7,12 +7,15 @@ interface ProtectedRouteProps {
 }
 const ProtectedRoute = ({children, requiredRole}: ProtectedRouteProps) => {
     const {user} = useAuth();
+    const roles = requiredRole.split(" ")
     
+    console.log(requiredRole)
+    console.log("arr", roles)
     if (!user){
         return <Navigate to="/login"/>
     }
     
-    if (requiredRole != user.role){ //if not enough clearance, redirect to forbidden page
+    if (!roles.includes(user.role)){ //if not enough clearance, redirect to forbidden page
         return <Navigate to="/forbidden"/>
     }
     
