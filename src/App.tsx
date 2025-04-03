@@ -13,11 +13,40 @@ import TransactionDetailPage from './pages/manager/TransactionDetailPage/Transac
 import CreatePromotionPage from './pages/manager/CreatePromotionPage/CreatePromotionPage';
 import PromotionsListingPage from './pages/manager/PromotionsListingPage/PromotionsListingPage';
 import PromotionDetailPage from './pages/manager/PromotionDetailPage/PromotionDetailPage';
+import PromotionsListingRegular from './pages/regular/PromotionsListingRegular/PromotionsListingRegular';
+import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegular/PublishedEventsPageRegular';
+import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular';
+
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
 		<Routes>
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route
+				path="/events"
+				element={
+					<ProtectedRoute requiredRole="regular">
+						<PublishedEventsPageRegular />
+					</ProtectedRoute>
+				}
+			/>
+
+			<Route
+				path="/events/:id"
+				element={
+					<ProtectedRoute requiredRole="regular">
+						<EventDetailPageRegular />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/promotions"
+				element={
+					<ProtectedRoute requiredRole="regular">
+						<PromotionsListingRegular />
+					</ProtectedRoute>
+				}
+			/>
 			<Route path="/manager/events/new" element=
 				{<ProtectedRoute requiredRole="manager">
 					<ManagerCreateNewEvent />
