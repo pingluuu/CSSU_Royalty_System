@@ -18,8 +18,8 @@ const AppRoutes = () => {
 	return (
 		<Routes>
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
-			<Route path="/manager/events/new" element=
-				{<ProtectedRoute requiredRole="manager">
+			<Route path="/create-event" element=
+				{<ProtectedRoute requiredRole="manager superuser">
 					<ManagerCreateNewEvent />
 				</ProtectedRoute>} />
 
