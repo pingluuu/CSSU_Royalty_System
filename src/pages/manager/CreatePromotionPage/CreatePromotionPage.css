@@ -1,0 +1,36 @@
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+    margin-bottom: 2rem;
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-control,
+.form-select {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+button.btn-success {
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+}

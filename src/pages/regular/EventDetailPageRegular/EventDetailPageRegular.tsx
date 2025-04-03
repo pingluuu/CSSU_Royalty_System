@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
+import './EventDetailPageRegular.css';
+
 
 interface Event {
     id: number;
@@ -30,7 +32,7 @@ export default function EventDetailPageRegular() {
             const data = res.data;
             setEvent(data);
 
-            if (data.guests.some((g: any) => g.userId === user.id)) {
+            if (user && data.guests.some((g: any) => g.userId === user.id)) {
                 setRsvped(true);
             }
         } catch (err) {
