@@ -16,6 +16,7 @@ import PromotionDetailPage from './pages/manager/PromotionDetailPage/PromotionDe
 import PromotionsListingRegular from './pages/regular/PromotionsListingRegular/PromotionsListingRegular';
 import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegular/PublishedEventsPageRegular';
 import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular';
+import AddEventGuestPage from "./pages/manager/AddEventGuestPage/AddEventGuestPage";
 
 const AppRoutes = () => {
 	const { user } = useAuth();
@@ -51,7 +52,11 @@ const AppRoutes = () => {
 				{<ProtectedRoute requiredRole="manager superuser">
 					<ManagerCreateNewEvent />
 				</ProtectedRoute>} />
-
+			<Route path="/events/:id/guests/new" element=
+				{<ProtectedRoute requiredRole="manager superuser">
+					<AddEventGuestPage/>
+				</ProtectedRoute>}
+			/>
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">
 					<AllTransactionsPage />
