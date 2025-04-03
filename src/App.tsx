@@ -17,12 +17,19 @@ import PromotionsListingRegular from './pages/regular/PromotionsListingRegular/P
 import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegular/PublishedEventsPageRegular';
 import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular';
 import AddEventGuestPage from "./pages/manager/AddEventGuestPage/AddEventGuestPage";
+import UserQRCodePage from "./pages/regular/UserQRCodePage/UserQRCodePage";
 
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
 		<Routes>
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route path="/my-qr" element={
+				<ProtectedRoute requiredRole="regular">
+					<UserQRCodePage />
+				</ProtectedRoute>
+			} />
+
 			<Route
 				path="/events"
 				element={
@@ -54,7 +61,7 @@ const AppRoutes = () => {
 				</ProtectedRoute>} />
 			<Route path="/events/:id/guests/new" element=
 				{<ProtectedRoute requiredRole="manager superuser">
-					<AddEventGuestPage/>
+					<AddEventGuestPage />
 				</ProtectedRoute>}
 			/>
 			<Route path="/all-transactions" element={

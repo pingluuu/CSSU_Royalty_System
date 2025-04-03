@@ -1,0 +1,15 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h2 {
+    margin-bottom: 1rem;
+}
+
+.qr-code-box {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    display: inline-block;
+    border-radius: 10px;
+}
