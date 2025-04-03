@@ -44,9 +44,6 @@ export default function NavBar() {
                     <Link className="nav-link" to="/redeem">Redeem Points</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/unprocessed-redemption">Redemption QR</Link>
-                  </li>
-                  <li className="nav-item">
                     <Link className="nav-link" to="/promotions">Promotions</Link>
                   </li>
                   <li className="nav-item">
