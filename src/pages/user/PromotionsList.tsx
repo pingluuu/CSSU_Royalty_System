@@ -77,7 +77,7 @@ const PromotionsList = () => {
 
       {/* Pagination */}
       <div className="mt-6 flex justify-center space-x-4">
-        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+
         <button
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
           disabled={page === 1}
@@ -88,7 +88,6 @@ const PromotionsList = () => {
         <span className="px-4 py-2 text-gray-700">
           Page {page} of {totalPages}
         </span>
-        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
         <button
           onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
           disabled={page === totalPages}
