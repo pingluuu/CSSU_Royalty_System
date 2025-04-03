@@ -18,6 +18,7 @@ import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegul
 import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular';
 import AddEventGuestPage from "./pages/manager/AddEventGuestPage/AddEventGuestPage";
 import UserQRCodePage from "./pages/regular/UserQRCodePage/UserQRCodePage";
+import UnprocessedRedemptionQRPage from "./pages/regular/UnprocessedRedemptionQRPage/UnprocessedRedemptionQRPage";
 
 const AppRoutes = () => {
 	const { user } = useAuth();
@@ -29,7 +30,14 @@ const AppRoutes = () => {
 					<UserQRCodePage />
 				</ProtectedRoute>
 			} />
-
+			<Route
+				path="/unprocessed-redemption"
+				element={
+					<ProtectedRoute requiredRole="regular">
+						<UnprocessedRedemptionQRPage />
+					</ProtectedRoute>
+				}
+			/>
 			<Route
 				path="/events"
 				element={
