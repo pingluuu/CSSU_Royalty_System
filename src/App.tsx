@@ -10,8 +10,9 @@ import ManagerCreateNewEvent from "./pages/manager/CreateEventPage";
 import ForbiddenPage from "./pages/Forbidden";
 import AllTransactionsPage from "./pages/manager/AllTransactionsPage/AllTransactionsPage";
 import TransactionDetailPage from './pages/manager/TransactionDetailPage/TransactionDetailPage';
-
-
+import CreatePromotionPage from './pages/manager/CreatePromotionPage/CreatePromotionPage';
+import PromotionsListingPage from './pages/manager/PromotionsListingPage/PromotionsListingPage';
+import PromotionDetailPage from './pages/manager/PromotionDetailPage/PromotionDetailPage';
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
@@ -35,6 +36,25 @@ const AppRoutes = () => {
 					</ProtectedRoute>
 				}
 			/>
+			<Route
+				path="/create-promotion"
+				element={
+					<ProtectedRoute requiredRole="manager">
+						<CreatePromotionPage />
+					</ProtectedRoute>
+				}
+			/>
+			<Route path="/promotions-manager" element={
+				<ProtectedRoute requiredRole="manager">
+					<PromotionsListingPage />
+				</ProtectedRoute>
+			}
+			/>
+			<Route path="/manager/promotions/:id" element={
+				<ProtectedRoute requiredRole="manager">
+					<PromotionDetailPage />
+				</ProtectedRoute>
+			} />
 
 			<Route path="/" element={<div>THIS IS JUST PLACEHOLDER PAGE</div>} />
 			<Route path="/forbidden" element={<ForbiddenPage />} />
