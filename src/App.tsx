@@ -17,10 +17,12 @@ import PromotionsListingRegular from './pages/regular/PromotionsListingRegular/P
 import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegular/PublishedEventsPageRegular';
 import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular';
 import AddEventGuestPage from "./pages/manager/AddEventGuestPage/AddEventGuestPage";
+import EventDetailPageManager from "./pages/manager/EventDetailPage/EventDetailPageManager";
 import UserQRCodePage from "./pages/regular/UserQRCodePage/UserQRCodePage";
 import UnprocessedRedemptionQRPage from "./pages/regular/UnprocessedRedemptionQRPage/UnprocessedRedemptionQRPage";
 import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/ProcessRedemptionPage";
 import AddEventOrganizer from "./pages/manager/AddEventOrganizerPage/AddEventOrganizerPage";
+
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
@@ -82,6 +84,7 @@ const AppRoutes = () => {
 					<AddEventGuestPage />
 				</ProtectedRoute>}
 			/>
+
 			<Route
 				path="/manager/events/:id/organizers"
 				element={
@@ -90,6 +93,13 @@ const AppRoutes = () => {
 					</ProtectedRoute>
 				}
 			/>
+
+			<Route path="/manager/events/:id" element=
+				{<ProtectedRoute requiredRole="manager superuser">
+					<EventDetailPageManager/>
+				</ProtectedRoute>}
+			/>
+      
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">
 					<AllTransactionsPage />
