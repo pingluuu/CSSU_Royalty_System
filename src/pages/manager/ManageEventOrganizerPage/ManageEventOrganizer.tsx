@@ -3,12 +3,24 @@ import { useState, useEffect} from "react"
 import { useParams } from "react-router-dom"
 import axios from 'axios';
 
-
-export default function AddEventOrganizer(){
+interface Organizer {
+    id: number;
+    utorid: string;
+    name: string;
+}
+export default function ManageEventOrganizer(){
     const [error, setError] = useState<string|null>(null)
     const [utorid, setUtorId] = useState("")
     const [loading, setLoading] = useState(true);
     const [invalidEvent, setInvalidEvent] = useState(false);
+
+    const [eventName, setEventName] = useState<string>(''); 
+    const [organizers, setOrganizers] = useState<Organizer []>([])
+
+    const [addingUtorId, setAddingUtorId] = useState<string| null> (null);
+    const [removingId, setRemovingId] = useState<number | null>(null); 
+    
+
     const {id} = useParams()
 
     useEffect(() => {
@@ -17,7 +29,9 @@ export default function AddEventOrganizer(){
         setError(null)
         const checkValidEvent = async () => {
             try {
-                await api.get(`/events/${id}`)
+                const res = await api.get(`/events/${id}`)
+                setOrganizers(res.data.organizers)
+                setEventName(res.data.name)
             }
             catch (error){
                 if (axios.isAxiosError(error)){
@@ -36,7 +50,7 @@ export default function AddEventOrganizer(){
             }
         }
         checkValidEvent()
-    }, [id])
+    }, [id, removingId, addingUtorId])
 
     if (loading) {
         return (
@@ -74,6 +88,7 @@ export default function AddEventOrganizer(){
         event.preventDefault()
         try {
             await api.post(`/events/${id}/organizers`, {utorid: utorid})
+            setAddingUtorId(utorid)
             alert(`${utorid} added as a list to organizer`)
         }
 
@@ -97,22 +112,58 @@ export default function AddEventOrganizer(){
         setUtorId(event.target.value)
     }
 
+    const handleRemoveOrganizer = async (userId: number) => {
+        console.log(userId)
+        try {
+            await api.delete(`/events/${id}/organizers/${userId}`)
+            setRemovingId(userId)
+        }
+
+        catch (err){
+            console.log(err)
+        }
+    }
 
     return (
         <div className="container mt-4"> 
-        <div className="card shadow p-4">
-            <h4 className="mb-3">Enter UTORid of Organizer</h4>
-            <form onSubmit={handleSubmit}>
-                <input type="text"
-                className="form-control" 
-                placeholder="Enter here" 
-                onChange={handleInputChange}
-                required
-                />
-                <button type="submit" className="btn btn-success">Add Organizer</button>
-            </form>
+            <div>
+                <h3 className="mb-3">Event Name: {eventName}</h3>
+            </div>
+            <div className="card shadow p-4">
+                <h4 className="mb-3">Enter UTORid of Organizer</h4>
+                <form onSubmit={handleSubmit}>
+                    <input type="text"
+                    className="form-control" 
+                    placeholder="Enter here" 
+                    onChange={handleInputChange}
+                    required
+                    />
+                    <button type="submit" className="btn btn-success">Add Organizer</button>
+                </form>
+            </div>
+            <div className="card shadow-sm p-4 mt-3">
+                <h5 className="mb-3">Current Organizers ({organizers.length})</h5>
+                {organizers.length > 0 ? (
+                    <ul className="list-group">
+                        {organizers.map((org) => (
+                            <li key={org.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    {org.name} ({org.utorid})
+                                </span>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-danger btn-sm"
+                                    onClick={() => handleRemoveOrganizer(org.id)}
+                                >
+                                    Remove
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-muted">No organizers currently assigned to this event.</p>
+                )}
+            </div>
         </div>
-        
-    </div>
     )
 }

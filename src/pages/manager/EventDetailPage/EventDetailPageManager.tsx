@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate} from "react-router-dom";
 import api from "../../../services/api";
-
+import { useAuth } from "../../../contexts/AuthContext"; 
 interface Event {
     id: number;
     name: string; 
@@ -17,12 +17,16 @@ interface Event {
     guests: { id: number, utorid: string, name: string }[];
 }
 export default function EventDetailPage(){
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [event, setEvent] = useState<Event | null>(null);
     const [error, setError] = useState<string|null>(null)
     const [isEditing, setIsEditing] = useState(true);
     const [eventDeleted, setEventDeleted] = useState(false)
     const {id} = useParams()
+
+    const [removingOrganizerId, setRemovingOrganizerId] = useState<number | null>(null);
+    const [organizerError, setOrganizerError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -103,8 +107,9 @@ export default function EventDetailPage(){
             console.log("error", err)
             alert("Published must be set to true")
         }
-        
     }
+
+
 
     const formatDateTimeLocal = (isoString: string) => {
         const date = new Date(isoString)
@@ -306,23 +311,12 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row mb-3">
-                    <label className="col-sm-3 col-form-label pt-sm-0"> {/* Adjust alignment/padding if needed */}
+                    <label className="col-sm-3 col-form-label pt-sm-0">
                         Organizers ({event.organizers.length}):
                     </label>
-                    <div className="col-sm-7">
-                        {event.organizers.length > 0 ? (
-                            <div style={{ maxHeight: '50px', overflowY: 'auto', border: '1px solid #eee', padding: '0.5rem', borderRadius: '0.25rem' }}>
-                                <ul className="list-unstyled mb-0 small">
-                                    {event.organizers.map(org => (
-                                        <li key={org.id} className="mb-1">
-                                            {org.name} ({org.utorid})
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : (
-                            <span className="text-muted">No organizers listed.</span>
-                        )}
+                    <div className="col-sm-7"> 
+                        <button className="btn btn-primary"
+                         onClick={() => navigate('/manager/events/3/manage-organizers')}>View Organizers</button>
                     </div>
                 </div>
                 <div className="row mb-3">
@@ -330,19 +324,8 @@ export default function EventDetailPage(){
                         Guests ({event.guests.length}):
                     </label>
                     <div className="col-sm-7">
-                        {event.guests.length > 0 ? (
-                            <div style={{ maxHeight: '50px', overflowY: 'auto', border: '1px solid #eee', padding: '0.5rem', borderRadius: '0.25rem' }}>
-                                <ul className="list-unstyled mb-0 small">
-                                    {event.guests.map(guest => (
-                                        <li key={guest.id} className="mb-1">
-                                            {guest.name} ({guest.utorid})
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : (
-                            <span className="text-muted">No organizers listed.</span>
-                        )}
+                        <button className="btn btn-primary btn-sm"  
+                        onClick={() => navigate('/manager/events/3/manage-guests')}>View Guests</button>
                     </div>
                 </div>
             </form>
