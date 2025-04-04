@@ -18,11 +18,28 @@ import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegul
 import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular';
 import AddEventGuestPage from "./pages/manager/AddEventGuestPage/AddEventGuestPage";
 import EventDetailPageManager from "./pages/manager/EventDetailPage/EventDetailPageManager";
+import UserQRCodePage from "./pages/regular/UserQRCodePage/UserQRCodePage";
+import UnprocessedRedemptionQRPage from "./pages/regular/UnprocessedRedemptionQRPage/UnprocessedRedemptionQRPage";
+import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/ProcessRedemptionPage";
+
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
 		<Routes>
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route path="/my-qr" element={
+				<ProtectedRoute requiredRole="regular">
+					<UserQRCodePage />
+				</ProtectedRoute>
+			} />
+			<Route
+				path="/redeem"
+				element={
+					<ProtectedRoute requiredRole="regular">
+						<UnprocessedRedemptionQRPage />
+					</ProtectedRoute>
+				}
+			/>
 			<Route
 				path="/events"
 				element={
@@ -48,13 +65,23 @@ const AppRoutes = () => {
 					</ProtectedRoute>
 				}
 			/>
+
+			<Route
+				path="/process-redemption"
+				element={
+					<ProtectedRoute requiredRole="cashier">
+						<ProcessRedemptionPage />
+					</ProtectedRoute>
+				}
+			/>
+
 			<Route path="/create-event" element=
 				{<ProtectedRoute requiredRole="manager superuser">
 					<ManagerCreateNewEvent />
 				</ProtectedRoute>} />
 			<Route path="/events/:id/guests/new" element=
 				{<ProtectedRoute requiredRole="manager superuser">
-					<AddEventGuestPage/>
+					<AddEventGuestPage />
 				</ProtectedRoute>}
 			/>
 			<Route path="/manager/events/:id" element=
