@@ -20,6 +20,7 @@ import AddEventGuestPage from "./pages/manager/AddEventGuestPage/AddEventGuestPa
 import UserQRCodePage from "./pages/regular/UserQRCodePage/UserQRCodePage";
 import UnprocessedRedemptionQRPage from "./pages/regular/UnprocessedRedemptionQRPage/UnprocessedRedemptionQRPage";
 import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/ProcessRedemptionPage";
+import AddEventOrganizer from "./pages/manager/AddEventOrganizerPage/AddEventOrganizerPage";
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
@@ -72,7 +73,6 @@ const AppRoutes = () => {
 					</ProtectedRoute>
 				}
 			/>
-
 			<Route path="/create-event" element=
 				{<ProtectedRoute requiredRole="manager superuser">
 					<ManagerCreateNewEvent />
@@ -81,6 +81,14 @@ const AppRoutes = () => {
 				{<ProtectedRoute requiredRole="manager superuser">
 					<AddEventGuestPage />
 				</ProtectedRoute>}
+			/>
+			<Route
+				path="/manager/events/:id/organizers"
+				element={
+					<ProtectedRoute requiredRole="manager superuser">
+						<AddEventOrganizer/>
+					</ProtectedRoute>
+				}
 			/>
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">
