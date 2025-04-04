@@ -15,13 +15,13 @@ import PromotionsListingPage from './pages/manager/PromotionsListingPage/Promoti
 import PromotionDetailPage from './pages/manager/PromotionDetailPage/PromotionDetailPage';
 import PromotionsListingRegular from './pages/regular/PromotionsListingRegular/PromotionsListingRegular';
 import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegular/PublishedEventsPageRegular';
-import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular';
-import AddEventGuestPage from "./pages/manager/AddEventGuestPage/AddEventGuestPage";
+import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular'
 import EventDetailPageManager from "./pages/manager/EventDetailPage/EventDetailPageManager";
 import UserQRCodePage from "./pages/regular/UserQRCodePage/UserQRCodePage";
 import UnprocessedRedemptionQRPage from "./pages/regular/UnprocessedRedemptionQRPage/UnprocessedRedemptionQRPage";
 import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/ProcessRedemptionPage";
 import ManageEventOrganizer from "./pages/manager/ManageEventOrganizerPage/ManageEventOrganizer";
+import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEventGuestPage";
 
 
 const AppRoutes = () => {
@@ -80,9 +80,9 @@ const AppRoutes = () => {
 				{<ProtectedRoute requiredRole="manager superuser">
 					<ManagerCreateNewEvent />
 				</ProtectedRoute>} />
-			<Route path="/events/:id/guests/new" element=
+			<Route path="manager/events/:id/manage-guests" element=
 				{<ProtectedRoute requiredRole="manager superuser">
-					<AddEventGuestPage />
+					<ManageEventGuestPage/>
 				</ProtectedRoute>}
 			/>
 
