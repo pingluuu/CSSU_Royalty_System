@@ -1,7 +1,8 @@
 import api from "../../../services/api"
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios';
+
 interface Guest {
     id: number;
     utorid: string;
@@ -17,6 +18,7 @@ export default function ManageEventGuestPage(){
     const [eventName, setEventName] = useState<string>(''); 
     const [guests, setGuests] = useState<Guest []>([])
     const [refreshKey, setRefreshKey] = useState<number>(0);
+    const navigate = useNavigate();
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUtorId(event.target.value)
     }
@@ -125,9 +127,9 @@ export default function ManageEventGuestPage(){
     }
     return (
         <div className="container mt-4"> 
-        
-        <div>
-                <h3 className="mb-3">Event Name: {eventName}</h3>
+            <div>
+                <h3 className="">Event Name: {eventName}</h3>
+                <button className="btn btn-secondary mb-3" onClick={() => navigate(`/manager/events/${id}`)}>Go Back To Event</button>
             </div>
             <div className="card shadow p-4">
                 <h4 className="mb-3">Enter UTORid of Guest</h4>

@@ -22,6 +22,7 @@ import UnprocessedRedemptionQRPage from "./pages/regular/UnprocessedRedemptionQR
 import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/ProcessRedemptionPage";
 import ManageEventOrganizer from "./pages/manager/ManageEventOrganizerPage/ManageEventOrganizer";
 import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEventGuestPage";
+import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
 
 
 const AppRoutes = () => {
@@ -94,12 +95,18 @@ const AppRoutes = () => {
 					</ProtectedRoute>
 				}
 			/>
-
+			<Route path="/manager/events/:id/award-points" element=
+				{<ProtectedRoute requiredRole="manager superuser cashier regular">
+					<AwardPointsPage/>
+				</ProtectedRoute>}
+			/>
+			
 			<Route path="/manager/events/:id" element=
 				{<ProtectedRoute requiredRole="manager superuser">
 					<EventDetailPageManager/>
 				</ProtectedRoute>}
 			/>
+			
       
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">

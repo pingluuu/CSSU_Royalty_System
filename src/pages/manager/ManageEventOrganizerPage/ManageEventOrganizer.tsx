@@ -1,6 +1,6 @@
 import api from "../../../services/api"
 import { useState, useEffect} from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios';
 
 interface Organizer {
@@ -18,10 +18,9 @@ export default function ManageEventOrganizer(){
     const [organizers, setOrganizers] = useState<Organizer []>([])
     const [refreshKey, setRefreshKey] = useState<number>(0);
 
-    
 
     const {id} = useParams()
-
+    const navigate = useNavigate();
     useEffect(() => {
         setLoading(true)
         setInvalidEvent(false)
@@ -126,6 +125,7 @@ export default function ManageEventOrganizer(){
         <div className="container mt-4"> 
             <div>
                 <h3 className="mb-3">Event Name: {eventName}</h3>
+                <button className="btn btn-secondary mb-3" onClick={() => navigate(`/manager/events/${id}`)}>Go Back To Event</button>
             </div>
             <div className="card shadow p-4">
                 <h4 className="mb-3">Enter UTORid of Organizer</h4>
