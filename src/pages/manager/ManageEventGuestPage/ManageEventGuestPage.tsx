@@ -2,6 +2,7 @@ import api from "../../../services/api"
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios';
+import { useAuth } from "../../../contexts/AuthContext"; 
 
 interface Guest {
     id: number;
@@ -18,6 +19,7 @@ export default function ManageEventGuestPage(){
     const [eventName, setEventName] = useState<string>(''); 
     const [guests, setGuests] = useState<Guest []>([])
     const [refreshKey, setRefreshKey] = useState<number>(0);
+    const {user} = useAuth()
     const navigate = useNavigate();
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUtorId(event.target.value)
@@ -33,8 +35,8 @@ export default function ManageEventGuestPage(){
         catch (error){
             if (axios.isAxiosError(error)){
                 if (error?.status === 404){
-                    setError("event not visible to organizer")
-                    setInvalidEvent(true)
+                    setError("event not visible to organizer or not valid user")
+                    // setInvalidEvent(true)
                 }
 
                 else if (error?.status === 410){
@@ -49,7 +51,7 @@ export default function ManageEventGuestPage(){
                     setError("Try again")
                 }
             }
-            setInvalidUser(true)
+            // setInvalidUser(true)
         }
     }
 
@@ -59,8 +61,15 @@ export default function ManageEventGuestPage(){
         setInvalidEvent(false)
         setError(null)
         const checkValidEvent = async () => {
+            if (!user){
+                return;
+            }
             try {
                 const res = await api.get(`/events/${id}`)
+                const checkOrganizer = res.data.organizers.some((organizer: Guest)=> organizer.utorid === user.utorid);
+                if (user.role !== "superuser" && user.role !== "manager" && !checkOrganizer){
+                    setError("Denied Permission")
+                }
                 setGuests(res.data.guests)
                 setEventName(res.data.name)
             }
@@ -105,26 +114,36 @@ export default function ManageEventGuestPage(){
             </div>
         );
     }
-
-    if (invalidEvent){
+    if (error){
         return (
             <div className="container mt-4">
                 <div className="alert alert-danger text-center">
                     <h1>{error}</h1>
+                    <button className="btn btn-primary m-2" onClick={() => setError(null)}>Go Back To Event</button>
                 </div>
             </div>
         )
     }
+    // if (invalidEvent){
+    //     return (
+    //         <div className="container mt-4">
+    //             <div className="alert alert-danger text-center">
+    //                 <h1>{error}</h1>
+    //                 <button className="btn btn-primary m-2" onClick={() => setInvalidEvent(null)}>Go Back To Event</button>
+    //             </div>
+    //         </div>
+    //     )
+    // }
 
-    if (invalidUser){
-        return (
-            <div className="container mt-4">
-                <div className="alert alert-danger text-center">
-                    <h1>{error}</h1>
-                </div>
-            </div>
-        )
-    }
+    // if (invalidUser){
+    //     return (
+    //         <div className="container mt-4">
+    //             <div className="alert alert-danger text-center">
+    //                 <h1>{error}</h1>
+    //             </div>
+    //         </div>
+    //     )
+    // }
     return (
         <div className="container mt-4"> 
             <div>
@@ -144,24 +163,27 @@ export default function ManageEventGuestPage(){
                 </form>
             </div>
             <div className="card shadow-sm p-4 mt-3">
-                <h5 className="mb-3">Current Organizers ({guests.length})</h5>
+                <h5 className="mb-3">Current Guests ({guests.length})</h5>
                 {guests.length > 0 ? (
-                    <ul className="list-group">
+                    <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                        <ul className="list-group">
                         {guests.map((g) => (
-                            <li key={g.id} className="list-group-item d-flex justify-content-between align-items-center">
+                            <li key={g.id}
+                             className="list-group-item d-flex flex-column flex-sm-row justify-content-sm-between">
                                 <span>
                                     {g.name} ({g.utorid})
                                 </span>
-                                <button
+                                {(user.role === "manager" || user.role === "superuser") && <button
                                     type="button"
                                     className="btn btn-outline-danger btn-sm"
                                     onClick={() => handleRemoveGuest(g.id)}
                                 >
                                     Remove
-                                </button>
+                                </button>}
                             </li>
                         ))}
                     </ul>
+                    </div>
                 ) : (
                     <p className="text-muted">No organizers currently assigned to this event.</p>
                 )}

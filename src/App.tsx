@@ -82,7 +82,7 @@ const AppRoutes = () => {
 					<ManagerCreateNewEvent />
 				</ProtectedRoute>} />
 			<Route path="manager/events/:id/manage-guests" element=
-				{<ProtectedRoute requiredRole="manager superuser">
+				{<ProtectedRoute requiredRole="manager superuser cashier regular">
 					<ManageEventGuestPage/>
 				</ProtectedRoute>}
 			/>
@@ -102,7 +102,7 @@ const AppRoutes = () => {
 			/>
 			
 			<Route path="/manager/events/:id" element=
-				{<ProtectedRoute requiredRole="manager superuser">
+				{<ProtectedRoute requiredRole="manager superuser regular cashier">
 					<EventDetailPageManager/>
 				</ProtectedRoute>}
 			/>
