@@ -25,8 +25,8 @@ export default function EventDetailPage(){
     const [eventDeleted, setEventDeleted] = useState(false)
     const {id} = useParams()
 
-    const [removingOrganizerId, setRemovingOrganizerId] = useState<number | null>(null);
-    const [organizerError, setOrganizerError] = useState<string | null>(null);
+    // const [removingOrganizerId, setRemovingOrganizerId] = useState<number | null>(null);
+    // const [organizerError, setOrganizerError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -70,8 +70,8 @@ export default function EventDetailPage(){
             setEventDeleted(true)
 
         }
-        catch (error){
-            console.log("Delete event error", error)
+        catch (err){
+            console.log("Delete event error", err)
             setError("Event has been published")
         }
     }
@@ -147,9 +147,10 @@ export default function EventDetailPage(){
         return (
             <div className="container mt-4">
                 <div className="alert alert-danger text-center">
-                <h1>{error ? "Error" : "Not Found"}</h1>
-                <p>{error || "Event data could not be loaded or the event does not exist."}</p>
+                    <h1>{error ? "Error" : "Not Found"}</h1>
+                    <p>{error || "Event data could not be loaded or the event does not exist."}</p>
                 </div>
+                <button className="btn btn-secondary me-2" onClick={() => setError(null)}>Go Back To Event</button>
             </div>
         )
     }
@@ -316,7 +317,7 @@ export default function EventDetailPage(){
                     </label>
                     <div className="col-sm-7"> 
                         <button className="btn btn-primary"
-                         onClick={() => navigate('/manager/events/3/manage-organizers')}>View Organizers</button>
+                         onClick={() => navigate(`/manager/events/${id}/manage-organizers`)}>View Organizers</button>
                     </div>
                 </div>
                 <div className="row mb-3">
@@ -325,7 +326,7 @@ export default function EventDetailPage(){
                     </label>
                     <div className="col-sm-7">
                         <button className="btn btn-primary btn-sm"  
-                        onClick={() => navigate('/manager/events/3/manage-guests')}>View Guests</button>
+                        onClick={() => navigate(`/manager/events/${id}/manage-guests`)}>View Guests</button>
                     </div>
                 </div>
             </form>
@@ -333,6 +334,7 @@ export default function EventDetailPage(){
                 <button className ="btn btn-success" onClick={editField}>Edit Fields</button>
                 <button className = "btn btn-secondary" onClick={submitEditField}>Save Changes</button>
                 <button className ="btn btn-danger"onClick={deleteEvent}>Delete Event</button>
+                <button className ="btn btn-primary"onClick={() => navigate(`/manager/events/${id}/award-points`)}>Award Points</button>
             </div>
         </div>
     )
