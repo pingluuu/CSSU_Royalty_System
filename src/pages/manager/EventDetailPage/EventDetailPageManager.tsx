@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate} from "react-router-dom";
 import api from "../../../services/api";
 import { useAuth } from "../../../contexts/AuthContext"; 
+//Also includes event organizer for this view
 interface Event {
     id: number;
     name: string; 
@@ -16,6 +17,24 @@ interface Event {
     organizers: {id: number, utorid: string, name: string}[]
     guests: { id: number, utorid: string, name: string }[];
 }
+
+interface Organizer {
+    id: number;
+    utorid: string;
+    name: string
+}
+
+interface EditableEventData {
+    name?: string;
+    description?: string;
+    location?: string;
+    startTime?: string;
+    endTime?: string;
+    capacity?: number | null;
+    pointsRemain?: number; // If total points are editable
+    published?: boolean;
+}
+
 export default function EventDetailPage(){
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -23,19 +42,28 @@ export default function EventDetailPage(){
     const [error, setError] = useState<string|null>(null)
     const [isEditing, setIsEditing] = useState(true);
     const [eventDeleted, setEventDeleted] = useState(false)
+    const [formData, setFormData] = useState<EditableEventData>({});
     const {id} = useParams()
+    const {user} = useAuth()
 
     // const [removingOrganizerId, setRemovingOrganizerId] = useState<number | null>(null);
     // const [organizerError, setOrganizerError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchEvent = async () => {
+            if (!user){
+                return;
+            }
             try {
                 const res = await api.get(`/events/${id}`)
+                const checkOrganizer = res.data.organizers.some((organizer: Organizer)=> organizer.utorid === user.utorid);
+                if (user.role !== "superuser" && user.role !== "manager" && !checkOrganizer){
+                    setError("Denied Permission")
+                }
                 console.log(res.data)
                 setEvent(res.data)
+                setFormData(res.data)
             }
-
             catch (error: any){
                 if (error.response.status === 404){
                     setError("Event not found or not accessible")
@@ -59,8 +87,8 @@ export default function EventDetailPage(){
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
         console.log(name, value)
-        setEvent((prev) => ({
-            ...prev!, 
+        setFormData((prev) => ({
+            ...prev, 
             [name]: value
         }))
     }
@@ -79,29 +107,45 @@ export default function EventDetailPage(){
     const submitEditField = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try {
             e.preventDefault()
-            const payload = {
-                ...event
-            }
+            const payload = {}
             
-            payload.startTime = new Date(event.startTime).toISOString()
-            payload.endTime =  new Date(event.endTime).toISOString()
-            payload.points = Number(payload.pointsRemain)
-            payload.capacity = payload.capacity ? Number(payload.capacity) : null
-            console.log(typeof(payload.published), payload.published)
-            payload.published = payload.published === "true" ? true : false
-            if (!payload.published){
-                alert("Published must be true")
-                return;
+            if (formData.startTime !== event?.startTime){
+                payload.startTime = new Date(formData.startTime).toISOString()
             }
-            delete payload.id
-            delete payload.guests
-            delete payload.organizers
-            delete payload.pointsAwarded
-            delete payload.pointsRemain
-            
+            if (formData.endTime !== event?.endTime){
+                payload.endTime = new Date(formData.endTime).toISOString()
+            }
+
+            if (formData.pointsRemain !== event?.pointsRemain){
+                payload.points = Number(payload.pointsRemain)
+            }
+
+            if (formData.capacity !== event?.capacity){
+                payload.capacity = payload.capacity ? Number(payload.capacity) : null
+            }
+
+            if (formData.name !== event?.name){
+                payload.name = formData.name
+            }
+
+            if (formData.description !== event?.description){
+                payload.description = formData.description
+            }
+
+            if (user.role === "manager"){
+                if (formData.published !== event?.published){
+                    payload.published = formData.published
+                }
+            }
+
+            if (formData.location !== event?.location){
+                payload.location = formData
+            }
+
             await api.patch(`/events/${id}`, payload)
             alert('Event updated')
             setIsEditing(!isEditing)
+            setError(null)
         }
         catch (err){
             console.log("error", err)
@@ -150,6 +194,7 @@ export default function EventDetailPage(){
                     <h1>{error ? "Error" : "Not Found"}</h1>
                     <p>{error || "Event data could not be loaded or the event does not exist."}</p>
                 </div>
+                <button className="btn btn-secondary me-2" onClick={() => navigate('/')}>Go Back To HomePage</button>
                 <button className="btn btn-secondary me-2" onClick={() => setError(null)}>Go Back To Event</button>
             </div>
         )
@@ -159,14 +204,14 @@ export default function EventDetailPage(){
         <div className="container mt-4">
             <form className="m-2">
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label">
                         Event ID:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="text"
                         name="id"
-                        value={event.id}
+                        value={formData.id}
                         onChange={handleInputChange}
                         disabled
                         className="form-control"
@@ -174,14 +219,14 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label">
                         Name of Event:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="text"
                         name="name"
-                        value={event.name}
+                        value={formData.name}
                         onChange={handleInputChange}
                         disabled={isEditing}
                         className="form-control"
@@ -189,14 +234,14 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label"> 
                         Description:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="text"
                         name="description"
-                        value={event.description}
+                        value={formData.description}
                         onChange={handleInputChange}
                         disabled={isEditing}
                         className="form-control"
@@ -204,14 +249,14 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label">
                         Location: 
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="text"
                         name="location"
-                        value={event.location}
+                        value={formData.location}
                         onChange={handleInputChange}
                         disabled={isEditing}
                         className="form-control"
@@ -219,14 +264,14 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label">
                         Start Time:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="datetime-local"
                         name="startTime"
-                        value={formatDateTimeLocal(event.startTime)}
+                        value={formatDateTimeLocal(formData.startTime)}
                         onChange={handleInputChange}
                         disabled={isEditing}
                         className="form-control"
@@ -234,10 +279,10 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label">
                         End Time:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="datetime-local"
                         name="endTime"
@@ -249,14 +294,14 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label">
                         Capacity:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="text"
                         name="capacity"
-                        value={event.capacity}
+                        value={formData.capacity}
                         onChange={handleInputChange}
                         disabled={isEditing}
                         className="form-control"
@@ -264,47 +309,48 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
+                    <label className="col-md-3 form-label">
                         Points Remain:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="text"
                         name="pointsRemain"
-                        value={event.pointsRemain}
+                        value={formData.pointsRemain}
                         onChange={handleInputChange}
-                        disabled={isEditing}
+                        disabled={isEditing && user.role === "manager"}
                         className="form-control"
                         />
                     </div>
                 </div>
                 <div className="row align-items-center mb-3">
-                    <label className="col-sm-3 form-label me-2">
-                        Points Reward:
+                    <label className="col-md-3 form-label">
+                        Points Awarded:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <input
                         type="text"
                         name="pointsReward"
-                        value={event.pointsAwarded}
+                        value={formData.pointsAwarded}
                         onChange={handleInputChange}
-                        disabled
+                        disabled={!isEditing || user?.role !== "manager" }
                         className="form-control"
                         />
                     </div>
                 </div>
+
                 <div className="row align-items-center mb-3">
-                    <label htmlFor="published" className="col-sm-3 col-form-label me-2">
+                    <label htmlFor="published" className="col-md-3 form-label">
                         Published:
                     </label>
-                    <div className="col-sm-7">
+                    <div className="col-md-9">
                         <select
                             id="published"
                             name="published"
                             className="form-select" 
-                            value={String(event.published)}
+                            value={String(formData.published)}
                             onChange={handleInputChange} 
-                            disabled={isEditing}
+                            disabled={!isEditing || user?.role !== "manager" }
                         >
                             <option value="true">True</option>
                             <option value="false">False</option>
@@ -312,8 +358,8 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row mb-3">
-                    <label className="col-sm-3 col-form-label pt-sm-0">
-                        Organizers ({event.organizers.length}):
+                    <label className="col-md-3 form-label">
+                        Organizers ({formData.organizers.length}):
                     </label>
                     <div className="col-sm-7"> 
                         <button className="btn btn-primary"
@@ -321,8 +367,8 @@ export default function EventDetailPage(){
                     </div>
                 </div>
                 <div className="row mb-3">
-                    <label className="col-sm-3 col-form-label pt-sm-0"> 
-                        Guests ({event.guests.length}):
+                    <label className="col-md-3 form-label">
+                        Guests ({formData.guests.length}):
                     </label>
                     <div className="col-sm-7">
                         <button className="btn btn-primary btn-sm"  
@@ -330,10 +376,11 @@ export default function EventDetailPage(){
                     </div>
                 </div>
             </form>
-            <div className="d-flex gap-2">
+            <div className="d-flex flex-column flex-md-row gap-2 mt-4"> 
                 <button className ="btn btn-success" onClick={editField}>Edit Fields</button>
                 <button className = "btn btn-secondary" onClick={submitEditField}>Save Changes</button>
-                <button className ="btn btn-danger"onClick={deleteEvent}>Delete Event</button>
+                {(user.role === "superuser" || user.role === "manager") &&
+                <button className ="btn btn-danger"onClick={deleteEvent}>Delete Event</button>}
                 <button className ="btn btn-primary"onClick={() => navigate(`/manager/events/${id}/award-points`)}>Award Points</button>
             </div>
         </div>
