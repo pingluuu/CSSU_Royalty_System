@@ -23,9 +23,9 @@ import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/Process
 import ManageEventOrganizer from "./pages/manager/ManageEventOrganizerPage/ManageEventOrganizer";
 import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEventGuestPage";
 import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
-import UserProfile from "./pages/profile/index";
 import LandingPage from './components/LandingPage';
 import ProfilePage from './components/ProfilePage';
+import UserAvailablePoints from "./pages/regular/AvailablePoints/AvailablePoints";
 
 const AppRoutes = () => {
 	const { user } = useAuth();
@@ -41,14 +41,15 @@ const AppRoutes = () => {
 					</ProtectedRoute>
 				}
 			/>
+			<Route path="/points" element={
+				<ProtectedRoute requiredRole="regular">
+					<UserAvailablePoints />
+				</ProtectedRoute>
+			} />
+
 			<Route path="/my-qr" element={
 				<ProtectedRoute requiredRole="regular">
 					<UserQRCodePage />
-				</ProtectedRoute>
-			} />
-			<Route path="/profile" element={
-				<ProtectedRoute requiredRole="regular">
-					<UserProfile />
 				</ProtectedRoute>
 			} />
 			<Route

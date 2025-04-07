@@ -46,8 +46,18 @@ export default function ProfilePage() {
     if (!user) return <div className="container mt-4">You must be logged in to view this page.</div>;
 
     return (
-        <div className="container mt-5" style={{ maxWidth: '720px' }}>
-            <h2 className="mb-4">👤 My Profile</h2>
+            <div className="container mt-5" style={{ maxWidth: '720px' }}>
+                <h2 className="mb-4" style={{textAlign: 'center'}}>My Profile</h2>
+                {user.avatarUrl && (
+                <div className="text-center mt-4" style={{ marginBottom: '40px' }}>
+                <img
+                    src={user.avatarUrl}
+                    alt="Profile Avatar"
+                    className="rounded-circle"
+                    style={{ width: '170px', height: '170px', objectFit: 'cover' }}
+                />
+                </div>
+            )}
             <form onSubmit={handleUpdate} className="row g-3 shadow-sm p-4 border rounded bg-light">
                 <div className="col-md-6">
                     <label className="form-label">Name</label>
