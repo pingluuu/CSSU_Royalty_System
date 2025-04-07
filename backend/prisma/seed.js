@@ -6,32 +6,53 @@
 // Import PrismaClient
 const { PrismaClient } = require('@prisma/client');
 
-// Initialize Prisma Client
+// prisma/seed.ts
+const bcrypt = require('bcrypt');
+
 const prisma = new PrismaClient();
 
-async function seed() {
-  // update regular1 utorid user points to be 1020
-  const regularUser = await prisma.user.findUnique({
-    where: { utorid: 'regular1' },
+async function main() {
+  const hashedPassword = await bcrypt.hash('Password123!', 10);
+
+  await prisma.user.createMany({
+    data: [
+      {
+        utorid: 'manager1',
+        name: 'Manager 1',
+        email: 'manager1@mail.utoronto.ca',
+        password: hashedPassword,
+        role: 'MANAGER',
+        verified: true,
+        points: 700
+      },
+      {
+        utorid: 'regular1',
+        name: 'Regular 1',
+        email: 'regular1@mail.utoronto.ca',
+        password: hashedPassword,
+        role: 'USER',
+        verified: true,
+      },
+      {
+        utorid: 'cashier1',
+        name: 'Cashier 1',
+        email: 'cashier1@mail.utoronto.ca',
+        password: hashedPassword,
+        role: 'CASHIER',
+        verified: true,
+      },
+    ],
   });
-  if (regularUser) {
-    await prisma.user.update({
-      where: { utorid: 'manager1' },
-      data: { role: 'manager' },
-    });
-    console.log('Updated regular1 user points to 1020');
-  } else {
-    console.log('User with utorid regular1 not found');
-  }
 }
 
-// Run the seed function and handle errors
-seed()
+main()
+  .then(() => {
+    console.log('🌱 Seeding complete!');
+  })
   .catch((e) => {
     console.error(e);
     process.exit(1);
   })
   .finally(async () => {
-    // Disconnect Prisma Client after seeding
     await prisma.$disconnect();
   });
