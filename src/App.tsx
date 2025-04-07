@@ -24,13 +24,23 @@ import ManageEventOrganizer from "./pages/manager/ManageEventOrganizerPage/Manag
 import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEventGuestPage";
 import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
 import UserProfile from "./pages/profile/index";
-
+import LandingPage from './components/LandingPage';
+import ProfilePage from './components/ProfilePage';
 
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
 		<Routes>
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route path="/" element={<LandingPage />} />
+			<Route
+				path="/profile"
+				element={
+					<ProtectedRoute requiredRole="manager superuser cashier regular"> {/* or just make it available to all roles */}
+						<ProfilePage />
+					</ProtectedRoute>
+				}
+			/>
 			<Route path="/my-qr" element={
 				<ProtectedRoute requiredRole="regular">
 					<UserQRCodePage />
@@ -89,7 +99,7 @@ const AppRoutes = () => {
 				</ProtectedRoute>} />
 			<Route path="manager/events/:id/manage-guests" element=
 				{<ProtectedRoute requiredRole="manager superuser cashier regular">
-					<ManageEventGuestPage/>
+					<ManageEventGuestPage />
 				</ProtectedRoute>}
 			/>
 
@@ -97,23 +107,23 @@ const AppRoutes = () => {
 				path="/manager/events/:id/manage-organizers"
 				element={
 					<ProtectedRoute requiredRole="manager superuser">
-						<ManageEventOrganizer/>
+						<ManageEventOrganizer />
 					</ProtectedRoute>
 				}
 			/>
 			<Route path="/manager/events/:id/award-points" element=
 				{<ProtectedRoute requiredRole="manager superuser cashier regular">
-					<AwardPointsPage/>
+					<AwardPointsPage />
 				</ProtectedRoute>}
 			/>
-			
-			<Route path="/manager/events/:id" element=
+
+			<Route path=" " element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
-					<EventDetailPageManager/>
+					<EventDetailPageManager />
 				</ProtectedRoute>}
 			/>
-			
-      
+
+
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">
 					<AllTransactionsPage />
@@ -147,7 +157,7 @@ const AppRoutes = () => {
 				</ProtectedRoute>
 			} />
 
-			<Route path="/" element={<div>THIS IS JUST PLACEHOLDER PAGE</div>} />
+
 			<Route path="/forbidden" element={<ForbiddenPage />} />
 			<Route path="*" element={<div>404 - Page Not Found</div>} />
 		</Routes>
