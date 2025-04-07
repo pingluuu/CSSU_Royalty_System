@@ -48,7 +48,7 @@ export default function LandingPage() {
                 <>
                     <h4>Cashier Dashboard</h4>
                     <div className="mt-3">
-                        <Link to="/create-transaction" className="btn btn-primary me-2">Create Transaction</Link>
+                        <Link to="/create-transaction-cashier" className="btn btn-primary me-2">Create Transaction</Link>
                         <Link to="/process-redemption" className="btn btn-warning">Process Redemption</Link>
                     </div>
                 </>

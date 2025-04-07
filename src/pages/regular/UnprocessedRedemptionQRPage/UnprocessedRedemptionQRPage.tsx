@@ -70,7 +70,7 @@ export default function UserRedemptionQRCodePage() {
                         onChange={(e) => setRemark(e.target.value)}
                     />
                 </div>
-                <button type="submit" className="btn btn-success">Submit Redemption Request</button>
+                <button type="submit" className="btn btn-success" style={{backgroundColor: "#0d6efd"}}>Submit Redemption Request</button>
             </form>
 
             {error && <div className="alert alert-danger">{error}</div>}

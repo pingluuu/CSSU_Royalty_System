@@ -54,7 +54,7 @@ export default function ProfilePage() {
                     src={user.avatarUrl}
                     alt="Profile Avatar"
                     className="rounded-circle"
-                    style={{ width: '170px', height: '170px', objectFit: 'cover' }}
+                    style={{ width: '170px', height: '170px', objectFit: 'cover', border: '2px solid #007bff' }}
                 />
                 </div>
             )}

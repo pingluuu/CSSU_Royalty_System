@@ -26,6 +26,8 @@ import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
 import LandingPage from './components/LandingPage';
 import ProfilePage from './components/ProfilePage';
 import UserAvailablePoints from "./pages/regular/AvailablePoints/AvailablePoints";
+import CreateTransaction from "./pages/cashier/CashierCreateTransaction/CashierCreateTransaction";
+import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/ManagerCreateTransaction";
 
 const AppRoutes = () => {
 	const { user } = useAuth();
@@ -124,7 +126,19 @@ const AppRoutes = () => {
 				</ProtectedRoute>}
 			/>
 
+			<Route path="/create-transaction-cashier" element=
+				{<ProtectedRoute requiredRole="cashier">
+					<CreateTransaction />
+				</ProtectedRoute>}
+			/>
 
+			<Route path="/create-transaction-manager" element=
+				{<ProtectedRoute requiredRole="manager">
+					<ManagerCreateTransaction />
+				</ProtectedRoute>} 
+			/>
+
+		
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">
 					<AllTransactionsPage />

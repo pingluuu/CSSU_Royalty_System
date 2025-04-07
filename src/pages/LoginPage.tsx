@@ -6,7 +6,7 @@ function LoginPage() {
   const [utorid, setUtorid] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth(); // From AuthContext
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -17,41 +17,45 @@ function LoginPage() {
     if (!result.success) {
       setError('Login failed. Please check your credentials.');
     } else {
-      navigate('/'); // Redirect to home or dashboard on success
+      navigate('/');
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className="card p-4 shadow-sm" style={{ width: '100%', maxWidth: '400px' }}>
+        <h2 className="text-center mb-4">Login</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="utorid">UTORid:</label>
-          <input
-            type="text"
-            id="utorid"
-            value={utorid}
-            onChange={(e) => setUtorid(e.target.value)}
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="utorid" className="form-label">UTORid</label>
+            <input
+              type="text"
+              id="utorid"
+              className="form-control"
+              value={utorid}
+              onChange={(e) => setUtorid(e.target.value)}
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+          {error && <div className="alert alert-danger py-2">{error}</div>}
 
-        <button type="submit">LOGIN</button>
-      </form>
+          <button type="submit" className="btn btn-primary w-100 mt-2">Login</button>
+        </form>
+      </div>
     </div>
   );
 }
