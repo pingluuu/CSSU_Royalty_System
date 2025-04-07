@@ -31,6 +31,7 @@ const AppRoutes = () => {
 	return (
 		<Routes>
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route path="/" element={<LandingPage />} />
 			<Route
 				path="/profile"
 				element={
@@ -150,7 +151,7 @@ const AppRoutes = () => {
 				</ProtectedRoute>
 			} />
 
-			<Route path="/" element={<LandingPage />} />
+
 			<Route path="/forbidden" element={<ForbiddenPage />} />
 			<Route path="*" element={<div>404 - Page Not Found</div>} />
 		</Routes>
