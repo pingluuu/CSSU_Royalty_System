@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 import api from '../services/api';
 
 type User = {
+  verified: any;
   name: any;
   email: any;
   id: any;

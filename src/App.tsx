@@ -24,12 +24,21 @@ import ManageEventOrganizer from "./pages/manager/ManageEventOrganizerPage/Manag
 import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEventGuestPage";
 import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
 import LandingPage from './components/LandingPage';
+import ProfilePage from './components/ProfilePage';
 
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
 		<Routes>
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route
+				path="/profile"
+				element={
+					<ProtectedRoute requiredRole="manager superuser cashier regular"> {/* or just make it available to all roles */}
+						<ProfilePage />
+					</ProtectedRoute>
+				}
+			/>
 			<Route path="/my-qr" element={
 				<ProtectedRoute requiredRole="regular">
 					<UserQRCodePage />
