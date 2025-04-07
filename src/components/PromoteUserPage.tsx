@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import api from '../../../services/api';
-import { useAuth } from '../../../contexts/AuthContext';
+import api from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function PromoteUserPage() {
     const { user } = useAuth();

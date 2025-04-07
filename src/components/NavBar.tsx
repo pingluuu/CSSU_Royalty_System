@@ -74,7 +74,7 @@ export default function NavBar() {
               {role === 'manager' && (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/users">Manage Users</Link>
+                    <Link className="nav-link" to="/promote">Manage Users</Link>
                   </li>
                   <li>
                     <Link className="nav-link" to="/create-transaction-manager">Create Transaction</Link>

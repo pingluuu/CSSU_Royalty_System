@@ -28,7 +28,7 @@ import ProfilePage from './components/ProfilePage';
 import UserAvailablePoints from "./pages/regular/AvailablePoints/AvailablePoints";
 import CreateTransaction from "./pages/cashier/CashierCreateTransaction/CashierCreateTransaction";
 import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/ManagerCreateTransaction";
-import PromoteUserPage from './pages/superuser/PromoteUserPage/PromoteUserPage';
+import PromoteUserPage from './components/PromoteUserPage';
 
 const AppRoutes = () => {
 	const { user } = useAuth();
