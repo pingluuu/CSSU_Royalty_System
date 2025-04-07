@@ -23,7 +23,7 @@ import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/Process
 import ManageEventOrganizer from "./pages/manager/ManageEventOrganizerPage/ManageEventOrganizer";
 import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEventGuestPage";
 import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
-
+import LandingPage from './components/LandingPage';
 
 const AppRoutes = () => {
 	const { user } = useAuth();
@@ -83,7 +83,7 @@ const AppRoutes = () => {
 				</ProtectedRoute>} />
 			<Route path="manager/events/:id/manage-guests" element=
 				{<ProtectedRoute requiredRole="manager superuser cashier regular">
-					<ManageEventGuestPage/>
+					<ManageEventGuestPage />
 				</ProtectedRoute>}
 			/>
 
@@ -91,23 +91,23 @@ const AppRoutes = () => {
 				path="/manager/events/:id/manage-organizers"
 				element={
 					<ProtectedRoute requiredRole="manager superuser">
-						<ManageEventOrganizer/>
+						<ManageEventOrganizer />
 					</ProtectedRoute>
 				}
 			/>
 			<Route path="/manager/events/:id/award-points" element=
 				{<ProtectedRoute requiredRole="manager superuser cashier regular">
-					<AwardPointsPage/>
+					<AwardPointsPage />
 				</ProtectedRoute>}
 			/>
-			
-			<Route path="/manager/events/:id" element=
+
+			<Route path=" " element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
-					<EventDetailPageManager/>
+					<EventDetailPageManager />
 				</ProtectedRoute>}
 			/>
-			
-      
+
+
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">
 					<AllTransactionsPage />
@@ -141,7 +141,7 @@ const AppRoutes = () => {
 				</ProtectedRoute>
 			} />
 
-			<Route path="/" element={<div>THIS IS JUST PLACEHOLDER PAGE</div>} />
+			<Route path="/" element={<LandingPage />} />
 			<Route path="/forbidden" element={<ForbiddenPage />} />
 			<Route path="*" element={<div>404 - Page Not Found</div>} />
 		</Routes>
