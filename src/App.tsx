@@ -23,6 +23,7 @@ import ProcessRedemptionPage from "./pages/cashier/ProcessRedemptionPage/Process
 import ManageEventOrganizer from "./pages/manager/ManageEventOrganizerPage/ManageEventOrganizer";
 import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEventGuestPage";
 import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
+import UserProfile from "./pages/profile/index";
 
 
 const AppRoutes = () => {
@@ -33,6 +34,11 @@ const AppRoutes = () => {
 			<Route path="/my-qr" element={
 				<ProtectedRoute requiredRole="regular">
 					<UserQRCodePage />
+				</ProtectedRoute>
+			} />
+			<Route path="/profile" element={
+				<ProtectedRoute requiredRole="regular">
+					<UserProfile />
 				</ProtectedRoute>
 			} />
 			<Route

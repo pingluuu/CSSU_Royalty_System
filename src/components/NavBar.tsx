@@ -32,9 +32,6 @@ export default function NavBar() {
               {role === 'regular' && (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/points">My Points</Link>
-                  </li>
-                  <li className="nav-item">
                     <Link className="nav-link" to="/my-qr">My QR Code</Link>
                   </li>
                   <li className="nav-item">

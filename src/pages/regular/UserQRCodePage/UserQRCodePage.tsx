@@ -36,9 +36,6 @@ export default function UserQRCodePage() {
 
             <div className="mt-3">
                 <p><strong>UTORid:</strong> {user.utorid}</p>
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Role:</strong> {user.role}</p>
             </div>
         </div>
     );
