@@ -1,42 +1,42 @@
+/*
+ * Complete this script so that it is able to add a superuser to the database
+ * Usage example: 
+ *   node prisma/createsu.js clive123 clive.su@mail.utoronto.ca SuperUser123!
+ */
 'use strict';
-
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 
-if (process.argv.length !== 5) {
-  console.error('Usage: node prisma/createsu.js <utorid> <email> <password>');
-  process.exit(1);
-}
+const prisma = new PrismaClient();
 
-const utorid = process.argv[2];
-const email = process.argv[3];
-const password = process.argv[4];
+const createSuperuser = async (utorid, email, password) => {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-async function main() {
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+    try {
+        const superUser = await prisma.user.create({
+            data: {
+                utorid,
+                name: 'Superuser',
+                email,
+                password: hashedPassword,
+                role: 'superuser',
+                verified: true, // Superuser should be automatically verified
+            },
+        });
+        console.log(`Superuser created: ${superUser.email}`);
+    } catch (error) {
+        console.error(`Failed to create superuser: ${error.message}`);
+    } finally {
+        await prisma.$disconnect();
+    }
+};
 
-  const user = await prisma.user.create({
-    data: {
-      utorid,
-      name: "Superuser",
-      email,
-      password: hashedPassword,
-      role: 'SUPERUSER', 
-      verified: true, 
-      expiresAt: new Date('9999-12-31T23:59:59.999Z')   
-    },
-  });
-
-  console.log('Superuser created successfully:', user);
-}
-
-main()
-  .catch((error) => {
-    console.error('Error creating superuser:', error);
+const args = process.argv.slice(2);
+if (args.length !== 3) {
+    console.log('Usage: node prisma/createsu.js <utorid> <email> <password>');
     process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+}
+
+const [utorid, email, password] = args;
+
+createSuperuser(utorid, email, password);

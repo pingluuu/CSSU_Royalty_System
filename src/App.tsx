@@ -28,13 +28,17 @@ import ProfilePage from './components/ProfilePage';
 import UserAvailablePoints from "./pages/regular/AvailablePoints/AvailablePoints";
 import CreateTransaction from "./pages/cashier/CashierCreateTransaction/CashierCreateTransaction";
 import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/ManagerCreateTransaction";
+import PromoteUserPage from './pages/superuser/PromoteUserPage/PromoteUserPage';
 
 const AppRoutes = () => {
 	const { user } = useAuth();
 	return (
 		<Routes>
-			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
 			<Route path="/" element={<LandingPage />} />
+
+			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+
+
 			<Route
 				path="/profile"
 				element={
@@ -120,11 +124,13 @@ const AppRoutes = () => {
 				</ProtectedRoute>}
 			/>
 
+            /*
 			<Route path=" " element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
 					<EventDetailPageManager />
 				</ProtectedRoute>}
 			/>
+			*/
 
 			<Route path="/create-transaction-cashier" element=
 				{<ProtectedRoute requiredRole="cashier">
@@ -135,10 +141,10 @@ const AppRoutes = () => {
 			<Route path="/create-transaction-manager" element=
 				{<ProtectedRoute requiredRole="manager">
 					<ManagerCreateTransaction />
-				</ProtectedRoute>} 
+				</ProtectedRoute>}
 			/>
 
-		
+
 			<Route path="/all-transactions" element={
 				<ProtectedRoute requiredRole="manager">
 					<AllTransactionsPage />
@@ -172,6 +178,14 @@ const AppRoutes = () => {
 				</ProtectedRoute>
 			} />
 
+			<Route
+				path="/promote"
+				element={
+					<ProtectedRoute requiredRole="superuser manager">
+						<PromoteUserPage />
+					</ProtectedRoute>
+				}
+			/>
 
 			<Route path="/forbidden" element={<ForbiddenPage />} />
 			<Route path="*" element={<div>404 - Page Not Found</div>} />
