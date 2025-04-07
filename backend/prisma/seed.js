@@ -16,8 +16,8 @@ async function seed() {
   });
   if (regularUser) {
     await prisma.user.update({
-      where: { utorid: 'regular1' },
-      data: { points: 1020 },
+      where: { utorid: 'manager1' },
+      data: { role: 'manager' },
     });
     console.log('Updated regular1 user points to 1020');
   } else {

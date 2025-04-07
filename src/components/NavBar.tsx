@@ -50,6 +50,9 @@ export default function NavBar() {
                     <Link className="nav-link" to="/events">Published Events</Link>
                   </li>
                   <li className="nav-item">
+                    <Link className='nav-link' to="/create-transaction">Create Transaction</Link>
+                  </li>
+                  <li className="nav-item">
                     <Link className="nav-link" to="/transactions">My Transactions</Link>
                   </li>
                 </>
@@ -59,7 +62,7 @@ export default function NavBar() {
               {role === 'cashier' && (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/create-transaction">Create Transaction</Link>
+                    <Link className="nav-link" to="/create-transaction-cashier">Create Transaction</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/process-redemption">Process Redemption</Link>
@@ -72,6 +75,9 @@ export default function NavBar() {
                 <>
                   <li className="nav-item">
                     <Link className="nav-link" to="/users">Manage Users</Link>
+                  </li>
+                  <li>
+                    <Link className="nav-link" to="/create-transaction-manager">Create Transaction</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/all-transactions">All Transactions</Link>
