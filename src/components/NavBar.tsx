@@ -35,6 +35,9 @@ export default function NavBar() {
               <li className="nav-item">
                 <Link className="nav-link" to="/my-transactions">My Transactions</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/all-events">All Events</Link>
+              </li>
 
               {/* 🧍 Regular User */}
               {role === 'regular' && (
