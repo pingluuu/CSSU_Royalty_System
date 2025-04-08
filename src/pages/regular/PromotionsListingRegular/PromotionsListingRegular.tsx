@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import './PromotionsListingRegular.css';
@@ -16,23 +17,28 @@ interface Promotion {
 export default function PromotionsListingPageRegular() {
   const { user } = useAuth();
   const [promotions, setPromotions] = useState<Promotion[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [nameFilter, setNameFilter] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
-  const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
   const limit = 10;
 
+  // Use URL search parameters for bookmarking filter state and pagination
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Initialize local filter state from URL parameters
+  const [nameFilter, setNameFilter] = useState(searchParams.get('name') || '');
+  const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || '');
+  const [page, setPage] = useState<number>(() => {
+    const param = searchParams.get('page');
+    return param ? parseInt(param, 10) : 1;
+  });
+
+  // Fetch promotions based on filters and pagination
   const fetchPromotions = async () => {
     setLoading(true);
     try {
-      const params: any = {
-        page,
-        limit,
-      };
+      const params: any = { page, limit };
       if (nameFilter) params.name = nameFilter;
       if (typeFilter) params.type = typeFilter;
-
       const res = await api.get('/promotions', { params });
       setPromotions(res.data.results);
       setCount(res.data.count);
@@ -43,26 +49,47 @@ export default function PromotionsListingPageRegular() {
     }
   };
 
+  // When the URL search parameters change, update local state and fetch data
   useEffect(() => {
-    if (user?.role === 'regular') {
-      fetchPromotions();
-    }
-  }, [page, nameFilter, typeFilter]);
+    setNameFilter(searchParams.get('name') || '');
+    setTypeFilter(searchParams.get('type') || '');
+    setPage(searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1);
+    fetchPromotions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const totalPages = Math.ceil(count / limit);
+
+  // On filter form submission, update URL query parameters (bookmarkable)
+  const handleFilterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params: Record<string, string> = {};
+    if (nameFilter) params.name = nameFilter;
+    if (typeFilter) params.type = typeFilter;
+    // Reset page to 1 upon filter submission
+    params.page = '1';
+    params.limit = limit.toString();
+    setSearchParams(params);
+  };
+
+  // Update URL query parameters for pagination while preserving current filters
+  const handlePageChange = (newPage: number) => {
+    const currentParams = Object.fromEntries([...searchParams]);
+    currentParams.page = newPage.toString();
+    setSearchParams(currentParams);
+  };
+
+  if (user?.role !== 'regular') {
+    return <p>You are not authorized to view this page.</p>;
+  }
 
   return (
     <div className="container mt-4">
       <h2>Available Promotions</h2>
 
-      <form
-        className="row g-3 mb-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          fetchPromotions();
-        }}
-      >
-        <div className="col-md-4">
+      {/* Filter form using a two-column grid layout */}
+      <form className="filter-form mb-3" onSubmit={handleFilterSubmit}>
+        <div>
           <label className="form-label">Search by Name</label>
           <input
             type="text"
@@ -71,7 +98,7 @@ export default function PromotionsListingPageRegular() {
             onChange={(e) => setNameFilter(e.target.value)}
           />
         </div>
-        <div className="col-md-4">
+        <div>
           <label className="form-label">Filter by Type</label>
           <select
             className="form-select"
@@ -83,7 +110,8 @@ export default function PromotionsListingPageRegular() {
             <option value="one_time">One-Time</option>
           </select>
         </div>
-        <div className="col-md-4 d-flex align-items-end">
+        {/* Submit button spanning both columns */}
+        <div style={{ gridColumn: 'span 2', textAlign: 'start' }}>
           <button type="submit" className="btn btn-primary w-100">
             Apply Filters
           </button>
@@ -101,16 +129,27 @@ export default function PromotionsListingPageRegular() {
               <div key={promo.id} className="list-group-item">
                 <h5>{promo.name}</h5>
                 <p>
-                  <strong>Type:</strong> {promo.type}<br />
-                  <strong>Ends:</strong> {new Date(promo.endTime).toLocaleString()}<br />
+                  <strong>Type:</strong> {promo.type}
+                  <br />
+                  <strong>Ends:</strong>{' '}
+                  {new Date(promo.endTime).toLocaleString()}
+                  <br />
                   {promo.minSpending !== undefined && (
-                    <span><strong>Min Spending:</strong> ${promo.minSpending}<br /></span>
+                    <span>
+                      <strong>Min Spending:</strong> ${promo.minSpending}
+                      <br />
+                    </span>
                   )}
                   {promo.rate !== undefined && (
-                    <span><strong>Rate:</strong> {promo.rate} points per $<br /></span>
+                    <span>
+                      <strong>Rate:</strong> {promo.rate} points per $
+                      <br />
+                    </span>
                   )}
                   {promo.points !== undefined && (
-                    <span><strong>Fixed Points:</strong> {promo.points}</span>
+                    <span>
+                      <strong>Fixed Points:</strong> {promo.points}
+                    </span>
                   )}
                 </p>
               </div>
@@ -121,16 +160,18 @@ export default function PromotionsListingPageRegular() {
             <button
               type="button"
               className="btn btn-outline-primary"
-              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              onClick={() => handlePageChange(Math.max(page - 1, 1))}
               disabled={page === 1}
             >
               Previous
             </button>
-            <span>Page {page} of {totalPages}</span>
+            <span>
+              Page {page} of {totalPages}
+            </span>
             <button
               type="button"
               className="btn btn-outline-primary"
-              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+              onClick={() => handlePageChange(Math.min(page + 1, totalPages))}
               disabled={page === totalPages}
             >
               Next
