@@ -86,7 +86,7 @@ const AppRoutes = () => {
 			<Route
 				path="/promotions"
 				element={
-					<ProtectedRoute requiredRole="regular">
+					<ProtectedRoute requiredRole="regular manager superuser cashier">
 						<PromotionsListingRegular />
 					</ProtectedRoute>
 				}
@@ -167,7 +167,7 @@ const AppRoutes = () => {
 				}
 			/>
 			<Route path="/promotions-manager" element={
-				<ProtectedRoute requiredRole="manager">
+				<ProtectedRoute requiredRole="manager superuser">
 					<PromotionsListingPage />
 				</ProtectedRoute>
 			}

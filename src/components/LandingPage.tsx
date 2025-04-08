@@ -67,7 +67,7 @@ export default function LandingPage() {
                             <Link to="/create-promotion" className="btn btn-outline-secondary w-100 mb-2">Create Promotion</Link>
                         </div>
                         <div className="col-md-4">
-                            <Link to="/users-manager" className="btn btn-outline-dark w-100 mb-2">User Management</Link>
+                            <Link to="/promote" className="btn btn-outline-dark w-100 mb-2">User Management</Link>
                         </div>
                     </div>
                 </>
