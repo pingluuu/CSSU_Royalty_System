@@ -27,6 +27,9 @@ export default function NavBar() {
               <li className="nav-item">
                 <Link className="nav-link" to="/profile">Profile</Link>
               </li>
+              <li className="nav-item">
+                    <Link className="nav-link" to="/my-transactions">My Transactions</Link>
+                </li>
 
               {/* 🧍 Regular User */}
               {role === 'regular' && (
@@ -51,9 +54,6 @@ export default function NavBar() {
                   </li>
                   <li className="nav-item">
                     <Link className='nav-link' to="/create-transaction">Create Transaction</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/transactions">My Transactions</Link>
                   </li>
                 </>
               )}
