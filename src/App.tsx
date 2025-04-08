@@ -110,7 +110,7 @@ const AppRoutes = () => {
 
 
 			<Route path="/all-events" element=
-				{<ProtectedRoute requiredRole="manager superuser cashier regular">
+				{<ProtectedRoute requiredRole="manager regular">
 					<EventsListingPage/>
 				</ProtectedRoute>}
 			/>

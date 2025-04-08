@@ -218,13 +218,19 @@ export default function EventsListingPage(){
                         return (
                             <Link
                                 key={ev.id}
-                                className='transaction-card'
+                                className='transaction-card transaction-event'
                                 to={morePermissionRole ? `/manager/events/${ev.id}` : `/events/${ev.id}`}
                                 style={{ textDecoration: 'none', color: 'inherit' }}
                             >
-                                <h5>Events#{ev.id}</h5>
+                                <h5>Events# {ev.id}</h5>
                                 <p>
-                                </p>
+                                <strong>Name:</strong> {ev.name}<br />
+                                <strong>Location:</strong> {ev.location}<br />
+                                <strong>Start Time:</strong> {ev.startTime}<br />
+                                <strong>End Time:</strong> {ev.endTime}<br />
+                                <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
+                                <strong>Num Guests</strong> {ev.guests.length}<br />
+                            </p>
                             </Link>
                         )
                     })}
