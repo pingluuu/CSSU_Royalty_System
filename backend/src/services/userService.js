@@ -267,7 +267,9 @@ const updateUser = async (userId, { email, verified, suspicious, role }, request
     if (!allRoles.includes(role)) {
       throw { status: 400, message: 'Invalid role' };
     }
+
     const userRole = requestRole; // Get the role of the currently logged-in user (may be retrieved from the session/token)
+
     if (userRole === 'superuser') {
       validRoles.push('manager', 'superuser');
     }
@@ -275,9 +277,20 @@ const updateUser = async (userId, { email, verified, suspicious, role }, request
       throw { status: 403, message: 'Unauthorized role change' };
     }
 
+    validRoles.push('manager', 'superuser');
+
+
     updateData.role = role;
 
   }
+  const theUser = await prisma.user.findUnique({
+    where: { id: parseInt(userId) },
+    select: { role: true }
+  });
+  if (theUser.role === 'superuser' && role !== 'superuser') {
+    throw { status: 403, message: 'Superuser cannot be demoted' };
+  }
+
 
   // Update the user in the database
   const updatedUser = await prisma.user.update({
