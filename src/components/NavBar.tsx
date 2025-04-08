@@ -72,6 +72,9 @@ export default function NavBar() {
                   <li className="nav-item">
                     <Link className="nav-link" to="/process-redemption">Process Redemption</Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/promotions">Promotions</Link>
+                  </li>
                 </>
               )}
 
@@ -132,6 +135,9 @@ export default function NavBar() {
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/promote">Promote User</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/promotions-manager">Manage Promotions</Link>
                   </li>
                 </>
               )}

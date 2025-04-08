@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import api from '../../../services/api';
-import { useAuth } from '../../../contexts/AuthContext';
+import api from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import './PromotionsListingRegular.css';
 
 interface Promotion {
@@ -79,9 +79,6 @@ export default function PromotionsListingPageRegular() {
     setSearchParams(currentParams);
   };
 
-  if (user?.role !== 'regular') {
-    return <p>You are not authorized to view this page.</p>;
-  }
 
   return (
     <div className="container mt-4">

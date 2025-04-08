@@ -13,7 +13,7 @@ import TransactionDetailPage from './pages/manager/TransactionDetailPage/Transac
 import CreatePromotionPage from './pages/manager/CreatePromotionPage/CreatePromotionPage';
 import PromotionsListingPage from './pages/manager/PromotionsListingPage/PromotionsListingPage';
 import PromotionDetailPage from './pages/manager/PromotionDetailPage/PromotionDetailPage';
-import PromotionsListingRegular from './pages/regular/PromotionsListingRegular/PromotionsListingRegular';
+import PromotionsListingRegular from './components/PromotionsListingRegular/PromotionsListingRegular';
 import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegular/PublishedEventsPageRegular';
 import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular'
 import EventDetailPageManager from "./pages/manager/EventDetailPage/EventDetailPageManager";
@@ -103,9 +103,7 @@ const AppRoutes = () => {
 			<Route
 				path="/promotions"
 				element={
-					<ProtectedRoute requiredRole="regular manager superuser cashier">
-						<PromotionsListingRegular />
-					</ProtectedRoute>
+					<PromotionsListingRegular />
 				}
 			/>
 
@@ -119,7 +117,7 @@ const AppRoutes = () => {
 			/>
 			<Route path="/create-account" element=
 				{<ProtectedRoute requiredRole="manager superuser cashier">
-					<CreateAccount/>
+					<CreateAccount />
 				</ProtectedRoute>}
 			/>
 			<Route path="/create-event" element=
@@ -174,8 +172,8 @@ const AppRoutes = () => {
 
 			<Route path="/my-transactions" element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
-					<MyTransactions/>
-				</ProtectedRoute>} 
+					<MyTransactions />
+				</ProtectedRoute>}
 			/>
 
 			<Route
