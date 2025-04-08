@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import api from '../../../services/api';
+import QrScanner from '../../../components/QrScanner'; 
 
 const CreateTransaction: React.FC = () => {
   const [utorid, setUtorid] = useState('');
@@ -7,6 +8,7 @@ const CreateTransaction: React.FC = () => {
   const [promotionIds, setPromotionIds] = useState('');
   const [remark, setRemark] = useState('');
   const [status, setStatus] = useState<{ message: string; success: boolean } | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +41,7 @@ const CreateTransaction: React.FC = () => {
     <div className="container mt-5" style={{ maxWidth: '600px' }}>
       <h2>Create Purchase Transaction</h2>
       <form onSubmit={handleSubmit}>
+        {/* UTORid Input + QR Scanner */}
         <div className="mb-3">
           <label htmlFor="utorid" className="form-label">Customer UTORid</label>
           <input
@@ -49,8 +52,41 @@ const CreateTransaction: React.FC = () => {
             onChange={(e) => setUtorid(e.target.value)}
             required
           />
+          <button
+            type="button"
+            className="btn btn-outline-secondary mt-2"
+            onClick={() => setShowScanner((prev) => !prev)}
+          >
+            {showScanner ? 'Cancel Scanner' : 'Scan QR Code'}
+          </button>
+          {showScanner && (
+            <div className="mt-3">
+            <QrScanner
+              onScanSuccess={(result) => {
+                try {
+                  const parsed = JSON.parse(result);
+                  if (parsed.utorid) {
+                    setUtorid(parsed.utorid);
+                    setStatus({
+                      message: `Scanned UTORid: ${parsed.utorid}`,
+                      success: true,
+                    });
+                  } else {
+                    setStatus({ message: 'Invalid QR code: missing utorid.', success: false });
+                  }
+                } catch (err) {
+                  console.error('Invalid QR code format', err);
+                  setStatus({ message: 'Invalid QR code format.', success: false });
+                }
+                setShowScanner(false);
+              }}
+              onClose={() => setShowScanner(false)}
+            />
+            </div>
+          )}
         </div>
 
+        {/* Spent */}
         <div className="mb-3">
           <label htmlFor="spent" className="form-label">Amount Spent ($)</label>
           <input
@@ -64,6 +100,7 @@ const CreateTransaction: React.FC = () => {
           />
         </div>
 
+        {/* Promotions */}
         <div className="mb-3">
           <label htmlFor="promotions" className="form-label">Promotion IDs (comma-separated)</label>
           <input
@@ -75,6 +112,7 @@ const CreateTransaction: React.FC = () => {
           />
         </div>
 
+        {/* Remark */}
         <div className="mb-3">
           <label htmlFor="remark" className="form-label">Remark (optional)</label>
           <textarea
@@ -89,6 +127,7 @@ const CreateTransaction: React.FC = () => {
         <button type="submit" className="btn btn-primary">Create Transaction</button>
       </form>
 
+      {/* Status Message */}
       {status && (
         <div
           className="alert mt-3"

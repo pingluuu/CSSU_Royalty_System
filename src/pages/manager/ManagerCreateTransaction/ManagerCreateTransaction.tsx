@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import api from '../../../services/api';
+import QrScanner from '../../../components/QrScanner'; 
 
 const CreateTransaction: React.FC = () => {
   const [type, setType] = useState<'purchase' | 'adjustment'>('purchase');
@@ -10,6 +11,7 @@ const CreateTransaction: React.FC = () => {
   const [promotionIds, setPromotionIds] = useState('');
   const [remark, setRemark] = useState('');
   const [status, setStatus] = useState<{ message: string; success: boolean } | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,10 +49,26 @@ const CreateTransaction: React.FC = () => {
     }
   };
 
+  const handleQrScan = (result: string) => {
+    try {
+      const parsed = JSON.parse(result);
+      if (parsed.utorid) {
+        setUtorid(parsed.utorid);
+        setStatus({ message: `Scanned UTORid: ${parsed.utorid}`, success: true });
+      } else {
+        setStatus({ message: 'Invalid QR code: UTORid missing.', success: false });
+      }
+    } catch {
+      setStatus({ message: 'Invalid QR format.', success: false });
+    }
+    setShowScanner(false);
+  };
+
   return (
     <div className="container mt-5" style={{ maxWidth: '600px' }}>
       <h2>Create Transaction</h2>
       <form onSubmit={handleSubmit}>
+        {/* Transaction Type */}
         <div className="mb-3">
           <label className="form-label">Transaction Type</label>
           <select
@@ -63,6 +81,7 @@ const CreateTransaction: React.FC = () => {
           </select>
         </div>
 
+        {/* UTORid + QR */}
         <div className="mb-3">
           <label htmlFor="utorid" className="form-label">Customer UTORid</label>
           <input
@@ -73,8 +92,24 @@ const CreateTransaction: React.FC = () => {
             onChange={(e) => setUtorid(e.target.value)}
             required
           />
+          <button
+            type="button"
+            className="btn btn-outline-secondary mt-2"
+            onClick={() => setShowScanner((prev) => !prev)}
+          >
+            {showScanner ? 'Cancel Scanner' : 'Scan QR Code'}
+          </button>
+          {showScanner && (
+            <div className="mt-3">
+              <QrScanner
+                onScanSuccess={handleQrScan}
+                onClose={() => setShowScanner(false)}
+              />
+            </div>
+          )}
         </div>
 
+        {/* Purchase Fields */}
         {type === 'purchase' && (
           <div className="mb-3">
             <label htmlFor="spent" className="form-label">Amount Spent ($)</label>
@@ -90,6 +125,7 @@ const CreateTransaction: React.FC = () => {
           </div>
         )}
 
+        {/* Adjustment Fields */}
         {type === 'adjustment' && (
           <>
             <div className="mb-3">
@@ -117,6 +153,7 @@ const CreateTransaction: React.FC = () => {
           </>
         )}
 
+        {/* Promotions */}
         <div className="mb-3">
           <label htmlFor="promotions" className="form-label">Promotion IDs (comma-separated)</label>
           <input
@@ -128,6 +165,7 @@ const CreateTransaction: React.FC = () => {
           />
         </div>
 
+        {/* Remark */}
         <div className="mb-3">
           <label htmlFor="remark" className="form-label">Remark (optional)</label>
           <textarea
@@ -148,7 +186,7 @@ const CreateTransaction: React.FC = () => {
           style={{
             backgroundColor: status.success ? '#e7f1ff' : '#ffe7e7',
             color: status.success ? '#0d6efd' : '#dc3545',
-            border: `1px solid ${status.success ? '#0d6efd' : '#dc3545'}`
+            border: `1px solid ${status.success ? '#0d6efd' : '#dc3545'}`,
           }}
         >
           {status.message}
