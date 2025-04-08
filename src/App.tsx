@@ -30,6 +30,7 @@ import CreateTransaction from "./pages/cashier/CashierCreateTransaction/CashierC
 import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/ManagerCreateTransaction";
 import MyTransactions from "./components/MyTransactionsPage";
 import PromoteUserPage from './components/PromoteUserPage';
+import EventsListingPage from "./components/EventsListingPage";
 
 
 const AppRoutes = () => {
@@ -105,7 +106,15 @@ const AppRoutes = () => {
 			<Route path="/create-event" element=
 				{<ProtectedRoute requiredRole="manager superuser">
 					<ManagerCreateNewEvent />
-				</ProtectedRoute>} />
+				</ProtectedRoute>} /> 
+
+
+			<Route path="/all-events" element=
+				{<ProtectedRoute requiredRole="manager superuser cashier regular">
+					<EventsListingPage/>
+				</ProtectedRoute>}
+			/>
+
 			<Route path="manager/events/:id/manage-guests" element=
 				{<ProtectedRoute requiredRole="manager superuser cashier regular">
 					<ManageEventGuestPage />
@@ -127,7 +136,7 @@ const AppRoutes = () => {
 			/>
 
             /*
-			<Route path=" " element=
+			<Route path="/manager/events/:id" element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
 					<EventDetailPageManager />
 				</ProtectedRoute>}
