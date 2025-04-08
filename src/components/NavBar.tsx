@@ -125,6 +125,9 @@ export default function NavBar() {
                     <Link className="nav-link" to="/create-account">Register User</Link>
                   </li>
                   <li>
+                    <Link className="nav-link" to="/update-users">Update User</Link>
+                  </li>
+                  <li>
                     <Link className="nav-link" to="/users">Users</Link>
                   </li>
                   <li className="nav-item">
