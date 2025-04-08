@@ -1,7 +1,37 @@
 /* === Container Styling === */
 .container {
-    max-width: 900px;
+    max-width: 1200px;
+    /* Wider container */
     margin: auto;
+    padding: 1rem;
+}
+
+/* 
+   === Filter Form ===
+   Instead of relying on Bootstrap’s row/col classes, 
+   we switch to a custom grid layout to ensure even spacing. 
+*/
+.filter-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    column-gap: 1rem;
+    row-gap: 1rem;
+    margin-bottom: 2rem;
+    /* spacing below the form */
+    align-items: end;
+    /* aligns labels and inputs on the bottom */
+}
+
+.filter-form .form-label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.filter-form .form-control,
+.filter-form .form-select {
+    width: 100%;
+    /* Ensures inputs occupy all available space in their grid cell */
+    font-size: 1rem;
 }
 
 /* === Transaction Card === */
@@ -12,6 +42,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     margin-bottom: 1.5rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
 }
 
 .transaction-card:hover {
