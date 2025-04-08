@@ -60,7 +60,7 @@ async function main() {
 
   // === EVENTS ===
   const events = [];
-  for (let i = 1; i <= 9; i++) {
+  for (let i = 1; i <= 14; i++) {
     const event = await prisma.event.create({
       data: {
         name: `Event ${i}`,
