@@ -135,13 +135,13 @@ const AppRoutes = () => {
 				</ProtectedRoute>}
 			/>
 
-            /*
+            
 			<Route path="/manager/events/:id" element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
 					<EventDetailPageManager />
 				</ProtectedRoute>}
 			/>
-			*/
+			
 
 			<Route path="/create-transaction-cashier" element=
 				{<ProtectedRoute requiredRole="cashier">
