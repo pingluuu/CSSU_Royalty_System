@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+//import './AllTransactionsPage.css';
 
 interface Promotion {
     id: number;
@@ -18,19 +19,40 @@ interface Promotion {
 export default function PromotionsListingPage() {
     const { user } = useAuth();
     const [promotions, setPromotions] = useState<Promotion[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [filterStarted, setFilterStarted] = useState('');
-    const [filterEnded, setFilterEnded] = useState('');
+    const [count, setCount] = useState(0);
+    const [limit] = useState(10);
+    const [loading, setLoading] = useState(false);
 
+    // Get and update URL search parameters
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // Local filter state; initialize from URL parameters
+    const [filterName, setFilterName] = useState(searchParams.get('name') || '');
+    const [filterType, setFilterType] = useState(searchParams.get('type') || '');
+    const [filterStarted, setFilterStarted] = useState(searchParams.get('started') || '');
+    const [filterEnded, setFilterEnded] = useState(searchParams.get('ended') || '');
+    const [page, setPage] = useState<number>(() => {
+        const param = searchParams.get('page');
+        return param ? parseInt(param, 10) : 1;
+    });
+
+    // Fetch promotions based on filters and pagination
     const fetchPromotions = async () => {
         setLoading(true);
         try {
-            const params: any = {};
+            const params: any = {
+                page,
+                limit,
+            };
+
+            if (filterName) params.name = filterName;
+            if (filterType) params.type = filterType;
             if (filterStarted) params.started = filterStarted === 'true';
             if (filterEnded) params.ended = filterEnded === 'true';
 
             const res = await api.get('/promotions', { params });
             setPromotions(res.data.results);
+            setCount(res.data.count);
         } catch (err) {
             console.error('Error fetching promotions:', err);
         } finally {
@@ -38,19 +60,73 @@ export default function PromotionsListingPage() {
         }
     };
 
+    // Sync local filter state and page with URL query parameters, then fetch data
     useEffect(() => {
-        if (user?.role === 'manager') {
-            fetchPromotions();
-        }
-    }, [filterStarted, filterEnded]);
+        setFilterName(searchParams.get('name') || '');
+        setFilterType(searchParams.get('type') || '');
+        setFilterStarted(searchParams.get('started') || '');
+        setFilterEnded(searchParams.get('ended') || '');
+        setPage(searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 1);
+        fetchPromotions();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]);
+
+    const totalPages = Math.ceil(count / limit);
+
+    // Handle filter submission: update URL query parameters which then trigger a fetch.
+    const handleFilterSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const params: Record<string, string> = {};
+        if (filterName) params.name = filterName;
+        if (filterType) params.type = filterType;
+        if (filterStarted) params.started = filterStarted;
+        if (filterEnded) params.ended = filterEnded;
+        // Reset page to 1 on new filter submission
+        params.page = '1';
+        params.limit = limit.toString();
+        setSearchParams(params);
+    };
+
+    // Update URL query parameters for pagination while preserving current filters.
+    const handlePageChange = (newPage: number) => {
+        const currentParams = Object.fromEntries([...searchParams]);
+        currentParams.page = newPage.toString();
+        setSearchParams(currentParams);
+    };
+
+    if (user?.role !== 'manager' && user?.role !== 'superuser') {
+        return <p>You are not authorized to view this page.</p>;
+    }
 
     return (
         <div className="container mt-4">
-            <h2>All Promotions</h2>
+            <h2 className="mb-3">All Promotions</h2>
 
-            <div className="row mb-3">
-                <div className="col-md-6">
-                    <label className="form-label">Filter Started</label>
+            {/* Two-column filter form */}
+            <form className="filter-form mb-4" onSubmit={handleFilterSubmit}>
+                <div>
+                    <label className="form-label">Name</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={filterName}
+                        onChange={(e) => setFilterName(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label className="form-label">Type</label>
+                    <select
+                        className="form-select"
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                    >
+                        <option value="">All</option>
+                        <option value="one-time">one-time</option>
+                        <option value="automatic">automatic</option>
+                    </select>
+                </div>
+                <div>
+                    <label className="form-label">Started</label>
                     <select
                         className="form-select"
                         value={filterStarted}
@@ -61,8 +137,8 @@ export default function PromotionsListingPage() {
                         <option value="false">Not Started</option>
                     </select>
                 </div>
-                <div className="col-md-6">
-                    <label className="form-label">Filter Ended</label>
+                <div>
+                    <label className="form-label">Ended</label>
                     <select
                         className="form-select"
                         value={filterEnded}
@@ -73,27 +149,60 @@ export default function PromotionsListingPage() {
                         <option value="false">Not Ended</option>
                     </select>
                 </div>
-            </div>
+                {/* Submit button spanning two columns */}
+                <div style={{ gridColumn: 'span 2', textAlign: 'start' }}>
+                    <button type="submit" className="btn btn-primary">
+                        Apply Filters
+                    </button>
+                </div>
+            </form>
 
             {loading ? (
                 <p>Loading...</p>
+            ) : promotions.length === 0 ? (
+                <p>No promotions found.</p>
             ) : (
-                <div className="list-group">
-                    {promotions.map((promo) => (
-                        <Link
-                            key={promo.id}
-                            to={`/manager/promotions/${promo.id}`}
-                            className="list-group-item list-group-item-action"
+                <>
+                    <div className="list-group">
+                        {promotions.map((promo) => (
+                            <Link
+                                key={promo.id}
+                                to={`/manager/promotions/${promo.id}`}
+                                className="list-group-item list-group-item-action"
+                            >
+                                <div className="d-flex w-100 justify-content-between">
+                                    <h5 className="mb-1">{promo.name}</h5>
+                                    <small>{new Date(promo.startTime).toLocaleDateString()}</small>
+                                </div>
+                                <p className="mb-1">{promo.description}</p>
+                                <small>
+                                    Type: {promo.type} | Ends: {new Date(promo.endTime).toLocaleDateString()}
+                                </small>
+                            </Link>
+                        ))}
+                    </div>
+                    <div className="pagination-controls">
+                        <button
+                            type="button"
+                            className="btn btn-outline-primary"
+                            onClick={() => handlePageChange(Math.max(page - 1, 1))}
+                            disabled={page === 1}
                         >
-                            <div className="d-flex w-100 justify-content-between">
-                                <h5 className="mb-1">{promo.name}</h5>
-                                <small>{new Date(promo.startTime).toLocaleDateString()}</small>
-                            </div>
-                            <p className="mb-1">{promo.description}</p>
-                            <small>Type: {promo.type} | Ends: {new Date(promo.endTime).toLocaleDateString()}</small>
-                        </Link>
-                    ))}
-                </div>
+                            Previous
+                        </button>
+                        <span>
+                            Page {page} of {totalPages}
+                        </span>
+                        <button
+                            type="button"
+                            className="btn btn-outline-primary"
+                            onClick={() => handlePageChange(Math.min(page + 1, totalPages))}
+                            disabled={page === totalPages}
+                        >
+                            Next
+                        </button>
+                    </div>
+                </>
             )}
         </div>
     );

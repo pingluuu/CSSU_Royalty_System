@@ -3,21 +3,20 @@ import {
   useContext,
   useState,
   useEffect,
+  ReactNode,
 } from 'react';
-import type { ReactNode } from 'react';
 import api from '../services/api';
-import img from '../assets/test.jpg'; // Placeholder image for testing
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 type User = {
-  verified: any;
-  name: any;
-  email: any;
   id: any;
   utorid: string;
+  name: string;
+  email: string;
   role: string;
   points: number;
+  verified: boolean;
   birthday?: string;
   avatarUrl?: string;
 };
@@ -26,6 +25,7 @@ type AuthContextType = {
   user: User | null;
   login: (utorid: string, password: string) => Promise<{ success: boolean; user?: User }>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -34,13 +34,10 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
-// Helper to fix relative image path
 const normalizeUser = (data: any): User => {
   return {
     ...data,
-    // avatarUrl: data.avatarUrl ? `${BASE_URL}${data.avatarUrl}` : undefined,
-    // static image for testing inside public in the frontend
-    avatarUrl: img
+    avatarUrl: data.avatarUrl ? `${BASE_URL}${data.avatarUrl}` : undefined,
   };
 };
 
@@ -68,6 +65,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('authToken');
+  };
+
+  const refreshUser = async () => {
+    try {
+      const userResponse = await api.get('/users/me');
+      const userData: User = normalizeUser(userResponse.data);
+      setUser(userData);
+    } catch (error) {
+      console.error('Failed to refresh user', error);
+    }
   };
 
   useEffect(() => {
@@ -98,7 +105,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

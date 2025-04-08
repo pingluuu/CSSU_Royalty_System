@@ -1,9 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function NavBar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 🔒 Hide navbar on login/register pages
+  const hideNavbarPaths = ['/login', '/register'];
+  if (hideNavbarPaths.some((path) => location.pathname.startsWith(path))) {
+    return null;
+  }
 
   const handleLogout = () => {
     logout();
@@ -15,9 +22,7 @@ export default function NavBar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          LoyaltyApp
-        </Link>
+        <Link className="navbar-brand" to="/">LoyaltyApp</Link>
 
         {user && (
           <div className="collapse navbar-collapse">
@@ -55,9 +60,6 @@ export default function NavBar() {
                   <li className="nav-item">
                     <Link className="nav-link" to="/events">Published Events</Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className='nav-link' to="/create-transaction">Create Transaction</Link>
-                  </li>
                 </>
               )}
 
@@ -65,10 +67,16 @@ export default function NavBar() {
               {role === 'cashier' && (
                 <>
                   <li className="nav-item">
+                    <Link className="nav-link" to="/create-account">Register User</Link>
+                  </li>
+                  <li className="nav-item">
                     <Link className="nav-link" to="/create-transaction-cashier">Create Transaction</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/process-redemption">Process Redemption</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/promotions">Promotions</Link>
                   </li>
                 </>
               )}
@@ -76,10 +84,19 @@ export default function NavBar() {
               {/* 👔 Manager */}
               {role === 'manager' && (
                 <>
+                  <li>
+                    <Link className="nav-link" to="/users">Users</Link>
+                  </li>
+                  <li>
+                    <Link className="nav-link" to="/update-users">Update User</Link>
+                  </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/promote">Manage Users</Link>
                   </li>
-                  <li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/create-account">Register User</Link>
+                  </li>
+                  <li className="nav-item">
                     <Link className="nav-link" to="/create-transaction-manager">Create Transaction</Link>
                   </li>
                   <li className="nav-item">
@@ -102,18 +119,30 @@ export default function NavBar() {
 
               {/* 🎤 Event Organizer (and Managers) */}
               {(role === 'manager' || role === 'event_organizer') && (
-                <>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/my-events">My Events</Link>
-                  </li>
-                </>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/my-events">My Events</Link>
+                </li>
               )}
 
               {/* 👑 Superuser */}
               {role === 'superuser' && (
-                <li className="nav-item">
-                  <Link className="nav-link" to="/promote">Promote User</Link>
-                </li>
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/create-account">Register User</Link>
+                  </li>
+                  <li>
+                    <Link className="nav-link" to="/update-users">Update User</Link>
+                  </li>
+                  <li>
+                    <Link className="nav-link" to="/users">Users</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/promote">Promote User</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/promotions-manager">Manage Promotions</Link>
+                  </li>
+                </>
               )}
             </ul>
           </div>

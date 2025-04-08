@@ -13,7 +13,7 @@ import TransactionDetailPage from './pages/manager/TransactionDetailPage/Transac
 import CreatePromotionPage from './pages/manager/CreatePromotionPage/CreatePromotionPage';
 import PromotionsListingPage from './pages/manager/PromotionsListingPage/PromotionsListingPage';
 import PromotionDetailPage from './pages/manager/PromotionDetailPage/PromotionDetailPage';
-import PromotionsListingRegular from './pages/regular/PromotionsListingRegular/PromotionsListingRegular';
+import PromotionsListingRegular from './components/PromotionsListingRegular/PromotionsListingRegular';
 import PublishedEventsPageRegular from './pages/regular/PublishedEventsPageRegular/PublishedEventsPageRegular';
 import EventDetailPageRegular from './pages/regular/EventDetailPageRegular/EventDetailPageRegular'
 import EventDetailPageManager from "./pages/manager/EventDetailPage/EventDetailPageManager";
@@ -31,6 +31,10 @@ import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/M
 import MyTransactions from "./components/MyTransactionsPage";
 import PromoteUserPage from './components/PromoteUserPage';
 import EventsListingPage from "./components/EventsListingPage";
+import CreateAccount from "./components/CreateAccount";
+import UsersListing from "./components/UsersListing";
+import RegisterPage from "./pages/RegisterPage";
+import UserUpdate from "./components/UserUpdate";
 
 
 const AppRoutes = () => {
@@ -40,6 +44,7 @@ const AppRoutes = () => {
 			<Route path="/" element={<LandingPage />} />
 
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route path="/register" element={<RegisterPage />} />
 
 
 			<Route
@@ -59,6 +64,16 @@ const AppRoutes = () => {
 			<Route path="/my-qr" element={
 				<ProtectedRoute requiredRole="regular">
 					<UserQRCodePage />
+				</ProtectedRoute>
+			} />
+			<Route path="/users" element={
+				<ProtectedRoute requiredRole="manager superuser">
+					<UsersListing />
+				</ProtectedRoute>
+			} />
+			<Route path="/update-users" element={
+				<ProtectedRoute requiredRole="manager superuser">
+					<UserUpdate />
 				</ProtectedRoute>
 			} />
 			<Route
@@ -89,9 +104,7 @@ const AppRoutes = () => {
 			<Route
 				path="/promotions"
 				element={
-					<ProtectedRoute requiredRole="regular manager superuser cashier">
-						<PromotionsListingRegular />
-					</ProtectedRoute>
+					<PromotionsListingRegular />
 				}
 			/>
 
@@ -102,6 +115,11 @@ const AppRoutes = () => {
 						<ProcessRedemptionPage />
 					</ProtectedRoute>
 				}
+			/>
+			<Route path="/create-account" element=
+				{<ProtectedRoute requiredRole="manager superuser cashier">
+					<CreateAccount />
+				</ProtectedRoute>}
 			/>
 			<Route path="/create-event" element=
 				{<ProtectedRoute requiredRole="manager superuser">
@@ -163,8 +181,8 @@ const AppRoutes = () => {
 
 			<Route path="/my-transactions" element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
-					<MyTransactions/>
-				</ProtectedRoute>} 
+					<MyTransactions />
+				</ProtectedRoute>}
 			/>
 
 			<Route

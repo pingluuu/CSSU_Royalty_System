@@ -2,6 +2,8 @@
 'use strict';
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+
 
 const port = (() => {
     const args = process.argv;
@@ -23,6 +25,7 @@ const port = (() => {
 
 
 const app = express();
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true,
