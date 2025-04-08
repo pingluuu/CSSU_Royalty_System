@@ -33,6 +33,7 @@ import PromoteUserPage from './components/PromoteUserPage';
 import CreateAccount from "./components/CreateAccount";
 import UsersListing from "./components/UsersListing";
 import RegisterPage from "./pages/RegisterPage";
+import UserUpdate from "./components/UserUpdate";
 
 
 const AppRoutes = () => {
@@ -67,6 +68,11 @@ const AppRoutes = () => {
 			<Route path="/users" element={
 				<ProtectedRoute requiredRole="manager superuser">
 					<UsersListing />
+				</ProtectedRoute>
+			} />
+			<Route path="/update-users" element={
+				<ProtectedRoute requiredRole="manager superuser">
+					<UserUpdate />
 				</ProtectedRoute>
 			} />
 			<Route
