@@ -30,6 +30,8 @@ import CreateTransaction from "./pages/cashier/CashierCreateTransaction/CashierC
 import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/ManagerCreateTransaction";
 import MyTransactions from "./components/MyTransactionsPage";
 import PromoteUserPage from './components/PromoteUserPage';
+import CreateAccount from "./components/CreateAccount";
+import RegisterPage from "./pages/RegisterPage";
 
 
 const AppRoutes = () => {
@@ -39,6 +41,7 @@ const AppRoutes = () => {
 			<Route path="/" element={<LandingPage />} />
 
 			<Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+			<Route path="/register" element={<RegisterPage />} />
 
 
 			<Route
@@ -101,6 +104,11 @@ const AppRoutes = () => {
 						<ProcessRedemptionPage />
 					</ProtectedRoute>
 				}
+			/>
+			<Route path="/create-account" element=
+				{<ProtectedRoute requiredRole="manager superuser cashier">
+					<CreateAccount/>
+				</ProtectedRoute>}
 			/>
 			<Route path="/create-event" element=
 				{<ProtectedRoute requiredRole="manager superuser">
