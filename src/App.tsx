@@ -28,7 +28,9 @@ import ProfilePage from './components/ProfilePage';
 import UserAvailablePoints from "./pages/regular/AvailablePoints/AvailablePoints";
 import CreateTransaction from "./pages/cashier/CashierCreateTransaction/CashierCreateTransaction";
 import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/ManagerCreateTransaction";
+import MyTransactions from "./components/MyTransactionsPage";
 import PromoteUserPage from './components/PromoteUserPage';
+
 
 const AppRoutes = () => {
 	const { user } = useAuth();
@@ -149,6 +151,12 @@ const AppRoutes = () => {
 				<ProtectedRoute requiredRole="manager">
 					<AllTransactionsPage />
 				</ProtectedRoute>} />
+
+			<Route path="/my-transactions" element=
+				{<ProtectedRoute requiredRole="manager superuser regular cashier">
+					<MyTransactions/>
+				</ProtectedRoute>} 
+			/>
 
 			<Route
 				path="/transactions/:id"
