@@ -123,7 +123,8 @@ const getUsers = async (filters) => {
                 createdAt: true,
                 lastLogin: true,
                 verified: true,
-                avatarUrl: true
+                avatarUrl: true,
+                suspicious: true
             }
         })
     ]);
@@ -141,6 +142,7 @@ const getUsers = async (filters) => {
             createdAt: user.createdAt.toISOString(),
             lastLogin: user.lastLogin ? user.lastLogin.toISOString() : null,
             verified: user.verified,
+            suspicious: user.suspicious, // Ensure null if not set
             avatarUrl: user.avatarUrl || null // Ensure null if not set
         }))
     };    
