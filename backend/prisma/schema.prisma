@@ -1,145 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-enum Role {
-  USER
-  CASHIER
-  MANAGER
-  SUPERUSER
-}
-
-enum PromotionType {
-  ONE_TIME
-  AUTOMATIC
-}
-
-enum TransactionType {
-  PURCHASE
-  ADJUSTMENT
-  REDEMPTION
-  TRANSFER
-  EVENT
-}
-
 model User {
-  id         Int          @id @default(autoincrement())
-  utorid     String       @unique
-  name       String       
-  email      String       @unique
-  password   String?      
-  role       Role         
-  verified   Boolean      @default(false)
-  birthday   DateTime?    
-  points     Int          @default(0)
-  createdAt  DateTime     @default(now())
-  lastLogin  DateTime?    
-  avatarUrl  String?      
-  expiresAt  DateTime?     
-  resetToken String?      
-  suspicious Boolean      @default(false)
+  id          Int       @id @default(autoincrement())
+  utorid      String    @unique
+  name        String
+  email       String    @unique
+  birthday    String?
+  password    String
+  role        Role      @default(regular)
+  points      Int       @default(0)
+  verified    Boolean   @default(false)
+  suspicious  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  lastLogin   DateTime?
+  avatarUrl   String?
   transactions Transaction[]
-  userPromotions UserPromotion[]
-  eventsOrganized EventOrganizer[]
-  eventsGuest     EventGuest[]
-  resetTokenHistory ResetTokenHistory[] 
+  resetToken  String?   @unique
+  expiresAt   DateTime?
+  
+
+  promotions  Promotion[]         // Promotions available to the user
+  organizedEvents EventOrganizer[] // Organizing events
+  guestEvents EventGuest[]         // Attending events
 }
 
 model Promotion {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String
+  type        PromotionType
+  startTime   DateTime
+  endTime     DateTime
+  minSpending Float?
+  rate        Float?
+  points      Int?
+  
+  users       User[]           // Users who have access to this promotion
+  transactions TransactionPromotion[] // Applied promotions
+}
+
+model Event {
   id            Int       @id @default(autoincrement())
   name          String
   description   String
   startTime     DateTime
   endTime       DateTime
-  promotionType PromotionType    
-  minimumSpend  Float?
-  rate          Float?
-  extraPoints   Int       @default(0)
-  createdBy     Int    
-  userPromotions UserPromotion[]
-  transactionPromotions TransactionPromotion[]
-}
+  location      String
+  capacity      Int?
+  points        Int
+  pointsRemain  Int
+  pointsAwarded Int
+  published     Boolean   @default(false)
 
-model UserPromotion {
-  id           Int       @id @default(autoincrement())
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       Int
-  promotion    Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
-  promotionId  Int
-  used         Boolean   @default(false)
-
-  @@unique([userId, promotionId])
-}
-
-model ResetTokenHistory {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  token     String
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id])
+  organizers    EventOrganizer[]
+  guests        EventGuest[]
+  transactions  Transaction[] @relation("eventTransactions")
 }
 
 model Transaction {
-  id                 Int             @id @default(autoincrement())
-  user               User            @relation(fields: [userId], references: [id])
-  userId             Int
-  type               TransactionType
-  amount             Float?          
-  points             Int
-  cashierId          Int?            
-  remark             String?
-  createdAt          DateTime        @default(now())
-  relatedId          Int?            
-  suspicious         Boolean         @default(false)
-  transactionPromotions TransactionPromotion[]
+  id          Int       @id @default(autoincrement())
+  utorid      String
+  userId      Int
+  type        TransactionType
+  spent       Float?
+  earned      Int?
+  amount      Int?
+  remark      String?
+  suspicious  Boolean          @default(false)
+  processed   Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  createdBy   String
+  status      Status           @default(pending)
+  relatedId   Int?
+  eventId     Int?             //  Add relation to Event
+  
+  user        User             @relation(fields: [userId], references: [id])
+  
+  event       Event?           @relation("eventTransactions", fields: [eventId], references: [id]) // Define reverse relation
+
+  promotions  TransactionPromotion[]
 }
 
 model TransactionPromotion {
-  id            Int           @id @default(autoincrement())
-  transaction   Transaction   @relation(fields: [transactionId], references: [id])
+  id            Int         @id @default(autoincrement())
   transactionId Int
-  promotion     Promotion     @relation(fields: [promotionId], references: [id], onDelete: Cascade)
   promotionId   Int
 
-  @@unique([transactionId, promotionId])
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  promotion     Promotion   @relation(fields: [promotionId], references: [id])
 }
 
-model Event {
-  id                Int             @id @default(autoincrement())
-  name              String
-  description       String
-  startTime         DateTime
-  endTime           DateTime
-  location          String
-  capacity          Int?
-  pointsAllocated   Int
-  pointsRemain      Int             
-  pointsAwarded     Int             
-  published         Boolean         @default(false) 
-  organizers        EventOrganizer[] 
-  guests            EventGuest[]     
-}
 
 model EventOrganizer {
-  eventId   Int
-  userId    Int
-  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user      User    @relation(fields: [userId], references: [id])
+  id       Int    @id @default(autoincrement())
+  eventId  Int
+  userId   Int
 
-  @@id([eventId, userId])
+  event    Event  @relation(fields: [eventId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
 }
 
 model EventGuest {
-  eventId   Int
-  userId    Int
-  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user      User    @relation(fields: [userId], references: [id])
+  id       Int    @id @default(autoincrement())
+  eventId  Int
+  userId   Int
 
-  @@id([eventId, userId])
+  event    Event  @relation(fields: [eventId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+enum PromotionType {
+  automatic
+  one_time
+}
+
+enum Role {
+  regular
+  cashier
+  manager
+  superuser
+}
+
+enum TransactionType {
+  purchase
+  adjustment
+  redemption
+  transfer
+  event
+}
+
+enum Status {
+  pending
+  completed
+  rejected
 }

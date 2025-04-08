@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 'use strict';
-
 const express = require('express');
 const cors = require('cors');
-
 
 const port = (() => {
     const args = process.argv;
@@ -23,12 +21,14 @@ const port = (() => {
 })();
 
 
+
 const app = express();
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true,
-  }));
-  
+}));
+
+
 
 // Import routes
 const userRoutes = require('./src/routes/userRoutes');
