@@ -78,6 +78,9 @@ export default function NavBar() {
               {/* 👔 Manager */}
               {role === 'manager' && (
                 <>
+                  <li>
+                    <Link className="nav-link" to="/users">Users</Link>
+                  </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/promote">Manage Users</Link>
                   </li>
@@ -117,6 +120,9 @@ export default function NavBar() {
                 <>
                   <li className="nav-item">
                     <Link className="nav-link" to="/create-account">Register User</Link>
+                  </li>
+                  <li>
+                    <Link className="nav-link" to="/users">Users</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/promote">Promote User</Link>

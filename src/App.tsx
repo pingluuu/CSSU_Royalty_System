@@ -31,6 +31,7 @@ import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/M
 import MyTransactions from "./components/MyTransactionsPage";
 import PromoteUserPage from './components/PromoteUserPage';
 import CreateAccount from "./components/CreateAccount";
+import UsersListing from "./components/UsersListing";
 import RegisterPage from "./pages/RegisterPage";
 
 
@@ -61,6 +62,11 @@ const AppRoutes = () => {
 			<Route path="/my-qr" element={
 				<ProtectedRoute requiredRole="regular">
 					<UserQRCodePage />
+				</ProtectedRoute>
+			} />
+			<Route path="/users" element={
+				<ProtectedRoute requiredRole="manager superuser">
+					<UsersListing />
 				</ProtectedRoute>
 			} />
 			<Route
