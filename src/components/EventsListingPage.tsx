@@ -15,6 +15,7 @@ export default function EventsListingPage(){
     const initStarted = searchParams.get("started") || "";
     const initEnded = searchParams.get("ended") || "";
     const initShowFull = searchParams.get("showFull") || "false";
+    const initPublished = searchParams.get("published") || "true";
 
     const [events, setEvents] = useState([]);
     const [page, setPage] = useState<number>(initPage);
@@ -29,6 +30,7 @@ export default function EventsListingPage(){
     const [started, setStarted] = useState<string>(initStarted);
     const [ended, setEnded] = useState<string>(initEnded);
     const [showFull, setShowFull] = useState<string>(initShowFull);
+    const [published, setPublished] = useState<string>(initPublished)
     const [fetchTrigger, setFetchTrigger] = useState(0);
     const [morePermissionRole, setMorePermissionRole] = useState(false)
 
@@ -54,13 +56,13 @@ export default function EventsListingPage(){
       };
     
     const updateURL = () => {
-
         const params: any = { page: page.toString() };
         if (name) params.name = name;
         if (location) params.location = location;
         if (started) params.started = started;
         if (ended) params.ended = ended;
         if (showFull) params.showFull = showFull;
+        if (published) params.published = published
         setSearchParams(params);
     };
 
@@ -68,7 +70,6 @@ export default function EventsListingPage(){
     useEffect(() => {
         const role = (["manager", "superuser"].includes(user.role))
         setMorePermissionRole(role)
-
         const fetchEvents = async () => {
             setLoading(true);
             setError(null);
@@ -88,6 +89,9 @@ export default function EventsListingPage(){
             }
             if (showFull) {
                 payload.showFull = showFull === "true";
+            }
+            if (published){
+                payload.published = published === "true";
             }
         
             try {
@@ -111,7 +115,7 @@ export default function EventsListingPage(){
             <h2>All Events</h2>
             <form className="mb-4">
                 <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <label className="form-label">Event Name:</label>
                         <input
                         type="text"
@@ -122,7 +126,7 @@ export default function EventsListingPage(){
                         />
                     </div>
                     
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <label className="form-label">Location:</label>
                         <input
                         type="text"
@@ -132,8 +136,8 @@ export default function EventsListingPage(){
                         onChange={(e) => setLocation(e.target.value)}
                         />
                     </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Show Full Events:</label>
+                    <div className="col-md-3">
+                        <label className="form-label">Show Full</label>
                         <select
                         className="form-select"
                         value={showFull}
@@ -141,6 +145,19 @@ export default function EventsListingPage(){
                         >
                         <option value="false">Hide Full Events</option>
                         <option value="true">Show Full Events</option>
+                        </select>
+                    </div>
+
+                    <div className="col-md-3">
+                        <label className="form-label">Published</label>
+                        <select
+                        className="form-select"
+                        value={published}
+                        onChange={(e) => {setPublished(e.target.value)}}
+                        disabled={!morePermissionRole}
+                        >
+                        <option value="false">False</option>
+                        <option value="true">True</option>
                         </select>
                     </div>
 
