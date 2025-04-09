@@ -4,7 +4,6 @@ import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import './EventDetailPageRegular.css';
 
-
 interface Event {
     id: number;
     name: string;
@@ -29,6 +28,10 @@ export default function EventDetailPageRegular() {
     const backLink = link_location.state?.from?.pathname + link_location.state?.from?.search || '/my-events';
     const navigate = useNavigate();
 
+    // State for banner messages
+    const [bannerMessage, setBannerMessage] = useState('');
+    const [bannerType, setBannerType] = useState(''); // "success" or "error"
+
     const fetchEvent = async () => {
         try {
             const res = await api.get(`/events/${id}`);
@@ -52,16 +55,19 @@ export default function EventDetailPageRegular() {
         try {
             const res = await api.post(`/events/${event.id}/rsvp`);
             setRsvped(true);
-            alert(res.data.message || 'RSVP successful!');
+            // Set success banner message
+            setBannerMessage(res.data.message || 'RSVP successful!');
+            setBannerType('success');
         } catch (err: any) {
             console.error('RSVP failed:', err);
             const message = err.response?.data?.message || 'RSVP failed';
-            alert(message); // This will show "startTime and endTime must not be in the past."
+            // Set error banner message
+            setBannerMessage(message);
+            setBannerType('error');
         } finally {
             setSubmitting(false);
         }
     };
-
 
     useEffect(() => {
         fetchEvent();
@@ -72,14 +78,25 @@ export default function EventDetailPageRegular() {
 
     return (
         <div className="container mt-4">
+<<<<<<< HEAD
             <button className="btn btn-secondary mb-3" onClick={() => navigate(backLink)}>
                 &larr; Back to Events
             </button>
+=======
+            {/* Banner Message */}
+            {bannerMessage && (
+                <div className={`banner ${bannerType}`}>
+                    {bannerMessage}
+                </div>
+            )}
+>>>>>>> 0f84d51f6e2dac401eb98ff9f33f99c3cd8d368e
 
             <h2>{event.name}</h2>
             <p><strong>Description:</strong> {event.description}</p>
             <p><strong>Location:</strong> {event.location}</p>
-            <p><strong>Time:</strong> {new Date(event.startTime).toLocaleString()} - {new Date(event.endTime).toLocaleString()}</p>
+            <p>
+                <strong>Time:</strong> {new Date(event.startTime).toLocaleString()} - {new Date(event.endTime).toLocaleString()}
+            </p>
             <p><strong>Points:</strong> {event.points}</p>
             <p><strong>Capacity:</strong> {event.capacity ?? 'Unlimited'}</p>
 

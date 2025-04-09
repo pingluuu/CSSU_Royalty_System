@@ -6,15 +6,15 @@ import AvailablePoints from './AvailablePoints';
 
 export default function LandingPage() {
   const { user } = useAuth();
-  const [points, setPoints] = useState<number | null>(null);
+  // Removed unused points state
   const [transactions, setTransactions] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (user?.role === 'regular') {
         try {
-          const userRes = await api.get('/users/me');
-          setPoints(userRes.data.points);
+          await api.get('/users/me');
+          // Removed setPoints as points state is no longer used
           const txRes = await api.get('/transactions', { params: { page: 1, limit: 5 } });
           setTransactions(txRes.data.results);
         } catch (err) {
@@ -30,7 +30,7 @@ export default function LandingPage() {
       <div className="container mt-5 d-flex flex-column align-items-center text-center">
         <h1 className="display-4 mb-3 text-primary fw-bold">Welcome to LoyaltyApp 🎉</h1>
         <p className="lead mb-4" style={{ maxWidth: '600px' }}>
-          This loyalty program allows users to earn points for purchases and redeem them for rewards. 
+          This loyalty program allows users to earn points for purchases and redeem them for rewards.
         </p>
         <Link to="/login" className="btn btn-lg btn-outline-primary">
           Login to Get Started
