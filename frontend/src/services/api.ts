@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:3000/'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/'
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -11,11 +11,11 @@ const api = axios.create({
 
 api.interceptors.request.use(config => {
     const token = localStorage.getItem('authToken');
-    if (token){
+    if (token) {
         //Need bearer due to how backend was set up otherwise need to change backend. 
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config
 })
 
-export default api
+export default api 
