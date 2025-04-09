@@ -5,10 +5,20 @@ import { Link } from 'react-router-dom';
 import AvailablePoints from './AvailablePoints';
 
 export default function LandingPage() {
+  const capitalizeFirst = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  
   const { user } = useAuth();
   // Removed unused points state
-  const [transactions, setTransactions] = useState<any[]>([]);
-
+  const [transactions, setTransactions] = useState<any[]>([
+    { id: 101, type: 'purchase', amount: 120 },
+    { id: 102, type: 'adjustment', amount: -20 },
+    { id: 103, type: 'redemption', amount: 100 },
+    { id: 104, type: 'event', amount: 75 },
+    { id: 105, type: 'transfer', amount: 50 },
+  ]);
+  
   useEffect(() => {
     const fetchUserData = async () => {
       if (user?.role === 'regular') {
@@ -41,17 +51,25 @@ export default function LandingPage() {
 
   return (
     <div className="container mt-4">
-      <h2>Welcome, {user.name}!</h2>
+      <h2>Welcome, {capitalizeFirst(user.name)}!</h2>
 
       {user.role === 'regular' && (
         <>
-          <AvailablePoints />
-          <div className="mt-4">
-            <h5 className="mt-4">Recent Transactions</h5>
-            <ul className="list-group">
+          <div className="mb-4">
+            <AvailablePoints />
+          </div>
+
+          <div className="card shadow-sm mb-4">
+            <div className="card-header bg-primary text-white">
+              <h5 className="mb-0">Recent Transactions</h5>
+            </div>
+            <ul className="list-group list-group-flush">
               {transactions.map(tx => (
-                <li key={tx.id} className="list-group-item">
-                  #{tx.id} - {tx.type} - {tx.amount ?? tx.spent} points
+                <li key={tx.id} className="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong>#{tx.id}</strong>: {capitalizeFirst(tx.type)}{' '}
+                  </div>
+                  <span className="badge bg-secondary">{tx.amount ?? tx.spent} pts</span>
                 </li>
               ))}
             </ul>

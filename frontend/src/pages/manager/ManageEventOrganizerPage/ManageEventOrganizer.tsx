@@ -140,7 +140,7 @@ export default function ManageEventOrganizer(){
                     required
                     />
 
-                    <button type="submit" className="btn btn-success mt-2">Add Organizer</button>
+                    <button type="submit" className="btn btn-primary mt-2">Add Organizer</button>
 
                 </form>
             </div>

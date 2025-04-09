@@ -159,7 +159,7 @@ export default function ManageEventGuestPage() {
                         required
                     />
 
-                    <button type="submit" className="btn btn-success mt-2">Add Guest</button>
+                    <button type="submit" className="btn btn-primary mt-2">Add Guest</button>
 
                 </form>
             </div>
