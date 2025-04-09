@@ -1,4 +1,4 @@
-.transaction-card {
+.event-card {
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -9,9 +9,10 @@
     color: inherit;
     transition: transform 0.2s ease;
     border-left: 5px solid #4f46e5; /* Indigo-600 / your preferred color */
+    margin-bottom: 1.5rem;
   }
   
-  .transaction-card:hover {
+  .event-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
