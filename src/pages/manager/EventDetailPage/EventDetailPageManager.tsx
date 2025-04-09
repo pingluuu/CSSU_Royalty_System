@@ -318,7 +318,7 @@ export default function EventDetailPage(){
                         name="pointsRemain"
                         value={formData.pointsRemain}
                         onChange={handleInputChange}
-                        disabled={isEditing && user.role === "manager"}
+                        disabled={isEditing || user?.role !== "manager" }
                         className="form-control"
                         />
                     </div>
@@ -333,7 +333,7 @@ export default function EventDetailPage(){
                         name="pointsReward"
                         value={formData.pointsAwarded}
                         onChange={handleInputChange}
-                        disabled={!isEditing || user?.role !== "manager" }
+                        disabled={true}
                         className="form-control"
                         />
                     </div>
@@ -350,7 +350,7 @@ export default function EventDetailPage(){
                             className="form-select" 
                             value={String(formData.published)}
                             onChange={handleInputChange} 
-                            disabled={!isEditing || user?.role !== "manager" }
+                            disabled={isEditing || user?.role !== "manager" }
                         >
                             <option value="true">True</option>
                             <option value="false">False</option>

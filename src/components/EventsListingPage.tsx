@@ -66,6 +66,21 @@ export default function EventsListingPage(){
         setSearchParams(params);
     };
 
+    const eventNavLink = (ev) => {
+        const isOrganizer = ev.organizers && ev.organizers.some((org) => org.utorid === user.utorid)
+        console.log("organigers", ev.organizers, isOrganizer)
+        if (isOrganizer){
+            return `/manager/events/${ev.id}`
+        }
+        if (["manager", "superuser"].includes(user.role)) {
+            return `/manager/events/${ev.id}`;
+          }
+          
+          
+        return `/events/${ev.id}`;
+
+    }
+
 
     useEffect(() => {
         const role = (["manager", "superuser"].includes(user.role))
@@ -96,6 +111,7 @@ export default function EventsListingPage(){
         
             try {
                 const res = await api.get("/events", { params: payload });
+                console.log(res.data.results)
                 setTotalCount(res.data.count);
                 setEvents(res.data.results);
             }catch(err) {
@@ -219,7 +235,7 @@ export default function EventsListingPage(){
                             <Link
                                 key={ev.id}
                                 className='transaction-card transaction-event'
-                                to={morePermissionRole ? `/manager/events/${ev.id}` : `/events/${ev.id}`}
+                                to= {eventNavLink(ev)}
                                 style={{ textDecoration: 'none', color: 'inherit' }}
                             >
                                 <h5>Events# {ev.id}</h5>
@@ -229,7 +245,7 @@ export default function EventsListingPage(){
                                 <strong>Start Time:</strong> {ev.startTime}<br />
                                 <strong>End Time:</strong> {ev.endTime}<br />
                                 <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
-                                <strong>Num Guests</strong> {ev.guests.length}<br />
+                                <strong>Num Guests</strong> {ev.numGuests}<br />
                             </p>
                             </Link>
                         )
