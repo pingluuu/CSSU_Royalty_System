@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../../services/api';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './PublishedEventsPageRegular.css';
 
 interface Event {
@@ -18,6 +18,7 @@ interface Event {
 export default function PublishedEventsPageRegular() {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
+    const link_location = useLocation();
 
     const fetchPublishedEvents = async () => {
         setLoading(true);
@@ -52,7 +53,7 @@ export default function PublishedEventsPageRegular() {
                         <Link
                             key={event.id}
                             to={`/events/${event.id}`}
-                            className="transaction-card"
+                            className="transaction-card" state={{from: link_location}}
                         >
                             <div className="card-header">
                                 <h5>{event.name}</h5>

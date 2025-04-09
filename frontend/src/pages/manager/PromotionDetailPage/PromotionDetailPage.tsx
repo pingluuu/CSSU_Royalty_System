@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation} from 'react-router-dom';
 import api from '../../../services/api';
+
 //import './PromotionDetailPage.css';
 
 export default function PromotionDetailPage() {
@@ -9,6 +10,8 @@ export default function PromotionDetailPage() {
     const [promotion, setPromotion] = useState<any>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [form, setForm] = useState<any>({});
+    const link_location = useLocation();
+    const back_link = link_location.state?.from?.pathname + link_location.state?.from?.search || '/promotions-manager';
 
     const fetchPromotion = async () => {
         try {
@@ -70,6 +73,9 @@ export default function PromotionDetailPage() {
 
     return (
         <div className="container mt-4">
+            <button className="btn btn-secondary mb-3" onClick={() => navigate(back_link)}>
+                &larr; Back to Promotions
+            </button>
             <h2>Promotion Detail</h2>
 
             {isEditing ? (

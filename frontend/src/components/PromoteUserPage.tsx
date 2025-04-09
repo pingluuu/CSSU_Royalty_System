@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import api from '../services/api';
-
+import { useAuth } from '../contexts/AuthContext';
 
 export default function PromoteUserPage() {
     // Removed unused 'user' variable
@@ -13,6 +13,8 @@ export default function PromoteUserPage() {
     });
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const { user } = useAuth();
+    const isSuperuser = user?.role === 'superuser';
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const target = e.target as HTMLInputElement | HTMLSelectElement;
@@ -87,8 +89,8 @@ export default function PromoteUserPage() {
                     <select className="form-select" name="role" value={form.role} onChange={handleChange}>
                         <option value="regular">Regular</option>
                         <option value="cashier">Cashier</option>
-                        <option value="manager">Manager</option>
-                        <option value="superuser">Superuser</option>
+                        {(isSuperuser) && <option value="manager">Manager</option>}
+                        {(isSuperuser) && <option value="superuser">Superuser</option>}
                     </select>
                 </div>
 

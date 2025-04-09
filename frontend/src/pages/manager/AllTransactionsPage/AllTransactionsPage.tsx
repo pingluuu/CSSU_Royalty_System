@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useLocation} from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import './AllTransactionsPage.css';
@@ -31,6 +31,7 @@ export default function AllTransactionsPage() {
     const [count, setCount] = useState(0);
     const [limit] = useState(10);
     const [loading, setLoading] = useState(false);
+    const link_location = useLocation();
 
     // Get and update URL search parameters
     const [searchParams, setSearchParams] = useSearchParams();
@@ -245,7 +246,7 @@ export default function AllTransactionsPage() {
                             to={`/transactions/${tx.id}`}
                             className={`transaction-card ${typeColors[tx.type] || ''} ${tx.suspicious ? 'transaction-suspicious' : ''
                                 }`}
-                            style={{ textDecoration: 'none', color: 'inherit' }}
+                            style={{ textDecoration: 'none', color: 'inherit' }} state={{ from: link_location }}
                         >
                             <h5>Transaction #{tx.id}</h5>
                             <p>

@@ -74,7 +74,7 @@ export default function LandingPage() {
           <h4>Admin Dashboard</h4>
           <div className="row mt-3">
             <div className="col-md-4">
-              <Link to="/events-manager" className="btn btn-outline-info w-100 mb-2">Manage Events</Link>
+              <Link to="/all-events" className="btn btn-outline-info w-100 mb-2">Manage Events</Link>
               <Link to="/create-event" className="btn btn-outline-secondary w-100 mb-2">Create New Event</Link>
             </div>
             <div className="col-md-4">

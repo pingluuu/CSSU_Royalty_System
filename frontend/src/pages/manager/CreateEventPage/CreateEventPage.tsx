@@ -154,7 +154,7 @@ const ManagerCreateNewEvent = () => {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-success"> Submit</button>
+                <button type="submit" className="btn btn-primary"> Submit</button>
             </form>
 
             {/* {message && <div className="mt-3 p3-rounded">{message}</div>}
