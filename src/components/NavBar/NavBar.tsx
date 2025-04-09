@@ -66,15 +66,14 @@ export default function NavBar() {
                     <li className="nav-item"><Link className="nav-link" to="/create-transaction-cashier">Create Transaction</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/process-redemption">Process Redemption</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/promotions">Promotions</Link></li>
+                    <li><Link className="nav-link" to="/retrieve-user">Retrieve User</Link></li>
                   </>
                 )}
 
                 {role === 'manager' && (
                   <>
                     <li><Link className="nav-link" to="/users">Users</Link></li>
-                    <li><Link className="nav-link" to="/update-users">Update User</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer Points</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/promote">Manage Users</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/create-account">Register User</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/create-transaction-manager">Create Transaction</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/all-transactions">All Transactions</Link></li>
@@ -93,9 +92,7 @@ export default function NavBar() {
                   <>
                     <li className="nav-item"><Link className="nav-link" to="/create-account">Register User</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer Points</Link></li>
-                    <li><Link className="nav-link" to="/update-users">Update User</Link></li>
                     <li><Link className="nav-link" to="/users">Users</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/promote">Promote User</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/promotions-manager">Manage Promotions</Link></li>
                   </>
                 )}

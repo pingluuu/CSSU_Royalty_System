@@ -126,7 +126,7 @@ export default function PromotionsListingPageRegular() {
                 <>
                     <div className="list-group">
                         {promotions.map((promo) => (
-                            <div key={promo.id} className="list-group-item">
+                            <div key={promo.id}    className="transaction-card transaction-adjustment mb-3" style={{textDecoration: 'none', color: 'inherit'}}>
                                 <h5>{promo.name}</h5>
                                 <p>
                                     <strong>Type:</strong> {promo.type}

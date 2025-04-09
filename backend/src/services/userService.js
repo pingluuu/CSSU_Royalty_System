@@ -198,6 +198,7 @@ const getUserById = async (userId, clearance) => {
     createdAt: hasPrivelege ? user.createdAt : undefined,
     lastLogin: hasPrivelege ? user.lastLogin : undefined,
     verified: user.verified,
+    suspicious: user.suspicious,
     avatarUrl: hasPrivelege ? user.avatarUrl : undefined,
     promotions: availablePromotions.map(promo => ({
       id: promo.id,

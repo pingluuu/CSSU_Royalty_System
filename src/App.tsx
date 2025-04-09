@@ -33,8 +33,9 @@ import EventsListingPage from "./components/EventsListingPage";
 import CreateAccount from "./components/CreateAccount";
 import UsersListing from "./components/UsersListing";
 import RegisterPage from "./pages/RegisterPage";
-import UserUpdate from "./components/UserUpdate";
 import TransferPage from "./components/TransferPage";
+import UserDetail from "./components/UserDetail";
+import UserRetrieval from "./pages/cashier/UserRetrieval";
 
 
 const AppRoutes = () => {
@@ -66,9 +67,15 @@ const AppRoutes = () => {
 					<UsersListing />
 				</ProtectedRoute>
 			} />
-			<Route path="/update-users" element={
-				<ProtectedRoute requiredRole="manager superuser">
-					<UserUpdate />
+			<Route path="/retrieve-user" element={
+				<ProtectedRoute requiredRole="cashier">
+					<UserRetrieval />
+				</ProtectedRoute>
+			} />
+
+			<Route path="/users/:userId" element={
+				<ProtectedRoute requiredRole="cashier manager superuser regular">
+					<UserDetail />
 				</ProtectedRoute>
 			} />
 			<Route 

@@ -127,7 +127,7 @@ export default function EventsListingPage(){
       }, [page, fetchTrigger]);
     
     return (
-        <div className="container mt-4">
+        <div className="container mt-4" style={{ maxWidth: '750px' }}>
             <h2>All Events</h2>
             <form className="mb-4">
                 <div className="row">

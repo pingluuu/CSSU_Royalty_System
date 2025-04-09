@@ -80,7 +80,7 @@ export default function CreatePromotionPage() {
                 </div>
 
                 <div className="col-md-4">
-                    <label className="form-label">Rate (Extra points per $)</label>
+                    <label className="form-label">Rate (Extra points/$)</label>
                     <input type="number" step="0.01" className="form-control" name="rate" value={formData.rate} onChange={handleChange} />
                 </div>
 

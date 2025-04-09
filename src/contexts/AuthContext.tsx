@@ -35,7 +35,7 @@ type AuthProviderProps = {
 };
 
 const normalizeUser = (data: any): User => {
-  console.log("The avatar usrl is :::", `${BASE_URL}${data.avatarUrl}`);
+  console.log("The avatar url is :::", `${BASE_URL}${data.avatarUrl}`);
 
   return {
     ...data,

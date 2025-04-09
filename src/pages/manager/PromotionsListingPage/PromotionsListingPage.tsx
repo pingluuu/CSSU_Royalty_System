@@ -168,8 +168,8 @@ export default function PromotionsListingPage() {
                             <Link
                                 key={promo.id}
                                 to={`/manager/promotions/${promo.id}`}
-                                className="list-group-item list-group-item-action"
-                            >
+                                className="transaction-card transaction-adjustment mb-3" style={{textDecoration: 'none', color: 'inherit'}}
+                                >
                                 <div className="d-flex w-100 justify-content-between">
                                     <h5 className="mb-1">{promo.name}</h5>
                                     <small>{new Date(promo.startTime).toLocaleDateString()}</small>
