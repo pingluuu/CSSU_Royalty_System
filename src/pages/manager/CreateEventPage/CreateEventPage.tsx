@@ -1,7 +1,7 @@
 import { useState } from "react"
 import api from "../../../services/api";
 import { useNavigate} from 'react-router-dom';
-
+import axios from "axios";
 interface FormData {
     name: string;
     description: string;
@@ -13,6 +13,8 @@ interface FormData {
 }
 const ManagerCreateNewEvent = () => {
     const navigate = useNavigate();
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState <FormData>(
         {name: '', 
         description: '', 
@@ -25,8 +27,8 @@ const ManagerCreateNewEvent = () => {
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
-        
         if (name === 'capacity') {
+            
             setFormData((prevData) => ({
               ...prevData,
               capacity: value === '' ? null : Number(value)
@@ -47,15 +49,30 @@ const ManagerCreateNewEvent = () => {
                 ...formData, 
                 startTime: new Date(formData.startTime).toISOString(),
                 endTime: new Date(formData.endTime).toISOString(),
-                capacity: typeof(formData.capacity) === "number" ? formData.capacity : null
+                capacity: typeof(formData.capacity) === "number" ? formData.capacity : null,
+                points: Number(formData.points)
+            }            
+            await api.post('/events', payload)
+            setMessage("Your Event Has Successfully Been Created")
+            setError(null)
+
+            // alert('Event created!');
+            // navigate('/events-manager')
+        }
+        catch (err) {
+            const backendMessage = err.response?.data?.message;
+            const status = err.response?.status;
+
+            if (backendMessage){
+                setError(backendMessage)
+            }
+            else if(status === 400){
+                setError("Event could not be created")
+            }
+            else {
+                setError("Unexpected Error Occured")
             }
 
-            await api.post('/events', payload)
-            alert('Event created!');
-            navigate('/events-manager')
-        }
-        catch (error) {
-            console.log("error creating event", error)
         }
  
     }
@@ -140,9 +157,9 @@ const ManagerCreateNewEvent = () => {
                 </div>
                 <button type="submit" className="btn btn-success"> Submit</button>
             </form>
-            {/* <div>
-                {error && <>All fields are required except capacity</>}
-            </div> */}
+
+            {message && <div className="mt-3 alert alert-success">{message}</div>}
+            {error && <div className="mt-3 alert alert-danger">{error}</div>}
         </div>
         
     )

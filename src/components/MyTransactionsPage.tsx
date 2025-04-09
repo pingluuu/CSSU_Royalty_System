@@ -4,6 +4,18 @@ import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 // This component is for all logged in users to view their transactions
+
+
+const typeColors: Record<string, string> = {
+    purchase: 'transaction-purchase',
+    adjustment: 'transaction-adjustment',
+    transfer: 'transaction-transfer',
+    redemption: 'transaction-redemption',
+    event: 'transaction-event',
+};
+
+
+
 export default function MyTransactions() {
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -183,12 +195,43 @@ export default function MyTransactions() {
                             return (
                                 <Link
                                     key={tx.id}
-                                    className='transaction-card'
+                                    className={`transaction-card ${typeColors[tx.type] || ''} ${tx.suspicious ? 'transaction-suspicious' : ''
+                                    }`}
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                 >
                                     <h5>Transaction #{tx.id}</h5>
                                     <p>
-
+                                        <strong>Type:</strong> {tx.type}
+                                        <br />
+                                        <strong>User:</strong> {tx.utorid}
+                                        <br />
+                                        {tx.spent !== undefined && (
+                                            <>
+                                                <strong>Spent:</strong> ${tx.spent}
+                                                <br />
+                                            </>
+                                        )}
+                                        {tx.amount !== undefined && (
+                                            <>
+                                                <strong>Amount:</strong> {tx.amount}
+                                                <br />
+                                            </>
+                                        )}
+                                        {tx.relatedId && (
+                                            <>
+                                                <strong>Related:</strong> {tx.relatedId}
+                                                <br />
+                                            </>
+                                        )}
+                                        {tx.remark && (
+                                            <>
+                                                <strong>Remark:</strong> {tx.remark}
+                                                <br />
+                                            </>
+                                        )}
+                                        <strong>Suspicious:</strong> {tx.suspicious ? 'Yes' : 'No'}
+                                        <br />
+                                        <strong>Created By:</strong> {tx.createdBy}
                                     </p>
                                 </Link>
                             )

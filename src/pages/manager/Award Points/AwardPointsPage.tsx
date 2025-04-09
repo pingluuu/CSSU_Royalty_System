@@ -36,7 +36,9 @@ export default function AwardPointsPage(){
     const {id} = useParams()
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null)
+    const [permissionEventErr, setPermissionEventErr] = useState<string | null>(null)
     const [event, setEvent] = useState<Event|null>(null);
+    const [message, setMessage] = useState("")
     const [targetType, setTargetType] = useState('all');
     const {user} = useAuth()
     const [refresh, setRefresh] = useState(0)
@@ -55,14 +57,16 @@ export default function AwardPointsPage(){
             try {
                 const res = await api.get(`/events/${id}`)
                 setEvent(res.data)
+                
                 const checkOrganizer = res.data.organizers.some((organizer: Organizer)=> organizer.utorid === user.utorid);
                 if (user.role !== "superuser" && user.role !== "manager" && !checkOrganizer){
-                    setError("Denied Permission")
+                    setPermissionEventErr("Denied Permission")
                 }
+                
             }
             catch (error: any){
                 if (error.response.status === 404){
-                    setError("Event not found")
+                    setPermissionEventErr("Event not found")
                 }
             }
             finally {
@@ -81,7 +85,6 @@ export default function AwardPointsPage(){
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
         
-        
         if (name === "amount") {
             const numValue = value === "" ? null : Number(value);
             setFormData((prev) => ({
@@ -98,13 +101,19 @@ export default function AwardPointsPage(){
     const handleSubmit = async () => {
         try {
             console.log(formData)
+            if (event?.guests.length === 0){
+                setError("No guests in this event to add points to")
+                setMessage("")
+                return;
+            }
             await api.post(`/events/${id}/transactions`, formData)
-            alert("Points added")
+            setMessage("Points successfully awarded")
             setFormData(prev => ({
                 ...prev,
                 utorid: "",
                 amount: null
             }));
+            setError(null)
             setRefresh((refresh) => refresh + 1)
             
         }
@@ -112,18 +121,19 @@ export default function AwardPointsPage(){
             console.log("err", err)
             if (axios.isAxiosError(err)){
                 if (err?.status === 400){
-                    alert("User not in guest list, must be positive points and have enough points")   
+                    setError("User not in guest list, must be positive points and have enough points")
                 }
-                
+            setMessage("")
         }
     }}
 
-    if (error) {
+    if (permissionEventErr) {
         return (
             <div className="container mt-4">
                 <div className="alert alert-danger text-center">
-                <h1>{error}</h1>
+                    <h1>{permissionEventErr}</h1>
                 </div>
+                <button className="btn btn-secondary me-2" onClick={() => navigate('/')}>Go Back To HomePage</button>
             </div>
         )
     }
@@ -199,6 +209,8 @@ export default function AwardPointsPage(){
             </form>
             <button className="btn btn-secondary me-2" onClick={() => navigate(`/manager/events/${id}`)}>Go Back To Event</button>
             <button className="btn btn-success" onClick={handleSubmit}>Add Points</button>
+            {message && <div className="mt-3 alert alert-success">{message}</div>}
+            {error && <div className="mt-3 alert alert-danger">{error}</div>}
         </div>
     )
 }

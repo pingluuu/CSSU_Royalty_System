@@ -11,14 +11,13 @@ interface Guest {
 }
 export default function ManageEventGuestPage(){
     const [utorid, setUtorId] = useState("")
-    const [invalidEvent, setInvalidEvent] = useState(false);
     const {id} = useParams()
     const [error, setError] = useState<string|null>(null)
     const [loading, setLoading] = useState(true);
-    const [invalidUser, setInvalidUser] = useState(false)
     const [eventName, setEventName] = useState<string>(''); 
     const [guests, setGuests] = useState<Guest []>([])
     const [refreshKey, setRefreshKey] = useState<number>(0);
+    const [message, setMessage] = useState("")
     const {user} = useAuth()
     const navigate = useNavigate();
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,9 +27,10 @@ export default function ManageEventGuestPage(){
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         try {
+            console.log(utorid)
             await api.post(`/events/${id}/guests`, {utorid: utorid})
             setRefreshKey((prev) => prev + 1)
-            alert(`Added ${utorid} to event ${id}`)
+            setMessage(`User has successfully been added to the event`)
         }
         catch (error){
             if (axios.isAxiosError(error)){
@@ -51,14 +51,11 @@ export default function ManageEventGuestPage(){
                     setError("Try again")
                 }
             }
-            // setInvalidUser(true)
         }
     }
 
     useEffect(() => {
-        console.log(refreshKey, "REFRESH KEY")
         setLoading(true)
-        setInvalidEvent(false)
         setError(null)
         const checkValidEvent = async () => {
             if (!user){
@@ -77,11 +74,9 @@ export default function ManageEventGuestPage(){
                 if (axios.isAxiosError(error)){
                     if (error?.status === 404){
                         setError("Event not found")
-                        setInvalidEvent(true)
                     }
                     else {
                         setError("something went wrong")
-                        setInvalidEvent(true)
                     }
                 }
             }
@@ -114,16 +109,16 @@ export default function ManageEventGuestPage(){
             </div>
         );
     }
-    if (error){
-        return (
-            <div className="container mt-4">
-                <div className="alert alert-danger text-center">
-                    <h1>{error}</h1>
-                    <button className="btn btn-primary m-2" onClick={() => setError(null)}>Go Back To Event</button>
-                </div>
-            </div>
-        )
-    }
+    // if (error){
+    //     return (
+    //         <div className="container mt-4">
+    //             <div className="alert alert-danger text-center">
+    //                 <h1>{error}</h1>
+    //                 <button className="btn btn-primary m-2" onClick={() => setError(null)}>Go Back To Event</button>
+    //             </div>
+    //         </div>
+    //     )
+    // }
     // if (invalidEvent){
     //     return (
     //         <div className="container mt-4">
@@ -188,6 +183,8 @@ export default function ManageEventGuestPage(){
                     <p className="text-muted">No organizers currently assigned to this event.</p>
                 )}
             </div>
+            {message && <div className="mt-3 alert alert-success">{message}</div>}
+            {error && <div className="mt-3 alert alert-danger">{error}</div>}
             
         </div>
     )
