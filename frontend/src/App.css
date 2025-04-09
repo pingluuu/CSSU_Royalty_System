@@ -5,6 +5,17 @@
   text-align: center;
 }
 
+.btn.btn-success {
+  background-color: #0d6efd;; 
+  border-color: #0d6efd;;
+  color: white;
+}
+
+.btn.btn-success:hover {
+  background-color: #218838;
+}
+
+
 .logo {
   height: 6em;
   padding: 1.5em;

@@ -414,7 +414,7 @@ export default function EventDetailPage(){
                 </div>
             </form>
             <div className="d-flex flex-column flex-md-row gap-2 mt-4"> 
-                <button className ="btn btn-success" onClick={editField}>Edit Fields</button>
+                <button className ="btn btn-success" onClick={editField}style={{color: 'var(--bs-btn-hover-color)', backgroundColor: 'var(--bs-btn-hover-bg)', borderColor: '#0a58ca'}}>Edit Fields</button>
                 <button className = "btn btn-secondary" onClick={submitEditField}>Save Changes</button>
                 {(user.role === "superuser" || user.role === "manager") &&
                 <button className ="btn btn-danger"onClick={deleteEvent}>Delete Event</button>}
