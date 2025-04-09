@@ -53,7 +53,7 @@ export default function PublishedEventsPageRegular() {
                         <Link
                             key={event.id}
                             to={`/events/${event.id}`}
-                            className="transaction-card" state={{from: link_location}}
+                            className="event-card" state={{from: link_location}}
                         >
                             <div className="card-header">
                                 <h5>{event.name}</h5>
