@@ -742,4 +742,101 @@ const markTransactionProcessed = async (transactionId, processed, cashier) => {
   };
 };
 
-module.exports = { createUser, getUsers, getUserById, updateUser, getCurrentUser, updatePassword, updateCurrentUser, transferPoints, redeemPoints, getUserTransactions, markTransactionProcessed };
+
+const getEventsWithCurrUser= async (user, query) => {
+  let { name, location, started, ended, showFull, page = 1, limit = 10, published } = query;
+
+  // Validate pagination
+  page = parseInt(page);
+  limit = parseInt(limit);
+
+  if (isNaN(page) || page < 1) throw { status: 400, error: 'GET_ALL_EVENTS_PAGE_INVALID' };
+  if (isNaN(limit) || limit < 1) throw { status: 400, error: 'GET_ALL_EVENTS_LIMIT_INVALID' };
+
+  // Reject conflicting filters
+  if (started !== undefined && ended !== undefined) throw { status: 400, message: "Cannot specify both started and ended filters." };
+
+  const now = new Date();
+  const filters = {};
+
+  if (name) filters.name = { contains: name };
+  if (location) filters.location = { contains: location };
+  if (started !== undefined) filters.startTime = started === 'true' ? { lte: now } : { gt: now };
+  if (ended !== undefined) filters.endTime = ended === 'true' ? { lte: now } : { gt: now };
+
+  // Published filter
+  if (user.role === 'regular' || user.role === 'cashier') {
+    filters.published = true;
+  } else if (published !== undefined) {
+    filters.published = published === 'true';
+  }
+
+  filters.organizers = { some: { user: { id: user.id } } };
+  const skip = (page - 1) * limit;  
+  const take = limit;
+
+  // Query events with organizers and guests
+  const [count, events] = await Promise.all([
+    prisma.event.count({ where: filters }),
+    prisma.event.findMany({
+      where: filters,
+      skip,
+      take,
+      orderBy: { startTime: 'asc' },
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        startTime: true,
+        endTime: true,
+        capacity: true,
+        pointsRemain: user.role === 'manager' || user.role === 'superuser' ? true : false,
+        pointsAwarded: user.role === 'manager' || user.role === 'superuser' ? true : false,
+        published: user.role === 'manager' || user.role === 'superuser' ? true : false,
+        organizers: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                utorid: true,
+                name: true
+              }
+            }
+          }
+        },
+        guests: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                utorid: true,
+                name: true
+              }
+            }
+          }
+        }
+      }
+    })
+  ]);
+
+  // Format output
+  const results = events.map(event => ({
+    id: event.id,
+    name: event.name,
+    location: event.location,
+    startTime: event.startTime.toISOString(),
+    endTime: event.endTime.toISOString(),
+    capacity: event.capacity,
+    pointsRemain: event.pointsRemain,
+    pointsAwarded: event.pointsAwarded,
+    published: event.published,
+    organizers: event.organizers.map(o => o.user),
+    guests: user.role === 'manager' || user.role === 'superuser'
+      ? event.guests.map(g => g.user)
+      : undefined,
+    numGuests: event.guests.length
+  }));
+
+  return { count, results };
+};
+module.exports = { createUser, getUsers, getUserById, updateUser, getCurrentUser, updatePassword, updateCurrentUser, transferPoints, redeemPoints, getUserTransactions, markTransactionProcessed , getEventsWithCurrUser};

@@ -36,6 +36,8 @@ import RegisterPage from "./pages/RegisterPage";
 import TransferPage from "./components/TransferPage";
 import UserDetail from "./components/UserDetail";
 import UserRetrieval from "./pages/cashier/UserRetrieval";
+import MyEvents from "./components/MyEventsPage";
+import MyEventsPage from "./components/MyEventsPage";
 
 
 const AppRoutes = () => {
@@ -140,6 +142,12 @@ const AppRoutes = () => {
 			<Route path="/all-events" element=
 				{<ProtectedRoute requiredRole="manager regular">
 					<EventsListingPage/>
+				</ProtectedRoute>}
+			/>
+
+			<Route path="/my-events" element=
+				{<ProtectedRoute requiredRole="manager regular">
+					<MyEventsPage/>
 				</ProtectedRoute>}
 			/>
 

@@ -814,6 +814,9 @@ const createEventRewardTransaction = async (eventId, payload,user) => {
   }
 };
 
+
+
+
 module.exports = { createEvent, 
   getEvents, 
   getEventById, 
