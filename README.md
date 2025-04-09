@@ -39,7 +39,7 @@ The platform supports multiple roles with role-based access:
 | QR Scanning    | `html5-qrcode`, `qrcode.react`                                            |
 | File Uploads   | `multer`                                                                  |
 | Miscellaneous  | `uuid`, `cors`                                                            |
-| AI Assistant   | `ChatGPT` by OpenAI for code assistance and refinement                    |
+| AI Assistant(Code Attribution)   | `ChatGPT` by OpenAI for code assistance and refinement                    |
 
 ---
 
