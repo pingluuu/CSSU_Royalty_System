@@ -28,7 +28,10 @@ export default function ProfilePage() {
       const formData = new FormData();
       formData.append('name', name);
       formData.append('email', email);
-      if (avatar) formData.append('avatar', avatar);
+      if (avatar) {
+        formData.append('avatar', avatar);
+        console.log('Avatar file:', avatar);
+      }
 
       await api.patch('/users/me', formData, {
         headers: {
@@ -47,6 +50,7 @@ export default function ProfilePage() {
       }
 
       await refreshUser(); // get updated image or fields
+      await refreshUser(); // Refresh user data
       setMessage('✅ Profile updated successfully.');
     } catch (err: any) {
       console.error(err);
@@ -62,7 +66,7 @@ export default function ProfilePage() {
 
       <div className="text-center mt-4" style={{ marginBottom: '40px' }}>
         <img
-            src={user.avatarUrl || defaultimg}
+            src={`${user.avatarUrl}?t=${Date.now()}` || defaultimg}
             alt="Profile Avatar"
             className="rounded-circle"
             style={{ width: '170px', height: '170px', objectFit: 'cover', border: '2px solid #007bff' }}

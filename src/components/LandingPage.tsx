@@ -2,6 +2,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
+import AvailablePoints from './AvailablePoints';
 
 export default function LandingPage() {
     const { user } = useAuth();
@@ -28,11 +29,12 @@ export default function LandingPage() {
 
     return (
         <div className="container mt-4">
-            <h2>Welcome, {user.utorid}</h2>
+            <h2>Welcome, {user.name}</h2>
 
             {user.role === 'regular' && (
                 <>
-                    <h4>Points Balance: {points ?? 'Loading...'}</h4>
+                    <AvailablePoints />
+                    <div className="mt-4">
                     <h5 className="mt-4">Recent Transactions</h5>
                     <ul className="list-group">
                         {transactions.map(tx => (
@@ -41,6 +43,7 @@ export default function LandingPage() {
                             </li>
                         ))}
                     </ul>
+                    </div>
                 </>
             )}
 

@@ -35,6 +35,8 @@ type AuthProviderProps = {
 };
 
 const normalizeUser = (data: any): User => {
+  console.log("The avatar usrl is :::", `${BASE_URL}${data.avatarUrl}`);
+
   return {
     ...data,
     avatarUrl: data.avatarUrl ? `${BASE_URL}${data.avatarUrl}` : undefined,
@@ -52,6 +54,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.setItem('authToken', token);
 
       const userResponse = await api.get('/users/me');
+  
       const userData: User = normalizeUser(userResponse.data);
       setUser(userData);
 

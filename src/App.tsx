@@ -2,7 +2,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import LoginPage from "./pages/LoginPage";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/NavBar/NavBar";
 // import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProtectedRoute from "./components/protectedRoutes";
@@ -25,7 +25,6 @@ import ManageEventGuestPage from "./pages/manager/ManageEventGuestPage/ManageEve
 import AwardPointsPage from "./pages/manager/Award Points/AwardPointsPage";
 import LandingPage from './components/LandingPage';
 import ProfilePage from './components/ProfilePage';
-import UserAvailablePoints from "./pages/regular/AvailablePoints/AvailablePoints";
 import CreateTransaction from "./pages/cashier/CashierCreateTransaction/CashierCreateTransaction";
 import ManagerCreateTransaction from "./pages/manager/ManagerCreateTransaction/ManagerCreateTransaction";
 import MyTransactions from "./components/MyTransactionsPage";
@@ -35,6 +34,7 @@ import CreateAccount from "./components/CreateAccount";
 import UsersListing from "./components/UsersListing";
 import RegisterPage from "./pages/RegisterPage";
 import UserUpdate from "./components/UserUpdate";
+import TransferPage from "./components/TransferPage";
 
 
 const AppRoutes = () => {
@@ -55,11 +55,6 @@ const AppRoutes = () => {
 					</ProtectedRoute>
 				}
 			/>
-			<Route path="/points" element={
-				<ProtectedRoute requiredRole="regular">
-					<UserAvailablePoints />
-				</ProtectedRoute>
-			} />
 
 			<Route path="/my-qr" element={
 				<ProtectedRoute requiredRole="regular">
@@ -76,6 +71,14 @@ const AppRoutes = () => {
 					<UserUpdate />
 				</ProtectedRoute>
 			} />
+			<Route 
+			 path="/transfer"
+			 element={
+				 <ProtectedRoute requiredRole="regular manager superuser cashier">
+					 <TransferPage />
+				 </ProtectedRoute>
+			 }
+			/>
 			<Route
 				path="/redeem"
 				element={

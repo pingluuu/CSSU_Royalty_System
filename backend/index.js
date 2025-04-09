@@ -25,12 +25,11 @@ const port = (() => {
 
 
 const app = express();
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads/avatars', express.static(path.join(__dirname, 'uploads', 'avatars')));
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true,
 }));
-
 
 
 // Import routes
