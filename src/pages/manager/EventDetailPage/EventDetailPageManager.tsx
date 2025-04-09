@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate} from "react-router-dom";
 import api from "../../../services/api";
 import { useAuth } from "../../../contexts/AuthContext"; 
+import axios from "axios";
 //Also includes event organizer for this view
 interface Event {
     id: number;
@@ -43,6 +44,7 @@ export default function EventDetailPage(){
     const [isEditing, setIsEditing] = useState(true);
     const [eventDeleted, setEventDeleted] = useState(false)
     const [formData, setFormData] = useState<EditableEventData>({});
+    const [message, setMessage] = useState("")
     const {id} = useParams()
     const {user} = useAuth()
 
@@ -99,8 +101,19 @@ export default function EventDetailPage(){
 
         }
         catch (err){
-            console.log("Delete event error", err)
-            setError("Event has been published")
+            const backendMessage = err.response?.data?.message;
+            const status = err.response?.status;
+            console.log(err, "ERROR")
+            if (backendMessage){
+                console.log("execute here")
+                setError(backendMessage)
+            }
+          
+            else {
+                setError("Unexpected Error Occured")
+            }
+            
+            
         }
     }
 
@@ -117,11 +130,19 @@ export default function EventDetailPage(){
             }
 
             if (formData.pointsRemain !== event?.pointsRemain){
-                payload.points = Number(payload.pointsRemain)
+                const intValue = parseInt(formData.pointsRemain, 10); 
+                if (!isNaN(intValue)) {
+                    payload.points = intValue
+                }
+                console.log(intValue)
             }
 
             if (formData.capacity !== event?.capacity){
-                payload.capacity = payload.capacity ? Number(payload.capacity) : null
+                const intValue = parseInt(formData.capacity, 10); 
+                if (!isNaN(intValue)) {
+                    payload.points = intValue
+                }
+                
             }
 
             if (formData.name !== event?.name){
@@ -139,17 +160,33 @@ export default function EventDetailPage(){
             }
 
             if (formData.location !== event?.location){
-                payload.location = formData
+                payload.location = formData.location
             }
-
+            console.log(payload)
             await api.patch(`/events/${id}`, payload)
-            alert('Event updated')
+            setMessage("Event successfully updated")
             setIsEditing(!isEditing)
             setError(null)
         }
         catch (err){
-            console.log("error", err)
-            alert("Published must be set to true")
+            setMessage("")
+            if (axios.isAxiosError(err)){
+                console.log('here')
+                if (err?.status === 400){
+                    setError([
+                        "Start or end time is in the past.",
+                        "Capacity cannot be reduced below the number of confirmed guests.",
+                        "Total points cannot be reduced below the remaining unallocated points.",
+                        "Cannot update name, description, location, start time, or capacity after the event has started.",
+                        "Cannot update end time after the event has ended."
+                      ].join(" "));
+                      
+                }
+                
+            }
+            else {setError("unexpected error")}
+            
+            
         }
     }
 
@@ -184,10 +221,11 @@ export default function EventDetailPage(){
                 <div className="alert alert-success text-center">
                     <h1>Event Deleted</h1>
                 </div>
+                <button className="btn btn-secondary me-2" onClick={() => navigate('/')}>Go Back To HomePage</button>
             </div>
         )
     }
-    if (error || !event){
+    if (!event){
         return (
             <div className="container mt-4">
                 <div className="alert alert-danger text-center">
@@ -195,7 +233,6 @@ export default function EventDetailPage(){
                     <p>{error || "Event data could not be loaded or the event does not exist."}</p>
                 </div>
                 <button className="btn btn-secondary me-2" onClick={() => navigate('/')}>Go Back To HomePage</button>
-                <button className="btn btn-secondary me-2" onClick={() => setError(null)}>Go Back To Event</button>
             </div>
         )
     }
@@ -299,7 +336,7 @@ export default function EventDetailPage(){
                     </label>
                     <div className="col-md-9">
                         <input
-                        type="text"
+                        type="number"
                         name="capacity"
                         value={formData.capacity}
                         onChange={handleInputChange}
@@ -314,11 +351,11 @@ export default function EventDetailPage(){
                     </label>
                     <div className="col-md-9">
                         <input
-                        type="text"
+                        type="number"
                         name="pointsRemain"
                         value={formData.pointsRemain}
                         onChange={handleInputChange}
-                        disabled={isEditing && user.role === "manager"}
+                        disabled={isEditing || user?.role !== "manager" }
                         className="form-control"
                         />
                     </div>
@@ -333,7 +370,7 @@ export default function EventDetailPage(){
                         name="pointsReward"
                         value={formData.pointsAwarded}
                         onChange={handleInputChange}
-                        disabled={!isEditing || user?.role !== "manager" }
+                        disabled={true}
                         className="form-control"
                         />
                     </div>
@@ -350,7 +387,7 @@ export default function EventDetailPage(){
                             className="form-select" 
                             value={String(formData.published)}
                             onChange={handleInputChange} 
-                            disabled={!isEditing || user?.role !== "manager" }
+                            disabled={isEditing || user?.role !== "manager" }
                         >
                             <option value="true">True</option>
                             <option value="false">False</option>
@@ -383,6 +420,8 @@ export default function EventDetailPage(){
                 <button className ="btn btn-danger"onClick={deleteEvent}>Delete Event</button>}
                 <button className ="btn btn-primary"onClick={() => navigate(`/manager/events/${id}/award-points`)}>Award Points</button>
             </div>
+            {message && <div className="mt-3 alert alert-success">{message}</div>}
+            {error && <div className="mt-3 alert alert-danger">{error}</div>}
         </div>
     )
 }
