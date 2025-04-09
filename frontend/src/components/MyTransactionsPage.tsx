@@ -18,7 +18,7 @@ const typeColors: Record<string, string> = {
 
 
 export default function MyTransactions() {
-    const {user} = useAuth()
+    const { user } = useAuth()
     const [searchParams, setSearchParams] = useSearchParams();
     const initPage = parseInt(searchParams.get("page") || "1", 10);
     const initType = searchParams.get("type") || "";
@@ -110,11 +110,9 @@ export default function MyTransactions() {
 
     }, [page, fetchTrigger])
 
-    const transactionNavLink = (tr) => {
-        const hasPermission = ["manager"].includes(user.role)
-        if (hasPermission){
-            return `/transactions/${tr.id}`
-        }
+    const transactionNavLink = (tr: Transaction): string => {
+        const hasPermission = user && ["manager"].includes(user.role);
+        return hasPermission ? `/transactions/${tr.id}` : "#";
     }
 
 
@@ -214,11 +212,10 @@ export default function MyTransactions() {
                         {transactions.map((tx) => {
                             return (
                                 <Link
-                                    to={`/transactions/${tx.id}`}
+                                    to={transactionNavLink(tx) ?? "#"}
                                     key={tx.id}
                                     className={`transaction-card ${typeColors[tx.type] || ''} ${tx.suspicious ? 'transaction-suspicious' : ''
-                                    }`}
-                                    to={transactionNavLink(tx)}
+                                        }`}
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                 >
                                     <h5>Transaction #{tx.id}</h5>
@@ -226,7 +223,7 @@ export default function MyTransactions() {
                                         <strong>Type:</strong> {tx.type}
                                         <br />
                                         {/* Since this is my own transactions, it shows what transactions involved in */}
-                                        <strong>User:</strong> {user?.utorid} 
+                                        <strong>User:</strong> {user?.utorid}
                                         <br />
                                         {tx.spent !== undefined && (
                                             <>
