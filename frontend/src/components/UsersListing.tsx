@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 
@@ -23,6 +23,7 @@ export default function UsersListing() {
   const initRole = searchParams.get("role") || "";
   const initVerified = searchParams.get("verified") || "";
   const initActivated = searchParams.get("activated") || "";
+  const link_location = useLocation();
 
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [count, setCount] = useState(0);
@@ -158,7 +159,7 @@ export default function UsersListing() {
             <div
               key={u.id}
               className="transaction-card transaction-adjustment mb-3"
-              style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer', backgroundColor: "#f3f4f6", borderLeft: "5px solid #6c757d"}}              onClick={() => navigate(`/users/${u.id}`)}
+              style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer', backgroundColor: "#f3f4f6", borderLeft: "5px solid #6c757d"}}  onClick={() => navigate(`/users/${u.id}`, { state: { from: link_location } })}
             >
               <h5>User #{u.id}</h5>
               <p>

@@ -208,7 +208,7 @@ export default function AwardPointsPage(){
                     </div>
             </form>
             <button className="btn btn-secondary me-2" onClick={() => navigate(`/manager/events/${id}`)}>Go Back To Event</button>
-            <button className="btn btn-success" onClick={handleSubmit}>Add Points</button>
+            <button className="btn btn-primary" onClick={handleSubmit}>Add Points</button>
             {message && <div className="mt-3 alert alert-success">{message}</div>}
             {error && <div className="mt-3 alert alert-danger">{error}</div>}
         </div>

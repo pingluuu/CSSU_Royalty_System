@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import './EventDetailPageRegular.css';
@@ -25,6 +25,9 @@ export default function EventDetailPageRegular() {
     const [loading, setLoading] = useState(true);
     const [rsvped, setRsvped] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const link_location = useLocation();
+    const backLink = link_location.state?.from?.pathname + link_location.state?.from?.search || '/my-events';
+    const navigate = useNavigate();
 
     const fetchEvent = async () => {
         try {
@@ -69,6 +72,10 @@ export default function EventDetailPageRegular() {
 
     return (
         <div className="container mt-4">
+            <button className="btn btn-secondary mb-3" onClick={() => navigate(backLink)}>
+                &larr; Back to Events
+            </button>
+
             <h2>{event.name}</h2>
             <p><strong>Description:</strong> {event.description}</p>
             <p><strong>Location:</strong> {event.location}</p>

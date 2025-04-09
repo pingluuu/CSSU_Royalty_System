@@ -108,7 +108,7 @@ const AppRoutes = () => {
 			<Route
 				path="/events/:id"
 				element={
-					<ProtectedRoute requiredRole="regular">
+					<ProtectedRoute requiredRole="regular cashier">
 						<EventDetailPageRegular />
 					</ProtectedRoute>
 				}
@@ -140,7 +140,7 @@ const AppRoutes = () => {
 
 
 			<Route path="/all-events" element=
-				{<ProtectedRoute requiredRole="manager regular">
+				{<ProtectedRoute requiredRole="manager cashier regular superuser">
 					<EventsListingPage/>
 				</ProtectedRoute>}
 			/>
@@ -226,7 +226,7 @@ const AppRoutes = () => {
 			}
 			/>
 			<Route path="/manager/promotions/:id" element={
-				<ProtectedRoute requiredRole="manager">
+				<ProtectedRoute requiredRole="manager superuser">
 					<PromotionDetailPage />
 				</ProtectedRoute>
 			} />

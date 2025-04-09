@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useLocation } from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 //import './AllTransactionsPage.css';
@@ -22,6 +22,7 @@ export default function PromotionsListingPage() {
     const [count, setCount] = useState(0);
     const [limit] = useState(10);
     const [loading, setLoading] = useState(false);
+    const link_location = useLocation();
 
     // Get and update URL search parameters
     const [searchParams, setSearchParams] = useSearchParams();
@@ -168,7 +169,7 @@ export default function PromotionsListingPage() {
                             <Link
                                 key={promo.id}
                                 to={`/manager/promotions/${promo.id}`}
-                                className="transaction-card transaction-adjustment mb-3" style={{textDecoration: 'none', color: 'inherit'}}
+                                className="transaction-card transaction-adjustment mb-3" style={{textDecoration: 'none', color: 'inherit'}} state={{ from: link_location }}
                                 >
                                 <div className="d-flex w-100 justify-content-between">
                                     <h5 className="mb-1">{promo.name}</h5>

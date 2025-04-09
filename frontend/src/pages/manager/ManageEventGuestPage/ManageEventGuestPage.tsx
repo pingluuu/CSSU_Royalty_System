@@ -154,7 +154,7 @@ export default function ManageEventGuestPage(){
                     onChange={handleInputChange}
                     required
                     />
-                    <button type="submit" className="btn btn-success">Add Guest</button>
+                    <button type="submit" className="btn btn-primary">Add Guest</button>
                 </form>
             </div>
             <div className="card shadow-sm p-4 mt-3">

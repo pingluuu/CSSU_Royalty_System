@@ -168,6 +168,44 @@ async function main() {
     });
   }
 
+  // === PUBLIC FUTURE EVENT (for regular users to view) ===
+  const publicFutureEventStart = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000); // +10 days
+  const publicFutureEventEnd = new Date(publicFutureEventStart.getTime() + 2 * 60 * 60 * 1000); // 2-hour duration
+
+  const publicEvent = await prisma.event.create({
+    data: {
+      name: 'Public Future Event',
+      description: 'This is a published event 10 days in the future, visible to regular users.',
+      startTime: publicFutureEventStart,
+      endTime: publicFutureEventEnd,
+      location: 'Room F10',
+      capacity: 150,
+      points: 250,
+      pointsRemain: 250,
+      pointsAwarded: 0,
+      published: true,
+    },
+  });
+
+  // Use the first manager as organizer
+  await prisma.eventOrganizer.create({
+    data: {
+      userId: allUsers.find((u) => u.role === 'manager').id,
+      eventId: publicEvent.id,
+    },
+  });
+
+  // Use a verified regular user as guest
+  const regularGuest = allUsers.find((u) => u.role === 'regular' && u.verified);
+  if (regularGuest) {
+    await prisma.eventGuest.create({
+      data: {
+        userId: regularGuest.id,
+        eventId: publicEvent.id,
+      },
+    });
+  }
+
   // === TRANSACTIONS (45 total) ===
   const types = ['purchase', 'adjustment', 'redemption', 'transfer', 'event'];
 

@@ -13,6 +13,7 @@ export default function PromoteUserPage() {
     });
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const isSuperuser = user?.role === 'superuser';
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type, checked } = e.target;
@@ -85,8 +86,8 @@ export default function PromoteUserPage() {
                     <select className="form-select" name="role" value={form.role} onChange={handleChange}>
                         <option value="regular">Regular</option>
                         <option value="cashier">Cashier</option>
-                        <option value="manager">Manager</option>
-                        <option value="superuser">Superuser</option>
+                        {(isSuperuser) && <option value="manager">Manager</option>}
+                        {(isSuperuser) && <option value="superuser">Superuser</option>}
                     </select>
                 </div>
 

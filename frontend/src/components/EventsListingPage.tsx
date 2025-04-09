@@ -1,6 +1,6 @@
 import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 
@@ -16,6 +16,8 @@ export default function EventsListingPage(){
     const initEnded = searchParams.get("ended") || "";
     const initShowFull = searchParams.get("showFull") || "false";
     const initPublished = searchParams.get("published") || "true";
+    const link_location = useLocation();
+
 
     const [events, setEvents] = useState([]);
     const [page, setPage] = useState<number>(initPage);
@@ -237,6 +239,7 @@ export default function EventsListingPage(){
                                 className='transaction-card transaction-event'
                                 to= {eventNavLink(ev)}
                                 style={{ textDecoration: 'none', color: 'inherit' }}
+                                state={{ from: link_location }}
                             >
                                 <h5>Events# {ev.id}</h5>
                                 <p>

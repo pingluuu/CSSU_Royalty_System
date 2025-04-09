@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 
@@ -24,6 +24,8 @@ export default function TransactionDetailPage() {
   const [adjustRemark, setAdjustRemark] = useState('');
   const [promotionIds, setPromotionIds] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const link_location = useLocation();
+  const backLink = link_location.state?.from?.pathname + link_location.state?.from?.search || '/all-transactions';
 
   const fetchTransaction = async () => {
     try {
@@ -83,6 +85,10 @@ export default function TransactionDetailPage() {
 
   return (
     <div className="container mt-5" style={{ maxWidth: '750px' }}>
+      <button className="btn btn-secondary mb-3" onClick={() => navigate(backLink)}>
+          &larr; Back to Transactions
+      </button>
+
       <div className="card shadow-sm border-0 mb-4">
         <div className="card-body">
           <h3 className="card-title mb-3">Transaction #{transaction.id}</h3>

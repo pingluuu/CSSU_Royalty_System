@@ -203,8 +203,6 @@ export default function MyTransactions() {
                                     <p>
                                         <strong>Type:</strong> {tx.type}
                                         <br />
-                                        <strong>User:</strong> {tx.utorid}
-                                        <br />
                                         {tx.spent !== undefined && (
                                             <>
                                                 <strong>Spent:</strong> ${tx.spent}
