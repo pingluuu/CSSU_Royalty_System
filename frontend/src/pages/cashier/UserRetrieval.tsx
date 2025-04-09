@@ -19,7 +19,7 @@ export default function UserRetrieval() {
     }
 
     try {
-      const res = await api.get(`/users/${inputId}`);
+      await api.get(`/users/${inputId}`);
       // Success - navigate to user detail page
       navigate(`/users/${inputId}`);
     } catch (err: any) {

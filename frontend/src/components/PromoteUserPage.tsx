@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import api from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
+
 
 export default function PromoteUserPage() {
-    const { user } = useAuth();
+    // Removed unused 'user' variable
     const [utorid, setUtorid] = useState('');
     const [form, setForm] = useState({
         email: '',
@@ -15,7 +15,9 @@ export default function PromoteUserPage() {
     const [error, setError] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type, checked } = e.target;
+        const target = e.target as HTMLInputElement | HTMLSelectElement;
+        const { name, value, type } = target;
+        const checked = (target as HTMLInputElement).checked;
         const val = type === 'checkbox' ? checked : value;
         setForm((prev) => ({ ...prev, [name]: val }));
     };

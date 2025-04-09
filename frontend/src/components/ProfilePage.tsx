@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
-import defaultimg from '../assets/default.png';
+import defaultimg from '../assets/Default.png';
 
 export default function ProfilePage() {
   const { user, login, refreshUser } = useAuth();
@@ -66,12 +66,12 @@ export default function ProfilePage() {
 
       <div className="text-center mt-4" style={{ marginBottom: '40px' }}>
         <img
-            src={`${user.avatarUrl || defaultimg}?t=${Date.now()}`}
-            alt="Profile Avatar"
-            className="rounded-circle"
-            style={{ width: '170px', height: '170px', objectFit: 'cover', border: '2px solid #007bff' }}
+          src={`${user.avatarUrl || defaultimg}?t=${Date.now()}`}
+          alt="Profile Avatar"
+          className="rounded-circle"
+          style={{ width: '170px', height: '170px', objectFit: 'cover', border: '2px solid #007bff' }}
         />
-       </div>
+      </div>
 
       <form onSubmit={handleUpdate} className="row g-3 shadow-sm p-4 border rounded bg-light" encType="multipart/form-data">
         <div className="col-md-6">
