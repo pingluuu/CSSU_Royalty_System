@@ -80,11 +80,10 @@ export default function NavBar() {
                     <li className="nav-item"><Link className="nav-link" to="/create-promotion">Create Promotion</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/promotions-manager">Manage Promotions</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/create-event">Create Event</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/events-manager">Manage Events</Link></li>
                   </>
                 )}
 
-                {(role === 'manager' || role === 'event_organizer') && (
+                {(role === 'manager' || role === 'regular') && (
                   <li className="nav-item"><Link className="nav-link" to="/my-events">My Events</Link></li>
                 )}
 
