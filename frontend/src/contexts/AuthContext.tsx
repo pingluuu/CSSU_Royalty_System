@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   if (isLoading) {
-    return <div>APP CHECKING OR ELSE THERE IS RACE CON</div>;
+    return <div>Loading...</div>;
   }
 
   return (

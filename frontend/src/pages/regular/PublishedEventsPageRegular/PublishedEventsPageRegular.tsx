@@ -27,7 +27,7 @@ export default function PublishedEventsPageRegular() {
                     published: true
                 },
             });
-            setEvents(res.data.results); // Assuming API returns { count, results }
+            setEvents(res.data.results);
         } catch (err) {
             console.error('Error fetching events:', err);
         } finally {
@@ -47,21 +47,22 @@ export default function PublishedEventsPageRegular() {
             ) : events.length === 0 ? (
                 <p>No available events at this time.</p>
             ) : (
-                <div className="list-group">
+                <div className="event-cards-grid">
                     {events.map((event) => (
                         <Link
                             key={event.id}
                             to={`/events/${event.id}`}
-                            className="list-group-item list-group-item-action"
+                            className="transaction-card"
                         >
-                            <div className="d-flex w-100 justify-content-between">
+                            <div className="card-header">
                                 <h5>{event.name}</h5>
-                                <small>{new Date(event.startTime).toLocaleString()}</small>
+                                <span>{new Date(event.startTime).toLocaleString()}</span>
                             </div>
-                            <p className="mb-1">{event.description}</p>
-                            <small>
-                                Location: {event.location} | Points: {event.points}
-                            </small>
+                            <p>{event.description}</p>
+                            <div className="card-footer">
+                                <small>📍 {event.location}</small>
+                                <small>🎯 {event.points} pts</small>
+                            </div>
                         </Link>
                     ))}
                 </div>
