@@ -37,6 +37,7 @@ export default function MyTransactions() {
         remark?: string;
         suspicious: boolean;
         createdBy: string;
+        promotionIds?: string[];
     }
 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -246,6 +247,17 @@ export default function MyTransactions() {
                                                 <br />
                                             </>
                                         )}
+                                        {tx.promotionIds?.length > 0 ? (
+                                            <>
+                                                <strong>Promotions:</strong> {tx.promotionIds.join(', ')}
+                                                <br />
+                                            </>
+                                        ) : 
+                                            <>
+                                                <strong>Promotions:</strong> No Promotions Applied
+                                                <br />
+                                            </>
+                                        }
                                         {tx.remark && (
                                             <>
                                                 <strong>Remark:</strong> {tx.remark}

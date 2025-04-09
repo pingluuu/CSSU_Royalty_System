@@ -52,13 +52,12 @@ const ManagerCreateNewEvent = () => {
                 points: Number(formData.points)
             }
             await api.post('/events', payload)
-            setMessage("Your Event Has Successfully Been Created")
             setError(null)
+            setMessage("Your Event Has Successfully Been Created")
 
-            const navigate = useNavigate();
-            navigate('/events-manager');
         }
         catch (err) {
+            setMessage(null)
             if (err instanceof Error && (err as any).response) {
                 const backendMessage = (err as any).response?.data?.message;
                 const status = (err as any).response?.status;
@@ -70,13 +69,12 @@ const ManagerCreateNewEvent = () => {
                 } else {
                     setError("Unexpected Error Occurred");
                 }
-            } else {
-                setError("Unexpected Error Occurred");
             }
-
         }
 
     }
+
+    
     return (
         <div className="container mt-4">
             <form onSubmit={handleSubmit} className="row g-3">
@@ -159,8 +157,33 @@ const ManagerCreateNewEvent = () => {
                 <button type="submit" className="btn btn-success"> Submit</button>
             </form>
 
-            {message && <div className="mt-3 alert alert-success">{message}</div>}
-            {error && <div className="mt-3 alert alert-danger">{error}</div>}
+            {/* {message && <div className="mt-3 p3-rounded">{message}</div>}
+            {error && <div className="mt-3 alert alert-danger">{error}</div>} */}
+
+            {message && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#e7f1ff',
+                    color: '#0d6efd',
+                    border: '1px solid #0d6efd',
+                    }}
+                >
+                    {message}
+                </div>
+            )}
+            {error && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#ffe7e7',
+                    color: '#dc3545',
+                    border: '1px solid #dc3545',
+                    }}
+                >
+                    {error}
+                </div>
+            )}
         </div>
 
     )

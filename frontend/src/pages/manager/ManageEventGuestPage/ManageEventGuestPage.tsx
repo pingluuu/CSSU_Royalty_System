@@ -18,6 +18,7 @@ export default function ManageEventGuestPage() {
     const [guests, setGuests] = useState<Guest[]>([])
     const [refreshKey, setRefreshKey] = useState<number>(0);
     const [message, setMessage] = useState("")
+    const [invalidEvent, setInvalidEvent] = useState("");
     const { user } = useAuth()
     const navigate = useNavigate();
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,12 +72,12 @@ export default function ManageEventGuestPage() {
                 setEventName(res.data.name)
             }
             catch (error) {
-                if (axios.isAxiosError(error)) {
-                    if (error?.status === 404) {
-                        setError("Event not found")
+                if (axios.isAxiosError(error)){
+                    if (error?.status === 404){
+                        setInvalidEvent("Event Not Found")
                     }
                     else {
-                        setError("something went wrong")
+                        setInvalidEvent("Unexpected Error")
                     }
                 }
             }
@@ -87,13 +88,16 @@ export default function ManageEventGuestPage() {
         checkValidEvent()
     }, [id, refreshKey])
     const handleRemoveGuest = async (userId: number) => {
+        setMessage("")
         try {
             await api.delete(`/events/${id}/guests/${userId}`)
+            setMessage("Guest successfully deleted")
             setRefreshKey((prev) => prev + 1)
         }
 
         catch (err) {
             console.log(err)
+            setError("Forbidden to delete")
         }
     }
 
@@ -119,16 +123,16 @@ export default function ManageEventGuestPage() {
     //         </div>
     //     )
     // }
-    // if (invalidEvent){
-    //     return (
-    //         <div className="container mt-4">
-    //             <div className="alert alert-danger text-center">
-    //                 <h1>{error}</h1>
-    //                 <button className="btn btn-primary m-2" onClick={() => setInvalidEvent(null)}>Go Back To Event</button>
-    //             </div>
-    //         </div>
-    //     )
-    // }
+    if (invalidEvent){
+        return (
+            <div className="container mt-4">
+                <div className="alert alert-danger text-center">
+                    <h1>{invalidEvent}</h1>
+                    <button className="btn btn-primary m-2" onClick={() => navigate('/')}>Go Back To HomePage</button>
+                </div>
+            </div>
+        )
+    }
 
     // if (invalidUser){
     //     return (
@@ -154,7 +158,7 @@ export default function ManageEventGuestPage() {
                         onChange={handleInputChange}
                         required
                     />
-                    <button type="submit" className="btn btn-success">Add Guest</button>
+                    <button type="submit" className="btn btn-success mt-2">Add Guest</button>
                 </form>
             </div>
             <div className="card shadow-sm p-4 mt-3">
@@ -183,8 +187,30 @@ export default function ManageEventGuestPage() {
                     <p className="text-muted">No organizers currently assigned to this event.</p>
                 )}
             </div>
-            {message && <div className="mt-3 alert alert-success">{message}</div>}
-            {error && <div className="mt-3 alert alert-danger">{error}</div>}
+            {message && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#e7f1ff',
+                    color: '#0d6efd',
+                    border: '1px solid #0d6efd',
+                    }}
+                >
+                    {message}
+                </div>
+            )}
+            {error && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#ffe7e7',
+                    color: '#dc3545',
+                    border: '1px solid #dc3545',
+                    }}
+                >
+                    {error}
+                </div>
+            )}
 
         </div>
     )

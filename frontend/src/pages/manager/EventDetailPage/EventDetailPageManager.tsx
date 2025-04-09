@@ -427,8 +427,30 @@ export default function EventDetailPage() {
                     <button className="btn btn-danger" onClick={deleteEvent}>Delete Event</button>}
                 <button className="btn btn-primary" onClick={() => navigate(`/manager/events/${id}/award-points`)}>Award Points</button>
             </div>
-            {message && <div className="mt-3 alert alert-success">{message}</div>}
-            {error && <div className="mt-3 alert alert-danger">{error}</div>}
+            {message && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#e7f1ff',
+                    color: '#0d6efd',
+                    border: '1px solid #0d6efd',
+                    }}
+                >
+                    {message}
+                </div>
+            )}
+            {error && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#ffe7e7',
+                    color: '#dc3545',
+                    border: '1px solid #dc3545',
+                    }}
+                >
+                    {error}
+                </div>
+            )}
         </div>
     )
 }
