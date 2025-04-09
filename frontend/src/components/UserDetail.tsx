@@ -27,7 +27,6 @@ export default function UserDetail() {
   const isManager = user?.role === 'manager';
   const isSuperuser = user?.role === 'superuser';
   const isCashier = user?.role === 'cashier';
-  const isRegular = user?.role === 'regular';
 
   useEffect(() => {
     const fetchUser = async () => {
