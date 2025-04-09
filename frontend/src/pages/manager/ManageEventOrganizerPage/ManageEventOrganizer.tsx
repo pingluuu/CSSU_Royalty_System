@@ -1,5 +1,5 @@
 import api from "../../../services/api"
-import { useState, useEffect} from "react"
+import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import axios from 'axios';
 
@@ -8,23 +8,23 @@ interface Organizer {
     utorid: string;
     name: string;
 }
-export default function ManageEventOrganizer(){
-    const [error, setError] = useState<string|null>(null)
+export default function ManageEventOrganizer() {
+    const [error, setError] = useState<string | null>(null)
     const [utorid, setUtorId] = useState("")
     const [loading, setLoading] = useState(true);
-    const [invalidEvent, setInvalidEvent] = useState("");
+    const [invalidEvent, setInvalidEvent] = useState<string>("");
     const [message, setMessage] = useState("")
 
-    const [eventName, setEventName] = useState<string>(''); 
-    const [organizers, setOrganizers] = useState<Organizer []>([])
+    const [eventName, setEventName] = useState<string>('');
+    const [organizers, setOrganizers] = useState<Organizer[]>([])
     const [refreshKey, setRefreshKey] = useState<number>(0);
 
 
-    const {id} = useParams()
+    const { id } = useParams()
     const navigate = useNavigate();
     useEffect(() => {
         setLoading(true)
-        setInvalidEvent(false)
+        setInvalidEvent("")
         setError(null)
         const checkValidEvent = async () => {
             try {
@@ -32,9 +32,9 @@ export default function ManageEventOrganizer(){
                 setOrganizers(res.data.organizers)
                 setEventName(res.data.name)
             }
-            catch (error){
-                if (axios.isAxiosError(error)){
-                    if (error?.status === 404){
+            catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if (error?.status === 404) {
                         setInvalidEvent("Event Not Found")
                     }
                     else {
@@ -72,7 +72,7 @@ export default function ManageEventOrganizer(){
     //     )
     // }
 
-    if (invalidEvent){
+    if (invalidEvent) {
         return (
             <div className="container mt-4">
                 <div className="alert alert-danger text-center">
@@ -85,22 +85,22 @@ export default function ManageEventOrganizer(){
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         try {
-            await api.post(`/events/${id}/organizers`, {utorid: utorid})
+            await api.post(`/events/${id}/organizers`, { utorid: utorid })
             setRefreshKey((prev) => prev + 1)
             setMessage(`${utorid} added as a list organizer`)
         }
 
         catch (err) {
-            if (axios.isAxiosError(err)){
-                if (err?.status === 400){
+            if (axios.isAxiosError(err)) {
+                if (err?.status === 400) {
                     setError("This user already added as a guest")
                 }
-                else if(err?.status===404){
+                else if (err?.status === 404) {
                     setError("This user does not exist")
 
                 }
                 else {
-                    setError("Event has ended")   
+                    setError("Event has ended")
                     return;
                 }
             }
@@ -118,14 +118,14 @@ export default function ManageEventOrganizer(){
             setRefreshKey((prev) => prev + 1)
         }
 
-        catch (err){
+        catch (err) {
             console.log(err)
             setError("Error with deleting organizer")
         }
     }
 
     return (
-        <div className="container mt-4"> 
+        <div className="container mt-4">
             <div>
                 <h3 className="mb-3">Event Name: {eventName}</h3>
                 <button className="btn btn-secondary mb-3" onClick={() => navigate(`/manager/events/${id}`)}>Go Back To Event</button>
@@ -134,10 +134,10 @@ export default function ManageEventOrganizer(){
                 <h4 className="mb-3">Enter UTORid of Organizer</h4>
                 <form onSubmit={handleSubmit}>
                     <input type="text"
-                    className="form-control" 
-                    placeholder="Enter here" 
-                    onChange={handleInputChange}
-                    required
+                        className="form-control"
+                        placeholder="Enter here"
+                        onChange={handleInputChange}
+                        required
                     />
 
                     <button type="submit" className="btn btn-success mt-2">Add Organizer</button>
@@ -171,9 +171,9 @@ export default function ManageEventOrganizer(){
                 <div
                     className="mt-3 p-3 rounded"
                     style={{
-                    backgroundColor: '#e7f1ff',
-                    color: '#0d6efd',
-                    border: '1px solid #0d6efd',
+                        backgroundColor: '#e7f1ff',
+                        color: '#0d6efd',
+                        border: '1px solid #0d6efd',
                     }}
                 >
                     {message}
@@ -183,9 +183,9 @@ export default function ManageEventOrganizer(){
                 <div
                     className="mt-3 p-3 rounded"
                     style={{
-                    backgroundColor: '#ffe7e7',
-                    color: '#dc3545',
-                    border: '1px solid #dc3545',
+                        backgroundColor: '#ffe7e7',
+                        color: '#dc3545',
+                        border: '1px solid #dc3545',
                     }}
                 >
                     {error}

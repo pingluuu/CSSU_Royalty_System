@@ -244,12 +244,12 @@ export default function MyTransactions() {
                                                 <br />
                                             </>
                                         )}
-                                        {tx.promotionIds?.length > 0 ? (
+                                        {(tx.promotionIds ?? []).length > 0 ? (
                                             <>
-                                                <strong>Promotions:</strong> {tx.promotionIds.join(', ')}
+                                                <strong>Promotions:</strong> {(tx.promotionIds ?? []).join(', ')}
                                                 <br />
                                             </>
-                                        ) : 
+                                        ) :
                                             <>
                                                 <strong>Promotions:</strong> No Promotions Applied
                                                 <br />
