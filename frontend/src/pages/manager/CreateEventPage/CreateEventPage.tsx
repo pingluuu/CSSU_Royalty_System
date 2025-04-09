@@ -56,7 +56,7 @@ const ManagerCreateNewEvent = () => {
             setError(null)
 
             const navigate = useNavigate();
-            navigate('/events-manager');
+            navigate('/all-events');
         }
         catch (err) {
             if (err instanceof Error && (err as any).response) {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import api from '../services/api';
-
+import { useAuth } from '../contexts/AuthContext';
 
 export default function PromoteUserPage() {
     // Removed unused 'user' variable
@@ -13,6 +13,7 @@ export default function PromoteUserPage() {
     });
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const { user } = useAuth();
     const isSuperuser = user?.role === 'superuser';
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

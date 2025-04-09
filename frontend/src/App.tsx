@@ -140,13 +140,8 @@ const AppRoutes = () => {
 
 
 			<Route path="/all-events" element=
-<<<<<<< HEAD
 				{<ProtectedRoute requiredRole="manager cashier regular superuser">
 					<EventsListingPage/>
-=======
-				{<ProtectedRoute requiredRole="manager regular">
-					<EventsListingPage />
->>>>>>> 0f84d51f6e2dac401eb98ff9f33f99c3cd8d368e
 				</ProtectedRoute>}
 			/>
 

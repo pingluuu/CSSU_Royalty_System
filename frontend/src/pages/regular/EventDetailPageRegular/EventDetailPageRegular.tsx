@@ -78,18 +78,15 @@ export default function EventDetailPageRegular() {
 
     return (
         <div className="container mt-4">
-<<<<<<< HEAD
             <button className="btn btn-secondary mb-3" onClick={() => navigate(backLink)}>
                 &larr; Back to Events
             </button>
-=======
             {/* Banner Message */}
             {bannerMessage && (
                 <div className={`banner ${bannerType}`}>
                     {bannerMessage}
                 </div>
             )}
->>>>>>> 0f84d51f6e2dac401eb98ff9f33f99c3cd8d368e
 
             <h2>{event.name}</h2>
             <p><strong>Description:</strong> {event.description}</p>

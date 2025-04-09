@@ -23,7 +23,6 @@ export default function MyEventsPage() {
     const [error, setError] = useState<string | null>(null);
     const limit = 10;
 
-
     const [name, setName] = useState<string>(initName);
     const [location, setLocation] = useState<string>(initLocation);
     const [started, setStarted] = useState<string>(initStarted);
@@ -33,13 +32,10 @@ export default function MyEventsPage() {
     const [fetchTrigger, setFetchTrigger] = useState(0);
     const [morePermissionRole, setMorePermissionRole] = useState(false)
 
-
     const totalPages = Math.max(Math.ceil(totalCount / limit), 1);
-
 
     const applyFilters = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
-
 
         if (started && ended) {
             setError("Cannot filter by both 'started' and 'ended'. Please choose one.");
@@ -76,7 +72,6 @@ export default function MyEventsPage() {
         organizers?: { utorid: string }[];
     }
 
-
     const eventNavLink = (ev: Event): string => {
         const isOrganizer = ev.organizers && user && ev.organizers.some((org) => org.utorid === user.utorid);
         if (isOrganizer) {
@@ -87,7 +82,6 @@ export default function MyEventsPage() {
         }
         return `/events/${ev.id}`;
     };
-
 
     useEffect(() => {
         const role = !!(user && ["manager", "superuser"].includes(user.role));
@@ -118,9 +112,6 @@ export default function MyEventsPage() {
 
             try {
                 const res = await api.get("/users/me/events", { params: payload });
-                console.log(res.data, "BOOM")
-                // const fetchedEvent = res.data.results
-                console.log(res.data.results, "HERE")
                 setTotalCount(res.data.count);
                 setEvents(res.data.results);
             } catch (err) {
@@ -194,7 +185,6 @@ export default function MyEventsPage() {
                                 value={started}
                                 onChange={(e) => {
                                     setStarted(e.target.value);
-
                                     if (e.target.value) setEnded("");
                                 }}
                             >
@@ -207,7 +197,6 @@ export default function MyEventsPage() {
                                 value={ended}
                                 onChange={(e) => {
                                     setEnded(e.target.value);
-
                                     if (e.target.value) setStarted("");
                                 }}
                             >
@@ -232,84 +221,32 @@ export default function MyEventsPage() {
                 {loading ? (
                     <p className="text-center">Loading events...</p>
                 ) : error ? (
-<<<<<<< HEAD
-                <div className="alert alert-danger" role="alert">
-                    {error}
-                </div>
-                ) : events.length === 0 ? (
-                <p className="text-center">No events found.</p>
-                ) : (
-                <>
-                    {events.map((ev) => {
-                        return (
-                            <Link
-                                key={ev.id}
-                                className='transaction-card transaction-event'
-                                to= {eventNavLink(ev)}
-                                style={{ textDecoration: 'none', color: 'inherit' }} state={{ from: link_location }}
-                            >
-                                <h5>Events# {ev.id}</h5>
-                                <p>
-                                <strong>Name:</strong> {ev.name}<br />
-                                <strong>Location:</strong> {ev.location}<br />
-                                <strong>Start Time:</strong> {ev.startTime}<br />
-                                <strong>End Time:</strong> {ev.endTime}<br />
-                                <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
-                                <strong>Num Guests</strong> {ev.numGuests}<br />
-                            </p>
-                            </Link>
-                        )
-                    })}
-                    {totalPages > 1 && (
-                    <div className="pagination-controls">
-                        <button
-                            type="button"
-                            className="btn btn-outline-primary"
-                            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                            disabled={page <= 1 || loading}
-                        >
-                        Previous
-                        </button>
-                        <span>
-                        Page {page} of {totalPages}
-                        </span>
-                        <button
-                            type="button"
-                            className="btn btn-outline-primary"
-                            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                            disabled={page >= totalPages || loading}
-                        >
-                        Next
-                        </button>
-=======
                     <div className="alert alert-danger" role="alert">
                         {error}
->>>>>>> 0f84d51f6e2dac401eb98ff9f33f99c3cd8d368e
                     </div>
                 ) : events.length === 0 ? (
                     <p className="text-center">No events found.</p>
                 ) : (
                     <>
-                        {events.map((ev) => {
-                            return (
-                                <Link
-                                    key={ev.id}
-                                    className='transaction-card transaction-event'
-                                    to={eventNavLink(ev)}
-                                    style={{ textDecoration: 'none', color: 'inherit' }}
-                                >
-                                    <h5>Events# {ev.id}</h5>
-                                    <p>
-                                        <strong>Name:</strong> {ev.name}<br />
-                                        <strong>Location:</strong> {ev.location}<br />
-                                        <strong>Start Time:</strong> {ev.startTime}<br />
-                                        <strong>End Time:</strong> {ev.endTime}<br />
-                                        <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
-                                        <strong>Num Guests</strong> {ev.numGuests}<br />
-                                    </p>
-                                </Link>
-                            )
-                        })}
+                        {events.map((ev) => (
+                            <Link
+                                key={ev.id}
+                                className='transaction-card transaction-event'
+                                to={eventNavLink(ev)}
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                state={{ from: link_location }}
+                            >
+                                <h5>Events# {ev.id}</h5>
+                                <p>
+                                    <strong>Name:</strong> {ev.name}<br />
+                                    <strong>Location:</strong> {ev.location}<br />
+                                    <strong>Start Time:</strong> {ev.startTime}<br />
+                                    <strong>End Time:</strong> {ev.endTime}<br />
+                                    <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
+                                    <strong>Num Guests</strong> {ev.numGuests}<br />
+                                </p>
+                            </Link>
+                        ))}
                         {totalPages > 1 && (
                             <div className="pagination-controls">
                                 <button
@@ -336,9 +273,6 @@ export default function MyEventsPage() {
                     </>
                 )}
             </div>
-
-
-
         </div>
     )
 }

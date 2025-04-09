@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react"
-<<<<<<< HEAD
 import { useParams, useNavigate, useLocation} from "react-router-dom";
-=======
-import { useParams, useNavigate } from "react-router-dom";
->>>>>>> 0f84d51f6e2dac401eb98ff9f33f99c3cd8d368e
 import api from "../../../services/api";
 import { useAuth } from "../../../contexts/AuthContext";
 import axios from "axios";
@@ -57,15 +53,10 @@ export default function EventDetailPage() {
     const [eventDeleted, setEventDeleted] = useState(false)
     const [formData, setFormData] = useState<EditableEventData>({});
     const [message, setMessage] = useState("")
-<<<<<<< HEAD
     const {id} = useParams()
     const {user} = useAuth()
     const location = useLocation();
     const backLink = location.state?.from?.pathname + location.state?.from?.search || '/all-events';
-=======
-    const { id } = useParams()
-    const { user } = useAuth()
->>>>>>> 0f84d51f6e2dac401eb98ff9f33f99c3cd8d368e
 
     // const [removingOrganizerId, setRemovingOrganizerId] = useState<number | null>(null);
     // const [organizerError, setOrganizerError] = useState<string | null>(null);
@@ -438,21 +429,12 @@ export default function EventDetailPage() {
                     </div>
                 </div>
             </form>
-<<<<<<< HEAD
-            <div className="d-flex flex-column flex-md-row gap-2 mt-4"> 
-                <button className ="btn btn-primary" onClick={editField}>Edit Fields</button>
-                <button className = "btn btn-secondary" onClick={submitEditField}>Save Changes</button>
-                {(user.role === "superuser" || user.role === "manager") &&
-                <button className ="btn btn-danger"onClick={deleteEvent}>Delete Event</button>}
-                <button className ="btn btn-primary"onClick={() => navigate(`/manager/events/${id}/award-points`)}>Award Points</button>
-=======
             <div className="d-flex flex-column flex-md-row gap-2 mt-4">
-                <button className="btn btn-success" onClick={editField} style={{ color: 'var(--bs-btn-hover-color)', backgroundColor: 'var(--bs-btn-hover-bg)', borderColor: '#0a58ca' }}>Edit Fields</button>
+                <button className="btn btn-primary" onClick={editField}>Edit Fields</button>
                 <button className="btn btn-secondary" onClick={submitEditField}>Save Changes</button>
                 {(user?.role === "superuser" || user?.role === "manager") &&
                     <button className="btn btn-danger" onClick={deleteEvent}>Delete Event</button>}
                 <button className="btn btn-primary" onClick={() => navigate(`/manager/events/${id}/award-points`)}>Award Points</button>
->>>>>>> 0f84d51f6e2dac401eb98ff9f33f99c3cd8d368e
             </div>
             {message && <div className="mt-3 alert alert-success">{message}</div>}
             {error && <div className="mt-3 alert alert-danger">{error}</div>}
