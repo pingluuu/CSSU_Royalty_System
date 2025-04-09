@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function LoginPage() {
   const [utorid, setUtorid] = useState('');
@@ -22,7 +22,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
+    <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow-sm" style={{ width: '100%', maxWidth: '400px' }}>
         <h2 className="text-center mb-4">Login</h2>
 
@@ -55,6 +55,13 @@ function LoginPage() {
 
           <button type="submit" className="btn btn-primary w-100 mt-2">Login</button>
         </form>
+      </div>
+
+      {/* Cool link to landing page */}
+      <div className="mt-4">
+        <Link to="/" className="text-decoration-none text-primary fw-medium">
+          ← Back to Main Page
+        </Link>
       </div>
     </div>
   );

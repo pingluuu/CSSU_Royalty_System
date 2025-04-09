@@ -66,7 +66,7 @@ export default function ProfilePage() {
 
       <div className="text-center mt-4" style={{ marginBottom: '40px' }}>
         <img
-            src={`${user.avatarUrl}?t=${Date.now()}` || defaultimg}
+            src={`${user.avatarUrl || defaultimg}?t=${Date.now()}`}
             alt="Profile Avatar"
             className="rounded-circle"
             style={{ width: '170px', height: '170px', objectFit: 'cover', border: '2px solid #007bff' }}
