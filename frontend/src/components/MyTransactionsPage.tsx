@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 // This component is for all logged in users to view their transactions
+import { useAuth } from "../contexts/AuthContext";
 
 
 const typeColors: Record<string, string> = {
@@ -17,7 +18,7 @@ const typeColors: Record<string, string> = {
 
 
 export default function MyTransactions() {
-
+    const { user } = useAuth()
     const [searchParams, setSearchParams] = useSearchParams();
     const initPage = parseInt(searchParams.get("page") || "1", 10);
     const initType = searchParams.get("type") || "";
@@ -89,7 +90,7 @@ export default function MyTransactions() {
 
             try {
                 const res = await api.get('/users/me/transactions', { params: payload })
-                console.log(res.data.results)
+                console.log(res.data)
                 setTotalCount(res.data.count)
                 setTransactions(res.data.results)
 
@@ -108,6 +109,11 @@ export default function MyTransactions() {
         fetchTransactions()
 
     }, [page, fetchTrigger])
+
+    const transactionNavLink = (tr: Transaction): string => {
+        const hasPermission = user && ["manager"].includes(user.role);
+        return hasPermission ? `/transactions/${tr.id}` : "#";
+    }
 
 
     const updateURL = () => {
@@ -206,7 +212,7 @@ export default function MyTransactions() {
                         {transactions.map((tx) => {
                             return (
                                 <Link
-                                    to={`/transactions/${tx.id}`}
+                                    to={transactionNavLink(tx) ?? "#"}
                                     key={tx.id}
                                     className={`transaction-card ${typeColors[tx.type] || ''} ${tx.suspicious ? 'transaction-suspicious' : ''
                                         }`}
@@ -215,6 +221,9 @@ export default function MyTransactions() {
                                     <h5>Transaction #{tx.id}</h5>
                                     <p>
                                         <strong>Type:</strong> {tx.type}
+                                        <br />
+                                        {/* Since this is my own transactions, it shows what transactions involved in */}
+                                        <strong>User:</strong> {user?.utorid}
                                         <br />
                                         {tx.spent !== undefined && (
                                             <>
