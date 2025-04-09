@@ -90,7 +90,7 @@ export default function CreatePromotionPage() {
                 </div>
 
                 <div className="col-12">
-                    <button type="submit" className="btn btn-success">Create Promotion</button>
+                    <button type="submit" className="btn btn-primary">Create Promotion</button>
                 </div>
             </form>
         </div>

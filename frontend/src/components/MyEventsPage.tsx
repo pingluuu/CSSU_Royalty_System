@@ -2,7 +2,7 @@ import api from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function MyEventsPage() {
     const { user } = useAuth()
@@ -14,6 +14,7 @@ export default function MyEventsPage() {
     const initEnded = searchParams.get("ended") || "";
     const initShowFull = searchParams.get("showFull") || "false";
     const initPublished = searchParams.get("published") || "true";
+    const link_location = useLocation();
 
     const [events, setEvents] = useState<Event[]>([]);
     const [page, setPage] = useState<number>(initPage);
@@ -21,7 +22,6 @@ export default function MyEventsPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const limit = 10;
-
 
     const [name, setName] = useState<string>(initName);
     const [location, setLocation] = useState<string>(initLocation);
@@ -32,13 +32,10 @@ export default function MyEventsPage() {
     const [fetchTrigger, setFetchTrigger] = useState(0);
     const [morePermissionRole, setMorePermissionRole] = useState(false)
 
-
     const totalPages = Math.max(Math.ceil(totalCount / limit), 1);
-
 
     const applyFilters = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
-
 
         if (started && ended) {
             setError("Cannot filter by both 'started' and 'ended'. Please choose one.");
@@ -75,7 +72,6 @@ export default function MyEventsPage() {
         organizers?: { utorid: string }[];
     }
 
-
     const eventNavLink = (ev: Event): string => {
         const isOrganizer = ev.organizers && user && ev.organizers.some((org) => org.utorid === user.utorid);
         if (isOrganizer) {
@@ -86,7 +82,6 @@ export default function MyEventsPage() {
         }
         return `/events/${ev.id}`;
     };
-
 
     useEffect(() => {
         const role = !!(user && ["manager", "superuser"].includes(user.role));
@@ -117,9 +112,6 @@ export default function MyEventsPage() {
 
             try {
                 const res = await api.get("/users/me/events", { params: payload });
-                console.log(res.data, "BOOM")
-                // const fetchedEvent = res.data.results
-                console.log(res.data.results, "HERE")
                 setTotalCount(res.data.count);
                 setEvents(res.data.results);
             } catch (err) {
@@ -193,7 +185,6 @@ export default function MyEventsPage() {
                                 value={started}
                                 onChange={(e) => {
                                     setStarted(e.target.value);
-
                                     if (e.target.value) setEnded("");
                                 }}
                             >
@@ -206,7 +197,6 @@ export default function MyEventsPage() {
                                 value={ended}
                                 onChange={(e) => {
                                     setEnded(e.target.value);
-
                                     if (e.target.value) setStarted("");
                                 }}
                             >
@@ -238,26 +228,25 @@ export default function MyEventsPage() {
                     <p className="text-center">No events found.</p>
                 ) : (
                     <>
-                        {events.map((ev) => {
-                            return (
-                                <Link
-                                    key={ev.id}
-                                    className='transaction-card transaction-event'
-                                    to={eventNavLink(ev)}
-                                    style={{ textDecoration: 'none', color: 'inherit' }}
-                                >
-                                    <h5>Events# {ev.id}</h5>
-                                    <p>
-                                        <strong>Name:</strong> {ev.name}<br />
-                                        <strong>Location:</strong> {ev.location}<br />
-                                        <strong>Start Time:</strong> {ev.startTime}<br />
-                                        <strong>End Time:</strong> {ev.endTime}<br />
-                                        <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
-                                        <strong>Num Guests</strong> {ev.numGuests}<br />
-                                    </p>
-                                </Link>
-                            )
-                        })}
+                        {events.map((ev) => (
+                            <Link
+                                key={ev.id}
+                                className='transaction-card transaction-event'
+                                to={eventNavLink(ev)}
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                state={{ from: link_location }}
+                            >
+                                <h5>Events# {ev.id}</h5>
+                                <p>
+                                    <strong>Name:</strong> {ev.name}<br />
+                                    <strong>Location:</strong> {ev.location}<br />
+                                    <strong>Start Time:</strong> {ev.startTime}<br />
+                                    <strong>End Time:</strong> {ev.endTime}<br />
+                                    <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
+                                    <strong>Num Guests</strong> {ev.numGuests}<br />
+                                </p>
+                            </Link>
+                        ))}
                         {totalPages > 1 && (
                             <div className="pagination-controls">
                                 <button
@@ -284,9 +273,6 @@ export default function MyEventsPage() {
                     </>
                 )}
             </div>
-
-
-
         </div>
     )
 }

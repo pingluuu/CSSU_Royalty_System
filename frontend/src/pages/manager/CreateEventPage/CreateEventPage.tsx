@@ -56,7 +56,7 @@ const ManagerCreateNewEvent = () => {
             setError(null)
 
             const navigate = useNavigate();
-            navigate('/events-manager');
+            navigate('/all-events');
         }
         catch (err) {
             if (err instanceof Error && (err as any).response) {
@@ -156,7 +156,7 @@ const ManagerCreateNewEvent = () => {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-success"> Submit</button>
+                <button type="submit" className="btn btn-primary"> Submit</button>
             </form>
 
             {message && <div className="mt-3 alert alert-success">{message}</div>}

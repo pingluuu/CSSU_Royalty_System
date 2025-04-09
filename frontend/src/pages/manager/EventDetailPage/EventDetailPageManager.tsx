@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react"
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation} from "react-router-dom";
 import api from "../../../services/api";
 import { useAuth } from "../../../contexts/AuthContext";
 import axios from "axios";
+
+// ...
+
+
 //Also includes event organizer for this view
 interface Event {
     id: number;
@@ -49,8 +53,10 @@ export default function EventDetailPage() {
     const [eventDeleted, setEventDeleted] = useState(false)
     const [formData, setFormData] = useState<EditableEventData>({});
     const [message, setMessage] = useState("")
-    const { id } = useParams()
-    const { user } = useAuth()
+    const {id} = useParams()
+    const {user} = useAuth()
+    const location = useLocation();
+    const backLink = location.state?.from?.pathname + location.state?.from?.search || '/all-events';
 
     // const [removingOrganizerId, setRemovingOrganizerId] = useState<number | null>(null);
     // const [organizerError, setOrganizerError] = useState<string | null>(null);
@@ -246,6 +252,9 @@ export default function EventDetailPage() {
 
     return (
         <div className="container mt-4">
+            <button className="btn btn-secondary mb-3" onClick={() => navigate(backLink)}>
+                &larr; Back to Events
+            </button>
             <form className="m-2">
                 <div className="row align-items-center mb-3">
                     <label className="col-md-3 form-label">
@@ -421,7 +430,7 @@ export default function EventDetailPage() {
                 </div>
             </form>
             <div className="d-flex flex-column flex-md-row gap-2 mt-4">
-                <button className="btn btn-success" onClick={editField} style={{ color: 'var(--bs-btn-hover-color)', backgroundColor: 'var(--bs-btn-hover-bg)', borderColor: '#0a58ca' }}>Edit Fields</button>
+                <button className="btn btn-primary" onClick={editField}>Edit Fields</button>
                 <button className="btn btn-secondary" onClick={submitEditField}>Save Changes</button>
                 {(user?.role === "superuser" || user?.role === "manager") &&
                     <button className="btn btn-danger" onClick={deleteEvent}>Delete Event</button>}
