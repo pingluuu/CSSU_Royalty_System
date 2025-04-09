@@ -86,6 +86,7 @@ export default function ManageEventGuestPage() {
         }
         checkValidEvent()
     }, [id, refreshKey])
+    
     const handleRemoveGuest = async (userId: number) => {
         try {
             await api.delete(`/events/${id}/guests/${userId}`)
@@ -154,7 +155,7 @@ export default function ManageEventGuestPage() {
                         onChange={handleInputChange}
                         required
                     />
-                    <button type="submit" className="btn btn-success">Add Guest</button>
+                    <button type="submit" className="btn btn-success mt-3">Add Guest</button>
                 </form>
             </div>
             <div className="card shadow-sm p-4 mt-3">

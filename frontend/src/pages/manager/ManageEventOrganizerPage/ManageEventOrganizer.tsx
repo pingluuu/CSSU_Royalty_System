@@ -136,7 +136,7 @@ export default function ManageEventOrganizer(){
                     onChange={handleInputChange}
                     required
                     />
-                    <button type="submit" className="btn btn-success">Add Organizer</button>
+                    <button type="submit" className="btn btn-success mt-3">Add Organizer</button>
                 </form>
             </div>
             <div className="card shadow-sm p-4 mt-3">

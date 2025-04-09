@@ -221,7 +221,7 @@ export default function EventsListingPage() {
                             </select>
                         </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-4 d-flex align-items-end">
                         <button
                             type="submit"
                             onClick={applyFilters}
