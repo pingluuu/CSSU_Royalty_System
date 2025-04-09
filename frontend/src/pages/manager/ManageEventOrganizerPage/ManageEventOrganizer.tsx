@@ -12,7 +12,8 @@ export default function ManageEventOrganizer(){
     const [error, setError] = useState<string|null>(null)
     const [utorid, setUtorId] = useState("")
     const [loading, setLoading] = useState(true);
-    const [invalidEvent, setInvalidEvent] = useState(false);
+    const [invalidEvent, setInvalidEvent] = useState("");
+    const [message, setMessage] = useState("")
 
     const [eventName, setEventName] = useState<string>(''); 
     const [organizers, setOrganizers] = useState<Organizer []>([])
@@ -34,12 +35,10 @@ export default function ManageEventOrganizer(){
             catch (error){
                 if (axios.isAxiosError(error)){
                     if (error?.status === 404){
-                        setError("Event not found")
-                        setInvalidEvent(true)
+                        setInvalidEvent("Event Not Found")
                     }
                     else {
-                        setError("something went wrong")
-                        setInvalidEvent(true)
+                        setInvalidEvent("Unexpected Error")
                     }
                 }
             }
@@ -63,21 +62,22 @@ export default function ManageEventOrganizer(){
         );
     }
 
-    if (error) {
-        return (
-            <div className="container mt-4">
-                <div className="alert alert-danger text-center">
-                    <h1>{error}</h1>
-                </div>
-            </div>
-        )
-    }
+    // if (error) {
+    //     return (
+    //         <div className="container mt-4">
+    //             <div className="alert alert-danger text-center">
+    //                 <h1>{error}</h1>
+    //             </div>
+    //         </div>
+    //     )
+    // }
 
     if (invalidEvent){
         return (
             <div className="container mt-4">
                 <div className="alert alert-danger text-center">
-                    <h1>{error}</h1>
+                    <h1>{invalidEvent}</h1>
+                    <button className="btn btn-primary m-2" onClick={() => navigate('/')}>Go Back To HomePage</button>
                 </div>
             </div>
         )
@@ -87,16 +87,16 @@ export default function ManageEventOrganizer(){
         try {
             await api.post(`/events/${id}/organizers`, {utorid: utorid})
             setRefreshKey((prev) => prev + 1)
-            alert(`${utorid} added as a list to organizer`)
+            setMessage(`${utorid} added as a list organizer`)
         }
 
         catch (err) {
             if (axios.isAxiosError(err)){
                 if (err?.status === 400){
-                    alert("This user is already a guest")
+                    setError("This user already added as a guest")
                 }
                 else if(err?.status===404){
-                    alert("This user does not exist")
+                    setError("This user does not exist")
 
                 }
                 else {
@@ -112,12 +112,15 @@ export default function ManageEventOrganizer(){
 
     const handleRemoveOrganizer = async (userId: number) => {
         try {
+            console.log("testset")
             await api.delete(`/events/${id}/organizers/${userId}`)
+            setMessage("Organizer successfully deleted")
             setRefreshKey((prev) => prev + 1)
         }
 
         catch (err){
             console.log(err)
+            setError("Error with deleting organizer")
         }
     }
 
@@ -136,7 +139,9 @@ export default function ManageEventOrganizer(){
                     onChange={handleInputChange}
                     required
                     />
-                    <button type="submit" className="btn btn-primary">Add Organizer</button>
+
+                    <button type="submit" className="btn btn-success mt-2">Add Organizer</button>
+
                 </form>
             </div>
             <div className="card shadow-sm p-4 mt-3">
@@ -162,6 +167,30 @@ export default function ManageEventOrganizer(){
                     <p className="text-muted">No organizers currently assigned to this event.</p>
                 )}
             </div>
+            {message && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#e7f1ff',
+                    color: '#0d6efd',
+                    border: '1px solid #0d6efd',
+                    }}
+                >
+                    {message}
+                </div>
+            )}
+            {error && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#ffe7e7',
+                    color: '#dc3545',
+                    border: '1px solid #dc3545',
+                    }}
+                >
+                    {error}
+                </div>
+            )}
         </div>
     )
 }

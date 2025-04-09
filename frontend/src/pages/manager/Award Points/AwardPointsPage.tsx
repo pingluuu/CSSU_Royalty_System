@@ -79,6 +79,12 @@ export default function AwardPointsPage(){
     const handleTargetChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedValue = event.target.value;
         setTargetType(selectedValue);
+        if (selectedValue === "all") {
+            setFormData((prev) => ({
+              ...prev,
+              utorid: "",
+            }));
+        }
         
     };
 
@@ -208,9 +214,33 @@ export default function AwardPointsPage(){
                     </div>
             </form>
             <button className="btn btn-secondary me-2" onClick={() => navigate(`/manager/events/${id}`)}>Go Back To Event</button>
-            <button className="btn btn-primary" onClick={handleSubmit}>Add Points</button>
-            {message && <div className="mt-3 alert alert-success">{message}</div>}
-            {error && <div className="mt-3 alert alert-danger">{error}</div>}
+
+            <button className="btn btn-success mt-2" onClick={handleSubmit}>Add Points</button>
+            {message && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#e7f1ff',
+                    color: '#0d6efd',
+                    border: '1px solid #0d6efd',
+                    }}
+                >
+                    {message}
+                </div>
+            )}
+            {error && (
+                <div
+                    className="mt-3 p-3 rounded"
+                    style={{
+                    backgroundColor: '#ffe7e7',
+                    color: '#dc3545',
+                    border: '1px solid #dc3545',
+                    }}
+                >
+                    {error}
+                </div>
+            )}
+
         </div>
     )
 }
