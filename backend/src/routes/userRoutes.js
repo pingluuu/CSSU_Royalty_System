@@ -35,4 +35,5 @@ router.get('/:userId/transactions', authenticate, requireClearance('regular'), u
 
 router.patch('/:transactionId/processed', authenticate, requireClearance('cashier'), userController.markTransactionProcessed);
 
+router.get('/me/events', authenticate, requireClearance('regular'), userController.getAllEventsWithCurrentUser)
 module.exports = router;
