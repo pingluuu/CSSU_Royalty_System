@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
-import { useAuth } from '../../contexts/AuthContext';
+
 import './PromotionsListingRegular.css';
 
 interface Promotion {
@@ -15,7 +15,7 @@ interface Promotion {
 }
 
 export default function PromotionsListingPageRegular() {
-  const { user } = useAuth();
+  // Removed unused 'user' variable
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -123,7 +123,7 @@ export default function PromotionsListingPageRegular() {
         <>
           <div className="list-group">
             {promotions.map((promo) => (
-              <div key={promo.id}   className="transaction-card transaction-adjustment mb-3">
+              <div key={promo.id} className="transaction-card transaction-adjustment mb-3">
                 <h5>{promo.name}</h5>
                 <p>
                   <strong>Type:</strong> {promo.type}

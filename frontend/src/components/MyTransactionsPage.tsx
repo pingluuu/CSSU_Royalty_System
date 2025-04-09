@@ -26,7 +26,19 @@ export default function MyTransactions() {
     const initAmount = searchParams.get("amount") || "";
     const initOperator = searchParams.get("operator") || "";
 
-    const [transactions, setTransactions] = useState([]);
+    interface Transaction {
+        id: number;
+        type: string;
+        utorid: string;
+        spent?: number;
+        amount?: number;
+        relatedId?: number;
+        remark?: string;
+        suspicious: boolean;
+        createdBy: string;
+    }
+
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [page, setPage] = useState<number>(initPage);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
@@ -194,9 +206,10 @@ export default function MyTransactions() {
                         {transactions.map((tx) => {
                             return (
                                 <Link
+                                    to={`/transactions/${tx.id}`}
                                     key={tx.id}
                                     className={`transaction-card ${typeColors[tx.type] || ''} ${tx.suspicious ? 'transaction-suspicious' : ''
-                                    }`}
+                                        }`}
                                     style={{ textDecoration: 'none', color: 'inherit' }}
                                 >
                                     <h5>Transaction #{tx.id}</h5>

@@ -36,7 +36,7 @@ import RegisterPage from "./pages/RegisterPage";
 import TransferPage from "./components/TransferPage";
 import UserDetail from "./components/UserDetail";
 import UserRetrieval from "./pages/cashier/UserRetrieval";
-import MyEvents from "./components/MyEventsPage";
+
 import MyEventsPage from "./components/MyEventsPage";
 
 
@@ -80,13 +80,13 @@ const AppRoutes = () => {
 					<UserDetail />
 				</ProtectedRoute>
 			} />
-			<Route 
-			 path="/transfer"
-			 element={
-				 <ProtectedRoute requiredRole="regular manager superuser cashier">
-					 <TransferPage />
-				 </ProtectedRoute>
-			 }
+			<Route
+				path="/transfer"
+				element={
+					<ProtectedRoute requiredRole="regular manager superuser cashier">
+						<TransferPage />
+					</ProtectedRoute>
+				}
 			/>
 			<Route
 				path="/redeem"
@@ -136,18 +136,18 @@ const AppRoutes = () => {
 			<Route path="/create-event" element=
 				{<ProtectedRoute requiredRole="manager superuser">
 					<ManagerCreateNewEvent />
-				</ProtectedRoute>} /> 
+				</ProtectedRoute>} />
 
 
 			<Route path="/all-events" element=
 				{<ProtectedRoute requiredRole="manager regular">
-					<EventsListingPage/>
+					<EventsListingPage />
 				</ProtectedRoute>}
 			/>
 
 			<Route path="/my-events" element=
 				{<ProtectedRoute requiredRole="manager regular">
-					<MyEventsPage/>
+					<MyEventsPage />
 				</ProtectedRoute>}
 			/>
 
@@ -171,13 +171,13 @@ const AppRoutes = () => {
 				</ProtectedRoute>}
 			/>
 
-            
+
 			<Route path="/manager/events/:id" element=
 				{<ProtectedRoute requiredRole="manager superuser regular cashier">
 					<EventDetailPageManager />
 				</ProtectedRoute>}
 			/>
-			
+
 
 			<Route path="/create-transaction-cashier" element=
 				{<ProtectedRoute requiredRole="cashier">

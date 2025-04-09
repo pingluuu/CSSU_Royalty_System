@@ -30,7 +30,7 @@ const TransferPage: React.FC = () => {
         remark: remark || undefined,
       };
 
-      const response = await api.post(`/users/${recipientUserid}/transactions`, payload);
+      await api.post(`/users/${recipientUserid}/transactions`, payload);
       setStatus({ message: `Success! You transferred ${amount} points to ${recipientUserid}.`, success: true });
 
       setrecipientUserid('');
