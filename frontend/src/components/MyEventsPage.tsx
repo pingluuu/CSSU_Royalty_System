@@ -16,6 +16,7 @@ export default function MyEventsPage() {
     const initPublished = searchParams.get("published") || "true";
     const initLimit = parseInt(searchParams.get("limit") || "10", 10);
     const link_location = useLocation();
+    const isRegular = user && user.role === "regular";
 
     const [events, setEvents] = useState<Event[]>([]);
     const [page, setPage] = useState<number>(initPage);
@@ -245,50 +246,60 @@ export default function MyEventsPage() {
                 ) : events.length === 0 ? (
                     <p className="text-center">No events found.</p>
                 ) : (
-                    <>
-                        {events.map((ev) => (
-                            <Link
-                                key={ev.id}
-                                className='transaction-card transaction-event'
-                                to={eventNavLink(ev)}
-                                style={{ textDecoration: 'none', color: 'inherit' }}
-                                state={{ from: link_location }}
-                            >
-                                <h5>Events# {ev.id}</h5>
-                                <p>
-                                    <strong>Name:</strong> {ev.name}<br />
-                                    <strong>Location:</strong> {ev.location}<br />
-                                    <strong>Start Time:</strong> {ev.startTime}<br />
-                                    <strong>End Time:</strong> {ev.endTime}<br />
-                                    <strong>Capacity:</strong> {ev.capacity ? ev.capacity : "Unlimited"}<br />
-                                    <strong>Num Guests</strong> {ev.numGuests}<br />
-                                </p>
-                            </Link>
-                        ))}
-                        {totalPages > 1 && (
-                            <div className="pagination-controls">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-primary"
-                                    onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                                    disabled={page <= 1 || loading}
-                                >
-                                    Previous
-                                </button>
-                                <span>
-                                    Page {page} of {totalPages}
-                                </span>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-primary"
-                                    onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                                    disabled={page >= totalPages || loading}
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        )}
-                    </>
+                <>
+                {events.map((ev) => {
+                    const content = (
+                    <div className="transaction-card transaction-event" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <h5>Event #{ev.id}</h5>
+                        <p>
+                        <strong>Name:</strong> {ev.name}<br />
+                        <strong>Location:</strong> {ev.location}<br />
+                        <strong>Start Time:</strong> {ev.startTime}<br />
+                        <strong>End Time:</strong> {ev.endTime}<br />
+                        <strong>Capacity:</strong> {ev.capacity ?? "Unlimited"}<br />
+                        <strong>Num Guests:</strong> {ev.numGuests}<br />
+                        </p>
+                    </div>
+                    );
+
+                    return isRegular ? (
+                    <div key={ev.id}>{content}</div>
+                    ) : (
+                    <Link
+                        key={ev.id}
+                        to={eventNavLink(ev)}
+                        className="text-decoration-none text-dark"
+                        state={{ from: link_location }}
+                    >
+                        {content}
+                    </Link>
+                    );
+                })}
+
+                {totalPages > 1 && (
+                    <div className="pagination-controls mt-3">
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary"
+                        onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                        disabled={page <= 1 || loading}
+                    >
+                        Previous
+                    </button>
+                    <span className="mx-3">
+                        Page {page} of {totalPages}
+                    </span>
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary"
+                        onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                        disabled={page >= totalPages || loading}
+                    >
+                        Next
+                    </button>
+                    </div>
+                )}
+                </>
                 )}
             </div>
         </div>

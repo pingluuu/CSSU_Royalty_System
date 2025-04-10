@@ -7,18 +7,28 @@ export default function NavBar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
+  
+  
   const hideNavbarPaths = ['/login', '/register'];
   if (hideNavbarPaths.some((path) => location.pathname.startsWith(path))) {
     return null;
   }
-
+  
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-
+  
   const role = user?.role;
+
+  let navStyle = undefined;
+  
+  if (role === 'manager') {
+    navStyle = { fontSize: '.79rem'}
+  } else if (role === 'cashier' || role === 'superuser') {
+    navStyle = { fontSize: '.92rem' }
+  }
+  
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light px-3 shadow-sm">
@@ -42,59 +52,59 @@ export default function NavBar() {
             </button>
 
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <ul className="navbar-nav me-auto mb-2 mb-lg-0" style={navStyle}>
                 {/* Common */}
                 <li className="nav-item"><Link className="nav-link" to="/profile">Profile</Link></li>
-                <li className="nav-item"><Link className="nav-link" to="/my-transactions">My Transactions</Link></li>
-                <li className="nav-item"><Link className="nav-link" to="/all-events">All Events</Link></li>
-
+                <li className="nav-item"><Link className="nav-link" to="/my-transactions">Transaction History</Link></li>
                 {/* Role-specific */}
                 {role === 'regular' && (
                   <>
                     <li className="nav-item"><Link className="nav-link" to="/my-qr">My QR Code</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer Points</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/redeem">Redeem Points</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/redeem">Redeem</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/promotions">Promotions</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/events">Published Events</Link></li>
+                    {/* <li className="nav-item"><Link className="nav-link" to="/events">Published Events</Link></li> */}
                   </>
                 )}
+
 
                 {role === 'cashier' && (
                   <>
                     <li className="nav-item"><Link className="nav-link" to="/create-account">Register User</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer Points</Link></li>
+                    <li><Link className="nav-link" to="/retrieve-user">Retrieve User</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/create-transaction-cashier">Create Transaction</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/process-redemption">Process Redemption</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/promotions">Promotions</Link></li>
-                    <li><Link className="nav-link" to="/retrieve-user">Retrieve User</Link></li>
                   </>
                 )}
 
                 {role === 'manager' && (
                   <>
                     <li><Link className="nav-link" to="/users">Users</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer Points</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/create-account">Register User</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/all-transactions">Transactions</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/create-transaction-manager">Create Transaction</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/all-transactions">All Transactions</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/create-promotion">Create Promotion</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/promotions-manager">Manage Promotions</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/create-promotion">Create Promotion</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/create-event">Create Event</Link></li>
                   </>
                 )}
 
-                {(role === 'manager' || role === 'regular') && (
+                {(role === 'regular') && (
                   <li className="nav-item"><Link className="nav-link" to="/my-events">My Events</Link></li>
                 )}
 
                 {role === 'superuser' && (
                   <>
-                    <li className="nav-item"><Link className="nav-link" to="/create-account">Register User</Link></li>
-                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer Points</Link></li>
                     <li><Link className="nav-link" to="/users">Users</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/create-account">Register User</Link></li>
+                    <li className="nav-item"><Link className="nav-link" to="/transfer">Transfer</Link></li>
                     <li className="nav-item"><Link className="nav-link" to="/promotions-manager">Manage Promotions</Link></li>
                   </>
                 )}
+                <li className="nav-item"><Link className="nav-link" to="/all-events">Events</Link></li>
 
                 {/* Mobile-only logout */}
                 <li className="nav-item d-lg-none mt-2">

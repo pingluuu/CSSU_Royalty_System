@@ -14,7 +14,8 @@ type User = {
   utorid: string;
   name: string;
   email: string;
-  role: string;
+  originalRole: 'regular' | 'cashier' | 'manager' | 'superuser';
+  role: 'regular' | 'cashier' | 'manager' | 'superuser';
   points: number;
   verified: boolean;
   birthday?: string;
@@ -26,6 +27,7 @@ type AuthContextType = {
   login: (utorid: string, password: string) => Promise<{ success: boolean; user?: User }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  setActiveRole: (newRole: User['role']) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -47,6 +49,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const setActiveRole = (newRole: User['role']) => {
+    if (user) {
+      setUser({ ...user, role: newRole });
+    }
+  };
+
   const login = async (utorid: string, password: string) => {
     try {
       const tokenResponse = await api.post('/auth/tokens', { utorid, password });
@@ -56,6 +64,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const userResponse = await api.get('/users/me');
   
       const userData: User = normalizeUser(userResponse.data);
+      userData.originalRole = userData.role; // Store the original role
+
       setUser(userData);
 
       return { success: true, user: userData };
@@ -108,7 +118,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, login, logout, refreshUser, setActiveRole }}>
       {children}
     </AuthContext.Provider>
   );

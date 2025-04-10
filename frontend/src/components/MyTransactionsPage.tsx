@@ -235,7 +235,7 @@ export default function MyTransactions() {
                                     key={tx.id}
                                     className={`transaction-card ${typeColors[tx.type] || ''} ${tx.suspicious ? 'transaction-suspicious' : ''
                                         }`}
-                                    style={{ textDecoration: 'none', color: 'inherit' }}
+                                    style={{ textDecoration: 'none', color: 'inherit', cursor: 'auto'}}
                                 >
                                     <h5>Transaction #{tx.id}</h5>
                                     <p>
