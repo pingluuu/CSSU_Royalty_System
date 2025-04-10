@@ -42,7 +42,7 @@ export default function UsersListing() {
   const totalPages = Math.ceil(count / limit);
 
   const updateURL = () => {
-    const params: any = { page: page.toString() };
+    const params: any = { page: page.toString(), limit: limit.toString()};
     if (name) params.name = name;
     if (role) params.role = role;
     if (verified) params.verified = verified;

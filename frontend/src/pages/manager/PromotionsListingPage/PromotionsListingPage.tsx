@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link, useLocation } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import api from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 //import './AllTransactionsPage.css';
@@ -20,9 +20,7 @@ export default function PromotionsListingPage() {
     const { user } = useAuth();
     const [promotions, setPromotions] = useState<Promotion[]>([]);
     const [count, setCount] = useState(0);
-    const [limit] = useState(10);
     const [loading, setLoading] = useState(false);
-    const link_location = useLocation();
 
     // Get and update URL search parameters
     const [searchParams, setSearchParams] = useSearchParams();
@@ -32,6 +30,10 @@ export default function PromotionsListingPage() {
     const [filterType, setFilterType] = useState(searchParams.get('type') || '');
     const [filterStarted, setFilterStarted] = useState(searchParams.get('started') || '');
     const [filterEnded, setFilterEnded] = useState(searchParams.get('ended') || '');
+
+    const initLimit = parseInt(searchParams.get("limit") || "10", 10);
+    const [limit, setLimit] = useState(initLimit);
+
     const [page, setPage] = useState<number>(() => {
         const param = searchParams.get('page');
         return param ? parseInt(param, 10) : 1;
@@ -104,58 +106,80 @@ export default function PromotionsListingPage() {
             <h2 className="mb-3">All Promotions</h2>
 
             {/* Two-column filter form */}
-            <form className="filter-form mb-4" onSubmit={handleFilterSubmit}>
-                <div>
-                    <label className="form-label">Name</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={filterName}
-                        onChange={(e) => setFilterName(e.target.value)}
-                    />
+            <form className="mb-4" onSubmit={handleFilterSubmit}>
+                <div className="row">
+                    <div className="col-md-6">
+                        <label className="form-label">Name</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={filterName}
+                            onChange={(e) => setFilterName(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label className="form-label">Type</label>
+                        <select
+                            className="form-select"
+                            value={filterType}
+                            onChange={(e) => setFilterType(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="one-time">one-time</option>
+                            <option value="automatic">automatic</option>
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Started</label>
+                        <select
+                            className="form-select"
+                            value={filterStarted}
+                            onChange={(e) => setFilterStarted(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="true">Started</option>
+                            <option value="false">Not Started</option>
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Ended</label>
+                        <select
+                            className="form-select"
+                            value={filterEnded}
+                            onChange={(e) => setFilterEnded(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="true">Ended</option>
+                            <option value="false">Not Ended</option>
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label me-2">Results per page:</label>
+                        <div className="d-flex">
+                        <select
+                            className="form-select"
+                            value={limit}
+                            onChange={(e) => {
+                            setLimit(parseInt(e.target.value, 10));
+                            }}
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        </div>
+                    </div>
+                    
+                    {/* Submit button spanning two columns */}
+                    <div style={{ gridColumn: 'span 2', textAlign: 'start' }}>
+                        <button type="submit" className="btn btn-primary mt-2">
+                            Apply Filters
+                        </button>
+                    </div>
+
                 </div>
-                <div>
-                    <label className="form-label">Type</label>
-                    <select
-                        className="form-select"
-                        value={filterType}
-                        onChange={(e) => setFilterType(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option value="one-time">one-time</option>
-                        <option value="automatic">automatic</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="form-label">Started</label>
-                    <select
-                        className="form-select"
-                        value={filterStarted}
-                        onChange={(e) => setFilterStarted(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option value="true">Started</option>
-                        <option value="false">Not Started</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="form-label">Ended</label>
-                    <select
-                        className="form-select"
-                        value={filterEnded}
-                        onChange={(e) => setFilterEnded(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option value="true">Ended</option>
-                        <option value="false">Not Ended</option>
-                    </select>
-                </div>
-                {/* Submit button spanning two columns */}
-                <div style={{ gridColumn: 'span 2', textAlign: 'start' }}>
-                    <button type="submit" className="btn btn-primary">
-                        Apply Filters
-                    </button>
-                </div>
+                
             </form>
 
             {loading ? (
@@ -169,7 +193,7 @@ export default function PromotionsListingPage() {
                             <Link
                                 key={promo.id}
                                 to={`/manager/promotions/${promo.id}`}
-                                className="transaction-card transaction-adjustment mb-3" style={{textDecoration: 'none', color: 'inherit'}} state={{ from: link_location }}
+                                className="transaction-card transaction-adjustment mb-3" style={{textDecoration: 'none', color: 'inherit'}}
                                 >
                                 <div className="d-flex w-100 justify-content-between">
                                     <h5 className="mb-1">{promo.name}</h5>
