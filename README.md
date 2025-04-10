@@ -1,131 +1,116 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from 'react';
-import api from '../services/api';
+# 🌟 CSC309 Loyalty System Web App
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+> Built by **Ping Lu, Ethan Hsu, Caesar Saleh**  
+> For the **CSC309: Web Development Course Term Project**  
+> University of Toronto – Winter 2025
 
-type User = {
-  id: any;
-  utorid: string;
-  name: string;
-  email: string;
-  originalRole: 'regular' | 'cashier' | 'manager' | 'superuser';
-  role: 'regular' | 'cashier' | 'manager' | 'superuser';
-  points: number;
-  verified: boolean;
-  birthday?: string;
-  avatarUrl?: string;
-};
+---
 
-type AuthContextType = {
-  user: User | null;
-  login: (utorid: string, password: string) => Promise<{ success: boolean; user?: User }>;
-  logout: () => void;
-  refreshUser: () => Promise<void>;
-  setActiveRole: (newRole: User['role']) => void;
-};
+## 📋 Description
 
-const AuthContext = createContext<AuthContextType | null>(null);
+This is a **loyalty point system web application** where users can:
 
-type AuthProviderProps = {
-  children: ReactNode;
-};
+- Register and participate in **events**
+- Make **purchases** and receive **awards**
+- View **promotions**, manage **transactions**, and more
 
-const normalizeUser = (data: any): User => {
-  console.log("The avatar url is :::", `${BASE_URL}${data.avatarUrl}`);
+The platform supports multiple roles with role-based access:
 
-  return {
-    ...data,
-    avatarUrl: data.avatarUrl ? `${BASE_URL}${data.avatarUrl}` : undefined,
-  };
-};
+- 👤 **Regular User**: Browse and participate
+- 🧾 **Cashier**: Create user accounts and record purchases
+- 🧑‍💼 **Manager**: Create and manage events, award points
+- 🛠️ **Superuser**: Full administrative privileges
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+---
 
-  const setActiveRole = (newRole: User['role']) => {
-    if (user) {
-      setUser({ ...user, role: newRole });
-    }
-  };
+## 🛠️ Tech Stack
 
-  const login = async (utorid: string, password: string) => {
-    try {
-      const tokenResponse = await api.post('/auth/tokens', { utorid, password });
-      const token = tokenResponse.data.token;
-      localStorage.setItem('authToken', token);
+- **Frontend**: React, Vite, TypeScript  
+- **Backend**: Express.js, Prisma ORM  
+- **Database**: SQLite (via Prisma)
 
-      const userResponse = await api.get('/users/me');
-  
-      const userData: User = normalizeUser(userResponse.data);
-      userData.originalRole = userData.role; // Store the original role
+---
 
-      setUser(userData);
+## 🛆 Libraries & Frameworks Used
 
-      return { success: true, user: userData };
-    } catch (error) {
-      console.log('Login failed', error);
-      return { success: false };
-    }
-  };
+| Category       | Libraries                                                                 |
+|----------------|---------------------------------------------------------------------------|
+| Auth/Security  | `bcrypt`, `jsonwebtoken`, `express-jwt`                                   |
+| QR Scanning    | `html5-qrcode`, `qrcode.react`                                            |
+| File Uploads   | `multer`                                                                  |
+| Miscellaneous  | `uuid`, `cors`                                                            |
+| AI Assistant(Code Attribution)   | `ChatGPT` by OpenAI for code assistance and refinement                    |
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('authToken');
-  };
+---
 
-  const refreshUser = async () => {
-    try {
-      const userResponse = await api.get('/users/me');
-      const userData: User = normalizeUser(userResponse.data);
-      setUser(userData);
-    } catch (error) {
-      console.error('Failed to refresh user', error);
-    }
-  };
+## 🚀 Getting Started
 
-  useEffect(() => {
-    const checkLoggedIn = async () => {
-      setIsLoading(true);
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        try {
-          const userResponse = await api.get('/users/me');
-          const userData: User = normalizeUser(userResponse.data);
-          setUser(userData);
-        } catch (error) {
-          console.log(error);
-          logout();
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
+The repository includes both **frontend** and **backend** codebases.
 
-    checkLoggedIn();
-  }, []);
+### 📁 Start the Frontend
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout, refreshUser, setActiveRole }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+This starts the React frontend using **Vite**.
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthProvider');
-  return context;
-};
+---
+
+### 🗓️ Initialize the Database
+
+```bash
+npx prisma db push
+```
+
+This pushes your current Prisma schema to SQLite and creates tables.
+
+---
+
+### 🌱 Seed the Database (Optional but Recommended)
+
+```bash
+npx prisma db seed
+```
+
+This seeds the database with a **variety of realistic users, events, and transactions**.  
+Great for testing full functionality out-of-the-box!
+
+---
+
+### 👑 Create a Superuser
+
+```bash
+cd backend/prisma
+node createsu.js
+```
+
+This creates a new superuser account so you can access admin features.
+
+---
+
+### 🔙 Start the Backend
+
+```bash
+cd backend
+npm install
+node --watch 3000 index.js
+```
+
+Make sure the port (`3000`) matches your `.env` and frontend config (`VITE_API_BASE_URL`).
+
+---
+
+## ✅ That’s It — You’re Ready!
+
+> Enjoy exploring our loyalty system app.  
+> We hope it’s intuitive, fun to use, and robust for all user types.
+
+---
+
+## 🙏 Acknowledgements
+
+Huge thanks to **Professor Jack Sun** and the amazing **CSC309 Course Staff**  
+for crafting an engaging and challenging course. We learned a ton!
