@@ -27,7 +27,7 @@ const port = (() => {
 const app = express();
 app.use('/uploads/avatars', express.static(path.join(__dirname, 'uploads', 'avatars')));
 app.use(cors({
-    origin: "https://cssu-royalty-system-n9tw.vercel.app/",
+    origin: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5173',
     credentials: true,
 }));
 
