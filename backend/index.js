@@ -24,7 +24,8 @@ const port = (() => {
 const app = express();
 app.use('/uploads/avatars', express.static(path.join(__dirname, 'uploads', 'avatars')));
 app.use(cors({
-    origin: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], 
     credentials: true,
 }));
 
