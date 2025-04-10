@@ -26,6 +26,7 @@ export default function MyTransactions() {
     const initPromotionId = searchParams.get("promotionId") || "";
     const initAmount = searchParams.get("amount") || "";
     const initOperator = searchParams.get("operator") || "";
+    const initLimit = parseInt(searchParams.get("limit") || "10", 10);
 
     interface Transaction {
         id: number;
@@ -45,7 +46,7 @@ export default function MyTransactions() {
     const [totalCount, setTotalCount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const limit = 10;
+    const [limit, setLimit] = useState(initLimit);
 
     const [type, setType] = useState<string>(initType);
     const [relatedId, setRelatedId] = useState<string>(initRelatedId);
@@ -118,7 +119,7 @@ export default function MyTransactions() {
 
 
     const updateURL = () => {
-        const newParams: any = { page: page.toString() };
+        const newParams: any = { page: page.toString(), limit: limit.toString()};
         if (type) newParams.type = type;
         if (relatedId) newParams.relatedId = relatedId;
         if (promotionId) newParams.promotionId = promotionId;
@@ -194,8 +195,25 @@ export default function MyTransactions() {
                             <option value="lte">Less than or equal</option>
                         </select>
                     </div>
+                    <div className="col-md-4">
+                        <label className="form-label me-2">Results per page:</label>
+                        <div className="d-flex">
+                        <select
+                            className="form-select"
+                            value={limit}
+                            onChange={(e) => {
+                            setLimit(parseInt(e.target.value, 10));
+                            }}
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        </div>
+                    </div>
                     <div className="col-md-4 d-flex align-items-end">
-                        <button type="submit" onClick={applyFilters} className="btn btn-primary w-100">
+                        <button type="submit" onClick={applyFilters} className="btn btn-primary w-100 mt-2">
                             Apply Filters
                         </button>
                     </div>
@@ -244,12 +262,12 @@ export default function MyTransactions() {
                                                 <br />
                                             </>
                                         )}
-                                        {tx.promotionIds?.length > 0 ? (
+                                        {(tx.promotionIds ?? []).length > 0 ? (
                                             <>
-                                                <strong>Promotions:</strong> {tx.promotionIds.join(', ')}
+                                                <strong>Promotions:</strong> {(tx.promotionIds ?? []).join(', ')}
                                                 <br />
                                             </>
-                                        ) : 
+                                        ) :
                                             <>
                                                 <strong>Promotions:</strong> No Promotions Applied
                                                 <br />

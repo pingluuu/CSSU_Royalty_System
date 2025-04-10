@@ -14,6 +14,7 @@ export default function EventsListingPage() {
   const initEnded = searchParams.get("ended") || "";
   const initShowFull = searchParams.get("showFull") || "false";
   const initPublished = searchParams.get("published") || "true";
+  const initLimit = parseInt(searchParams.get("limit") || "10", 10);
   const link_location = useLocation();
 
   const [events, setEvents] = useState<Event[]>([]);
@@ -21,7 +22,8 @@ export default function EventsListingPage() {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const limit = 10;
+  const [limit, setLimit] = useState(initLimit);
+
 
   const [name, setName] = useState<string>(initName);
   const [location, setLocation] = useState<string>(initLocation);
@@ -49,7 +51,7 @@ export default function EventsListingPage() {
   };
 
   const updateURL = () => {
-    const params: any = { page: page.toString() };
+    const params: any = { page: page.toString(), limit: limit.toString()};
     if (name) params.name = name;
     if (location) params.location = location;
     if (started) params.started = started;
@@ -193,8 +195,25 @@ export default function EventsListingPage() {
               </select>
             </div>
           </div>
-
           <div className="col-md-4">
+            <label className="form-label me-2">Results per page:</label>
+            <div className="d-flex">
+              <select
+                className="form-select"
+                value={limit}
+                onChange={(e) => {
+                  setLimit(parseInt(e.target.value, 10));
+                }}
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="col-md-4 d-flex align-items-end mt-2">
             <button
               type="submit"
               onClick={applyFilters}

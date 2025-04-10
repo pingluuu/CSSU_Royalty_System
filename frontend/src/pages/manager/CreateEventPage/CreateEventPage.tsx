@@ -1,6 +1,6 @@
 import { useState } from "react"
 import api from "../../../services/api";
-import { useNavigate } from 'react-router-dom';
+
 interface FormData {
     name: string;
     description: string;
@@ -11,7 +11,7 @@ interface FormData {
     points: number
 }
 const ManagerCreateNewEvent = () => {
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState<FormData>(
         {
@@ -74,7 +74,7 @@ const ManagerCreateNewEvent = () => {
 
     }
 
-    
+
     return (
         <div className="container mt-4">
             <form onSubmit={handleSubmit} className="row g-3">
@@ -164,9 +164,9 @@ const ManagerCreateNewEvent = () => {
                 <div
                     className="mt-3 p-3 rounded"
                     style={{
-                    backgroundColor: '#e7f1ff',
-                    color: '#0d6efd',
-                    border: '1px solid #0d6efd',
+                        backgroundColor: '#e7f1ff',
+                        color: '#0d6efd',
+                        border: '1px solid #0d6efd',
                     }}
                 >
                     {message}
@@ -176,9 +176,9 @@ const ManagerCreateNewEvent = () => {
                 <div
                     className="mt-3 p-3 rounded"
                     style={{
-                    backgroundColor: '#ffe7e7',
-                    color: '#dc3545',
-                    border: '1px solid #dc3545',
+                        backgroundColor: '#ffe7e7',
+                        color: '#dc3545',
+                        border: '1px solid #dc3545',
                     }}
                 >
                     {error}

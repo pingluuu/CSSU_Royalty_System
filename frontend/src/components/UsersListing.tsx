@@ -23,12 +23,13 @@ export default function UsersListing() {
   const initRole = searchParams.get("role") || "";
   const initVerified = searchParams.get("verified") || "";
   const initActivated = searchParams.get("activated") || "";
+  const initLimit = parseInt(searchParams.get("limit") || "10", 10);
   const link_location = useLocation();
 
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(initPage);
-  const [limit] = useState(10);
+  const [limit, setLimit] = useState(initLimit);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -41,7 +42,7 @@ export default function UsersListing() {
   const totalPages = Math.ceil(count / limit);
 
   const updateURL = () => {
-    const params: any = { page: page.toString() };
+    const params: any = { page: page.toString(), limit: limit.toString()};
     if (name) params.name = name;
     if (role) params.role = role;
     if (verified) params.verified = verified;
@@ -101,7 +102,7 @@ export default function UsersListing() {
               placeholder="Search by name/UTORid"
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Role:</label>
             <select
               className="form-select"
@@ -115,7 +116,7 @@ export default function UsersListing() {
               <option value="superuser">Superuser</option>
             </select>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Verified:</label>
             <select
               className="form-select"
@@ -127,7 +128,7 @@ export default function UsersListing() {
               <option value="false">No</option>
             </select>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label className="form-label">Activated:</label>
             <select
               className="form-select"
@@ -139,6 +140,23 @@ export default function UsersListing() {
               <option value="false">No</option>
             </select>
           </div>
+          <div className="col-md-3">
+            <label className="form-label me-2">Results per page:</label>
+            <div className="d-flex">
+              <select
+                  className="form-select"
+                  value={limit}
+                  onChange={(e) => {
+                  setLimit(parseInt(e.target.value, 10));
+                  }}
+              >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+              </select>
+            </div>
+        </div>
         </div>
         <div className="row mt-3">
           <div className="col-md-12 align-items-center">

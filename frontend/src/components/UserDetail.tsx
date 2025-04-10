@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import defaultAvatar from '../assets/default.png';
+import defaultAvatar from '../assets/Default.png';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -17,13 +17,13 @@ export default function UserDetail() {
   const link_location = useLocation();
   const backLink = link_location.state?.from?.pathname + link_location.state?.from?.search || '/users';
   const navigate = useNavigate();
-  
+
   // Editable fields
   const [email, setEmail] = useState('');
   const [verified, setVerified] = useState('');
   const [suspicious, setSuspicious] = useState('');
   const [role, setRole] = useState('');
-  
+
   const isManager = user?.role === 'manager';
   const isSuperuser = user?.role === 'superuser';
   const isCashier = user?.role === 'cashier';
@@ -73,7 +73,7 @@ export default function UserDetail() {
       {isCashier && <Link to="/retrieve-user" className="btn btn-secondary mb-3">
         &larr; Back to Users
       </Link>}
-      {(isManager || isSuperuser) && <button  className="btn btn-secondary mb-3" onClick={()=> navigate(backLink)}>
+      {(isManager || isSuperuser) && <button className="btn btn-secondary mb-3" onClick={() => navigate(backLink)}>
         &larr; Back to Users
       </button>}
       <h2>User Details</h2>
@@ -86,7 +86,7 @@ export default function UserDetail() {
         />
       </div>}
       <div className="row g-3 mb-4">
-      <div className="col-md-6"><strong>ID:</strong> {userData.id}</div>
+        <div className="col-md-6"><strong>ID:</strong> {userData.id}</div>
         <div className="col-md-6"><strong>Name:</strong> {userData.name}</div>
         <div className="col-md-6"><strong>UTORid:</strong> {userData.utorid}</div>
         <div className="col-md-6"><strong>Points:</strong> {userData.points}</div>
