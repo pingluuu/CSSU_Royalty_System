@@ -19,7 +19,7 @@ export default function PromotionsListingPageRegular() {
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const limit = 10;
+  
 
   // Use URL search parameters for bookmarking filter state and pagination
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,6 +27,8 @@ export default function PromotionsListingPageRegular() {
   // Initialize local filter state from URL parameters
   const [nameFilter, setNameFilter] = useState(searchParams.get('name') || '');
   const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || '');
+  const initLimit = parseInt(searchParams.get("limit") || "10", 10);
+  const [limit, setLimit] = useState(initLimit);
   const [page, setPage] = useState<number>(() => {
     const param = searchParams.get('page');
     return param ? parseInt(param, 10) : 1;
@@ -85,31 +87,51 @@ export default function PromotionsListingPageRegular() {
       <h2>Available Promotions</h2>
 
       {/* Filter form using a two-column grid layout */}
-      <form className="filter-form mb-3" onSubmit={handleFilterSubmit}>
-        <div>
-          <label className="form-label">Search by Name</label>
-          <input
-            type="text"
-            className="form-control"
-            value={nameFilter}
-            onChange={(e) => setNameFilter(e.target.value)}
-          />
+      <form className="mb-3" onSubmit={handleFilterSubmit}>
+        <div className="row">
+          <div className="col-md-4">
+            <label className="form-label">Search by Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
+            />
+          </div>
+          <div className="col-md-4">
+            <label className="form-label">Filter by Type</label>
+            <select
+              className="form-select"
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="automatic">Automatic</option>
+              <option value="one_time">One-Time</option>
+            </select>
+          </div>
+          <div className="col-md-4">
+            <label className="form-label me-2">Results per page:</label>
+            <div className="d-flex">
+              <select
+                className="form-select"
+                value={limit}
+                onChange={(e) => {
+                  setLimit(parseInt(e.target.value, 10));
+                }}
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <div>
-          <label className="form-label">Filter by Type</label>
-          <select
-            className="form-select"
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="automatic">Automatic</option>
-            <option value="one_time">One-Time</option>
-          </select>
-        </div>
+        
         {/* Submit button spanning both columns */}
         <div style={{ gridColumn: 'span 2', textAlign: 'start' }}>
-          <button type="submit" className="btn btn-primary w-100">
+          <button type="submit" className="btn btn-primary w-100 mt-3">
             Apply Filters
           </button>
         </div>
