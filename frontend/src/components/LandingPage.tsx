@@ -8,18 +8,16 @@ export default function LandingPage() {
   const capitalizeFirst = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
-  
-  const { user } = useAuth();
-  // Removed unused points state
-  const [transactions, setTransactions] = useState<any[]>([
-  ]);
-  
+
+  const { user, setActiveRole } = useAuth();
+
+  const [transactions, setTransactions] = useState<any[]>([]);
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (user?.role === 'regular') {
         try {
           await api.get('/users/me');
-          // Removed setPoints as points state is no longer used
           const txRes = await api.get('/users/me/transactions', { params: { page: 1, limit: 5 } });
           setTransactions(txRes.data.results);
         } catch (err) {
@@ -29,6 +27,12 @@ export default function LandingPage() {
     };
     fetchUserData();
   }, [user]);
+
+  const getSwitchableRoles = () => {
+    if (user?.originalRole === 'manager') return ['regular', 'cashier'];
+    if (user?.originalRole === 'superuser') return ['regular', 'cashier', 'manager'];
+    return [];
+  };
 
   if (!user) {
     return (
@@ -47,6 +51,27 @@ export default function LandingPage() {
   return (
     <div className="container mt-4">
       <h2>Welcome, {capitalizeFirst(user.name)}!</h2>
+
+      {(user.originalRole === 'manager' || user.originalRole === 'superuser') && (
+        <div className="dropdown mb-4">
+          <button className="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Interface: {capitalizeFirst(user.role)}
+          </button>
+          <ul className="dropdown-menu">
+            {getSwitchableRoles().map((r) => (
+              <li key={r}>
+                <button
+                  className="dropdown-item"
+                  onClick={() => setActiveRole(r)}
+                  disabled={user.role === r}
+                >
+                  {capitalizeFirst(r)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {user.role === 'regular' && (
         <>
@@ -91,6 +116,7 @@ export default function LandingPage() {
           </div>
         </div>
       )}
+
       {(user.role === 'manager' || user.role === 'superuser') && (
         <div className="card shadow-sm border-0 mt-4">
           <div className="card-body">
