@@ -14,8 +14,8 @@ type User = {
   utorid: string;
   name: string;
   email: string;
-  originalRole: 'regular' | 'cashier' | 'manager' | 'superuser';
-  role: 'regular' | 'cashier' | 'manager' | 'superuser';
+  originalRole: string;
+  role: string;
   points: number;
   verified: boolean;
   birthday?: string;
