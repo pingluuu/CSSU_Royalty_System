@@ -119,7 +119,7 @@ export default function MyTransactions() {
 
 
     const updateURL = () => {
-        const newParams: any = { page: page.toString() };
+        const newParams: any = { page: page.toString(), limit: limit.toString()};
         if (type) newParams.type = type;
         if (relatedId) newParams.relatedId = relatedId;
         if (promotionId) newParams.promotionId = promotionId;
