@@ -29,7 +29,6 @@ export default function AllTransactionsPage() {
     const { user } = useAuth();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [count, setCount] = useState(0);
-    const [limit] = useState(10);
     const [loading, setLoading] = useState(false);
     const link_location = useLocation();
 
@@ -55,6 +54,9 @@ export default function AllTransactionsPage() {
     const [filterOperator, setFilterOperator] = useState(
         searchParams.get('operator') || ''
     );
+
+    const initLimit = parseInt(searchParams.get("limit") || "10", 10);
+    const [limit, setLimit] = useState(initLimit);
     const [page, setPage] = useState<number>(() => {
         const param = searchParams.get('page');
         return param ? parseInt(param, 10) : 1;
@@ -140,95 +142,116 @@ export default function AllTransactionsPage() {
         <div className="container mt-4">
             <h2 className="mb-3">All Transactions</h2>
 
-            {/* Custom grid-based filter form, now set for two filters per row */}
-            <form className="filter-form mb-4" onSubmit={handleFilterSubmit}>
-                <div>
-                    <label className="form-label">Type</label>
-                    <select
-                        className="form-select"
-                        value={filterType}
-                        onChange={(e) => setFilterType(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option value="purchase">Purchase</option>
-                        <option value="adjustment">Adjustment</option>
-                        <option value="transfer">Transfer</option>
-                        <option value="redemption">Redemption</option>
-                        <option value="event">Event</option>
-                    </select>
+            
+            <form className="mb-4" onSubmit={handleFilterSubmit}>
+                <div className="row">
+                    <div className="col-md-4">
+                        <label className="form-label">Type</label>
+                        <select
+                            className="form-select"
+                            value={filterType}
+                            onChange={(e) => setFilterType(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="purchase">Purchase</option>
+                            <option value="adjustment">Adjustment</option>
+                            <option value="transfer">Transfer</option>
+                            <option value="redemption">Redemption</option>
+                            <option value="event">Event</option>
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">User Name/UTORid</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={filterName}
+                            onChange={(e) => setFilterName(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Created By</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={filterCreatedBy}
+                            onChange={(e) => setFilterCreatedBy(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Suspicious</label>
+                        <select
+                            className="form-select"
+                            value={filterSuspicious}
+                            onChange={(e) => setFilterSuspicious(e.target.value)}
+                        >
+                            <option value="">All</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Amount</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={filterAmount}
+                            onChange={(e) => setFilterAmount(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Operator</label>
+                        <select
+                            className="form-select"
+                            value={filterOperator}
+                            onChange={(e) => setFilterOperator(e.target.value)}
+                        >
+                            <option value="">None</option>
+                            <option value="gte">≥</option>
+                            <option value="lte">≤</option>
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Promo ID</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={filterPromotionId}
+                            onChange={(e) => setFilterPromotionId(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label">Related ID</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={filterRelatedId}
+                            onChange={(e) => setFilterRelatedId(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <label className="form-label me-2">Results per page:</label>
+                        <div className="d-flex">
+                            <select
+                                className="form-select"
+                                value={limit}
+                                onChange={(e) => {
+                                setLimit(parseInt(e.target.value, 10));
+                                }}
+                            >
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
-                <div>
-                    <label className="form-label">User Name/UTORid</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={filterName}
-                        onChange={(e) => setFilterName(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label className="form-label">Created By</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={filterCreatedBy}
-                        onChange={(e) => setFilterCreatedBy(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label className="form-label">Suspicious</label>
-                    <select
-                        className="form-select"
-                        value={filterSuspicious}
-                        onChange={(e) => setFilterSuspicious(e.target.value)}
-                    >
-                        <option value="">All</option>
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="form-label">Amount</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        value={filterAmount}
-                        onChange={(e) => setFilterAmount(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label className="form-label">Operator</label>
-                    <select
-                        className="form-select"
-                        value={filterOperator}
-                        onChange={(e) => setFilterOperator(e.target.value)}
-                    >
-                        <option value="">None</option>
-                        <option value="gte">≥</option>
-                        <option value="lte">≤</option>
-                    </select>
-                </div>
-                <div>
-                    <label className="form-label">Promo ID</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        value={filterPromotionId}
-                        onChange={(e) => setFilterPromotionId(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label className="form-label">Related ID</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        value={filterRelatedId}
-                        onChange={(e) => setFilterRelatedId(e.target.value)}
-                    />
-                </div>
+                
                 {/* Adjusted button container to span 2 columns for a two-column layout */}
                 <div style={{ gridColumn: 'span 2', textAlign: 'start' }}>
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn btn-primary mt-2">
                         Apply Filters
                     </button>
                 </div>
