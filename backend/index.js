@@ -7,21 +7,18 @@ const path = require('path');
 
 const port = (() => {
     const args = process.argv;
-
-    if (args.length !== 3) {
-        console.error("usage: node index.js port");
-        process.exit(1);
-    }
-
-    const num = parseInt(args[2], 10);
+  
+    // Use provided port or fallback to 8080
+    const num = args[2] ? parseInt(args[2], 10) : 8080;
+  
     if (isNaN(num)) {
-        console.error("error: argument must be an integer.");
-        process.exit(1);
+      console.error("error: argument must be an integer.");
+      process.exit(1);
     }
-
+  
     return num;
-})();
-
+  })();
+  
 
 
 const app = express();
