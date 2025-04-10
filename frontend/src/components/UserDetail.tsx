@@ -79,7 +79,7 @@ export default function UserDetail() {
       <h2>User Details</h2>
       {(isManager || isSuperuser) && <div className="text-center my-4">
         <img
-          src={userData.avatarUrl ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}${userData.avatarUrl}` : defaultAvatar}
+          src={userData.avatarUrl ? `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}${userData.avatarUrl}` : defaultAvatar}
           alt="User Avatar"
           className="rounded-circle"
           style={{ width: '160px', height: '160px', objectFit: 'cover', border: '2px solid #007bff' }}
